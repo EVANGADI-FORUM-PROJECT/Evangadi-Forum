@@ -46,6 +46,9 @@ async function login(credentials) {
  * Logs out the current user by clearing localStorage.
  */
 function logout() {
+  // Remove both the token and user data — this is what "logs out" the
+  // user client-side since there's no server-side session to invalidate
+
   localStorage.removeItem("token");
   localStorage.removeItem("user");
 }
