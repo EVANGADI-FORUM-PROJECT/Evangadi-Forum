@@ -136,6 +136,8 @@ function handleAuthError(error) {
 
 /**
  * Service for handling auth-related requests.
+ * Exposed as a single object so components can import one cohesive API
+ * (e.g. authService.login(...)) instead of many separate named imports.
  */
 export const authService = {
   register,
