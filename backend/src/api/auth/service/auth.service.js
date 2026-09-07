@@ -44,19 +44,34 @@ export const registerService = async ({
   email,
   password,
 }) => {
+  // Call normalizeEmail to trim whitespace and convert the email to lowercase
+  // so that email comparisons are consistent
   const normalizedEmail = normalizeEmail(email);
+
+  // Check if a user already exists with this email to prevent duplicate accounts.
+  // This provides an application-level check before attempting the database insert.
   const userExists = await checkUserExists(normalizedEmail);
+
   if (userExists) {
     throw new BadRequestError('User already exists with this email.');
   }
 
-  // every time we call bcrypt.genSalt, it generates a new random salt string.
-  const salt = await bcrypt.genSalt(10); // generates a unique random salt each call
+  // Generate a new random salt for this password.
+  // The salt is different each time bcrypt.genSalt() is called.
+  const salt = await bcrypt.genSalt(10);
+
+  // Hash the user's password using the generated salt.
+  // The original password is never stored directly in the database.
   const hashedPassword = await bcrypt.hash(password, salt);
+
+  // SQL query used to insert the new user's data into the database
   const sql =
     'INSERT INTO users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)';
+
   let result;
+
   try {
+    // Execute the INSERT query with the user's data
     result = await safeExecute(sql, [
       firstName,
       lastName,
@@ -64,12 +79,18 @@ export const registerService = async ({
       hashedPassword,
     ]);
   } catch (error) {
+    // If the database detects a duplicate email, return a user-friendly error.
+    // This protects against duplicates even if two requests pass the checkUserExists() check at the same time.
     if (error?.code === 'ER_DUP_ENTRY') {
       throw new BadRequestError('User already exists with this email.');
     }
+
+    // Pass any other database error to the error-handling middleware
     throw error;
   }
 
+  // Return the newly created user's information.
+  // The password/hash is intentionally not included in the response.
   return {
     id: result.insertId,
     firstName,
@@ -77,6 +98,7 @@ export const registerService = async ({
     email: normalizedEmail,
   };
 };
+
 
 /**
  * Authenticates a user and generates a JWT token.
