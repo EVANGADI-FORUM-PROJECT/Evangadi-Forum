@@ -111,8 +111,12 @@ function handleAuthError(error) {
   }
 
   const status = error.response.status;
+  // Backend may use either `msg` or `message` as the error key —
+  // check both so we don't miss the server's actual explanation
+
   const backendMessage =
     error.response.data?.msg || error.response.data?.message;
+  // Map HTTP status codes to friendly, contextual messages
 
   switch (status) {
     case 400:
@@ -124,6 +128,8 @@ function handleAuthError(error) {
         "Something went wrong on our end. Please try again later.",
       );
     default:
+      // Catch-all for any other status code (403, 404, 429, etc.)
+
       return new Error(backendMessage || "An unexpected error occurred.");
   }
 }
