@@ -1,4 +1,4 @@
-import { apiClient } from '../core/api.client.js';
+import { apiClient } from "../core/api.client.js";
 
 /**
  * Registers a new user.
@@ -6,8 +6,14 @@ import { apiClient } from '../core/api.client.js';
  */
 async function register(userData) {
   try {
-    const response = await apiClient.post('/api/auth/register', userData);
+    // Send registration payload to the backend auth endpoint
+    const response = await apiClient.post("/api/auth/register", userData);
+
+    // Only return the user object — registration does not log the user in
+    // automatically, so no token is stored here
     return { user: response.data.user };
+
+    // Convert raw axios error into a friendly, typed Error object
   } catch (error) {
     throw handleAuthError(error);
   }
@@ -19,11 +25,16 @@ async function register(userData) {
  */
 async function login(credentials) {
   try {
-    const response = await apiClient.post('/api/auth/login', credentials);
+    // Send login credentials to the backend
+    const response = await apiClient.post("/api/auth/login", credentials);
+    // Destructure the user object and JWT token from the response
     const { user, token } = response.data;
-
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    // Persist the token so apiClient's interceptor can attach it to
+    // future requests (see api.client.js)
+    localStorage.setItem("token", token);
+    // Persist the user object (stringified, since localStorage only
+    // stores strings) so the UI can rehydrate user info on page reload
+    localStorage.setItem("user", JSON.stringify(user));
 
     return { user, token };
   } catch (error) {
@@ -35,29 +46,39 @@ async function login(credentials) {
  * Logs out the current user by clearing localStorage.
  */
 function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  // Remove both the token and user data — this is what "logs out" the
+  // user client-side since there's no server-side session to invalidate
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 }
 
 /**
  * Retrieves the stored JWT token from localStorage.
  */
 function getStoredToken() {
-  return localStorage.getItem('token');
+  // Simple passthrough read — used by isAuthenticated() and by the
+  // apiClient request interceptor
+
+  return localStorage.getItem("token");
 }
 
 /**
  * Retrieves the stored user object from localStorage.
  */
 function getStoredUser() {
-  const userJson = localStorage.getItem('user');
+  const userJson = localStorage.getItem("user");
+  // No user in storage — nothing to parse
   if (!userJson) return null;
 
   try {
+    // Parse the stored JSON string back into an object
     return JSON.parse(userJson);
   } catch (error) {
-    // If JSON parsing fails, clear invalid data
-    localStorage.removeItem('user');
+    // Defensive cleanup: if localStorage somehow has corrupted/invalid
+    // JSON (e.g. manually edited), wipe it instead of crashing the app
+
+    localStorage.removeItem("user");
     return null;
   }
 }
@@ -66,42 +87,57 @@ function getStoredUser() {
  * Checks if the user is currently authenticated based on local storage.
  */
 function isAuthenticated() {
+  // Coerce token presence to a boolean — true if a token string exists
+
   return !!getStoredToken();
 }
 
 /**
  * Centralized error handler for auth service requests.
+ * Normalizes different failure types into consistent, user-friendly Error objects.
+ 
  */
 function handleAuthError(error) {
+  // No `error.response` means the request never got a response at all —
+  // either a network failure or a timeout, not a server-side rejection
+
   if (!error.response) {
-    if (error.code === 'ECONNABORTED') {
-      return new Error('Request timed out. Please try again.');
+    if (error.code === "ECONNABORTED") {
+      return new Error("Request timed out. Please try again.");
     }
     return new Error(
-      'Unable to connect to server. Please check your internet connection.',
+      "Unable to connect to server. Please check your internet connection.",
     );
   }
 
   const status = error.response.status;
+  // Backend may use either `msg` or `message` as the error key —
+  // check both so we don't miss the server's actual explanation
+
   const backendMessage =
     error.response.data?.msg || error.response.data?.message;
+  // Map HTTP status codes to friendly, contextual messages
 
   switch (status) {
     case 400:
-      return new Error(backendMessage || 'Invalid input data.');
+      return new Error(backendMessage || "Invalid input data.");
     case 401:
-      return new Error(backendMessage || 'Invalid email or password.');
+      return new Error(backendMessage || "Invalid email or password.");
     case 500:
       return new Error(
-        'Something went wrong on our end. Please try again later.',
+        "Something went wrong on our end. Please try again later.",
       );
     default:
-      return new Error(backendMessage || 'An unexpected error occurred.');
+      // Catch-all for any other status code (403, 404, 429, etc.)
+
+      return new Error(backendMessage || "An unexpected error occurred.");
   }
 }
 
 /**
  * Service for handling auth-related requests.
+ * Exposed as a single object so components can import one cohesive API
+ * (e.g. authService.login(...)) instead of many separate named imports.
  */
 export const authService = {
   register,
