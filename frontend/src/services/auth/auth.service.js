@@ -68,12 +68,16 @@ function getStoredToken() {
  */
 function getStoredUser() {
   const userJson = localStorage.getItem("user");
+  // No user in storage — nothing to parse
   if (!userJson) return null;
 
   try {
+    // Parse the stored JSON string back into an object
     return JSON.parse(userJson);
   } catch (error) {
-    // If JSON parsing fails, clear invalid data
+    // Defensive cleanup: if localStorage somehow has corrupted/invalid
+    // JSON (e.g. manually edited), wipe it instead of crashing the app
+
     localStorage.removeItem("user");
     return null;
   }
