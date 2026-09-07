@@ -25,10 +25,15 @@ async function register(userData) {
  */
 async function login(credentials) {
   try {
+    // Send login credentials to the backend
     const response = await apiClient.post("/api/auth/login", credentials);
+    // Destructure the user object and JWT token from the response
     const { user, token } = response.data;
-
+    // Persist the token so apiClient's interceptor can attach it to
+    // future requests (see api.client.js)
     localStorage.setItem("token", token);
+    // Persist the user object (stringified, since localStorage only
+    // stores strings) so the UI can rehydrate user info on page reload
     localStorage.setItem("user", JSON.stringify(user));
 
     return { user, token };
