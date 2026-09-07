@@ -87,13 +87,20 @@ function getStoredUser() {
  * Checks if the user is currently authenticated based on local storage.
  */
 function isAuthenticated() {
+  // Coerce token presence to a boolean — true if a token string exists
+
   return !!getStoredToken();
 }
 
 /**
  * Centralized error handler for auth service requests.
+ * Normalizes different failure types into consistent, user-friendly Error objects.
+ 
  */
 function handleAuthError(error) {
+  // No `error.response` means the request never got a response at all —
+  // either a network failure or a timeout, not a server-side rejection
+
   if (!error.response) {
     if (error.code === "ECONNABORTED") {
       return new Error("Request timed out. Please try again.");
