@@ -57,6 +57,9 @@ function logout() {
  * Retrieves the stored JWT token from localStorage.
  */
 function getStoredToken() {
+  // Simple passthrough read — used by isAuthenticated() and by the
+  // apiClient request interceptor
+
   return localStorage.getItem("token");
 }
 
