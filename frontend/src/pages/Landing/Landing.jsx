@@ -4,7 +4,7 @@
  *   shell tokens (cards, borders, slate + orange). No data fetching.
  */
 import { motion as Motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // eslint-disable-line import/no-unresolved
 import {
   Sparkles,
   MessageSquare,
