@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 /**
- * Configured axios instance for API communication.
+ * Configured Axios instance for API communication.
+ *
+ * The base URL is read from the Vite environment variable
+ * VITE_API_BASE_URL. If it is not defined, the API defaults
+ * to the local backend running on port 3777.
  */
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3777',
