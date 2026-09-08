@@ -45,9 +45,10 @@ apiClient.interceptors.request.use(
  * If the server responds with HTTP 401 Unauthorized, the user's
  * authentication data is cleared and they are redirected to the
  * authentication page.
-
+ */
 apiClient.interceptors.response.use(
   response => {
+    // Return successful API responses unchanged.
     return response;
   },
   error => {
