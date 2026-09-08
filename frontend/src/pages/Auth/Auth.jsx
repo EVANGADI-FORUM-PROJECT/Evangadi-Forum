@@ -46,11 +46,12 @@ export default function Auth() {
   // Handle form submission for both login and registration
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Clear previous messages
 
     setError(null);
     setSuccessMessage(null);
+    // Clean and normalize the email
     const normalizedEmail = email.trim().toLowerCase();
     // regex for email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
