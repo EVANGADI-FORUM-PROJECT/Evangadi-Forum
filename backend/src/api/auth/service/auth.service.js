@@ -123,7 +123,8 @@ export const loginService = async ({ email, password }) => {
   const isMatch = await bcrypt.compare(password, user.password_hash);
 
   if (!isMatch) {
-    throw new UnauthenticatedError("Invalid email or password"); //we should not specify which one is incorrect for security reasons, so we use a generic message
+    throw new UnauthenticatedError("Invalid email or password");
+    //we should not specify which one is incorrect for security reasons, so we use a generic message
   }
 
   const payload = {
@@ -132,7 +133,7 @@ export const loginService = async ({ email, password }) => {
     lastName: user.last_name,
   };
 
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN }); // Generate a JWT token with the user's ID and name, signed with the secret key, and set to expire in the given time
 
   return {
     user: {
