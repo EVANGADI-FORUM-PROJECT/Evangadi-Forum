@@ -7,6 +7,7 @@ import { validationErrorHandler } from '../../../middleware/validation-handler.j
 // for the current request. validationErrorHandler checks those results.
 
 export const registerValidation = [
+  //firstName-middleware 
   body('firstName')
     .notEmpty()
     .withMessage('First name is required')
@@ -14,7 +15,7 @@ export const registerValidation = [
     .withMessage('First name must be a string')
     .isLength({ min: 3 })
     .withMessage('First name must be at least 3 characters long'),
-
+  //lastName-middleware 
   body('lastName')
     .notEmpty()
     .withMessage('Last name is required')
@@ -22,14 +23,14 @@ export const registerValidation = [
     .withMessage('Last name must be a string')
     .isLength({ min: 3 })
     .withMessage('Last name must be at least 3 characters long'),
-
+  //email-middleware 
   body('email')
     .notEmpty()
     .withMessage('Email is required')
     .isEmail()
     .withMessage('A valid email address is required')
     .normalizeEmail(),
-
+  //password-middleware 
   body('password')
     .notEmpty()
     .withMessage('Password is required')
