@@ -65,7 +65,7 @@ export default function Auth() {
       setError("Please enter a valid email address.");
       return;
     }
-
+    // Check if password was entered
     if (!password.trim()) {
       setError("Password is required.");
       return;
