@@ -31,6 +31,7 @@ apiClient.interceptors.request.use(
     return config;
   },
   error => {
+     // Handle errors that occur while preparing the request.
     return Promise.reject(error);
   },
 );
