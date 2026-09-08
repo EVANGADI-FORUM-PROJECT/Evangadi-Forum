@@ -25,7 +25,7 @@ export const checkUserExists = async email => {
   const normalizedEmail = normalizeEmail(email);
   const sql = 'SELECT user_id FROM users WHERE email = ? LIMIT 1';
   const rows = await safeExecute(sql, [normalizedEmail]);
-  return rows.length > 0;
+  return rows.length > 0; //if user exists row.length willbe > 0 and checkUserExists returns true
 };
 
 /**
@@ -51,7 +51,7 @@ export const registerService = async ({
   // Check if a user already exists with this email to prevent duplicate accounts.
   // This provides an application-level check before attempting the database insert.
   const userExists = await checkUserExists(normalizedEmail);
-
+  // if the user already exists, it throws an error, and the registration won't continue
   if (userExists) {
     throw new BadRequestError('User already exists with this email.');
   }
@@ -64,7 +64,7 @@ export const registerService = async ({
   // The original password is never stored directly in the database.
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // SQL query used to insert the new user's data into the database
+  //  insert the new user's data into the database
   const sql =
     'INSERT INTO users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)';
 
@@ -79,8 +79,9 @@ export const registerService = async ({
       hashedPassword,
     ]);
   } catch (error) {
-    // If the database detects a duplicate email, return a user-friendly error.
-    // This protects against duplicates even if two requests pass the checkUserExists() check at the same time.
+    // If the database detects a duplicate email, return error
+    // This protects against duplicates even if two requests pass the checkUserExists() check at the same time
+    //ER_DUP_ENTRY: is mtsql error that tells us we're trying to insert a value that already exists in colunm that is set to be unique
     if (error?.code === 'ER_DUP_ENTRY') {
       throw new BadRequestError('User already exists with this email.');
     }
