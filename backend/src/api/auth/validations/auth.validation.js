@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 import { validationErrorHandler } from '../../../middleware/validation-handler.js';
-
+//Express puts the data into req, and express-validator provides different functions (body, param, query, etc.) that create middleware to validate those different locations
 
 // Each body() call creates a validation middleware for a field in req.body.
 // The validation rules are executed in order and the results are stored
