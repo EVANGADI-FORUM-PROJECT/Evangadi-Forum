@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 /**
- * Configured axios instance for API communication.
+ * Configured Axios instance for API communication.
+ *
+ * The base URL is read from the Vite environment variable
+ * VITE_API_BASE_URL. If it is not defined, the API defaults
+ * to the local backend running on port 3777.
  */
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3777',
@@ -12,7 +16,11 @@ const apiClient = axios.create({
 });
 
 /**
- * Request interceptor to attach the JWT token to headers.
+ * Request interceptor.
+ *
+ * Runs before every API request and checks localStorage for
+ * the user's JWT authentication token. If a token exists,
+ * it is automatically attached to the Authorization header.
  */
 apiClient.interceptors.request.use(
   config => {
@@ -23,15 +31,24 @@ apiClient.interceptors.request.use(
     return config;
   },
   error => {
+     // Handle errors that occur while preparing the request.
     return Promise.reject(error);
   },
 );
 
 /**
- * Response interceptor to handle global 401 unauthorized errors.
+ * Response interceptor.
+ *
+ * Runs after receiving an API response. Successful responses
+ * are returned normally.
+ *
+ * If the server responds with HTTP 401 Unauthorized, the user's
+ * authentication data is cleared and they are redirected to the
+ * authentication page.
  */
 apiClient.interceptors.response.use(
   response => {
+    // Return successful API responses unchanged.
     return response;
   },
   error => {
@@ -51,5 +68,8 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
+/**
+ * Export the configured Axios client so it can be reused
+ * throughout the application.
+ */
 export { apiClient };
