@@ -8,7 +8,9 @@ import { authService } from '../services/auth/auth.service.js';
 const AuthContext = createContext(undefined);
 
 /**
+ * AuthProvider is a component that wraps the parts of your application that need authentication information.
  * AuthProvider component that wraps the app to provide authentication context.
+ * children means everything inside <AuthProvider>.
  */
 export function AuthProvider({ children }) {
   // Authentication state
@@ -16,6 +18,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+//   user = null
+// That means React initially doesn't know about a logged-in user.
+
+// application needs to check whether the user already has a valid/stored session.
   // Initialize user state from localStorage on mount
   useEffect(() => {
     const token = authService.getStoredToken();
