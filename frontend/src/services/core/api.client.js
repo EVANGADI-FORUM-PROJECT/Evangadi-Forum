@@ -37,8 +37,15 @@ apiClient.interceptors.request.use(
 );
 
 /**
- * Response interceptor to handle global 401 unauthorized errors.
- */
+ * Response interceptor.
+ *
+ * Runs after receiving an API response. Successful responses
+ * are returned normally.
+ *
+ * If the server responds with HTTP 401 Unauthorized, the user's
+ * authentication data is cleared and they are redirected to the
+ * authentication page.
+
 apiClient.interceptors.response.use(
   response => {
     return response;
