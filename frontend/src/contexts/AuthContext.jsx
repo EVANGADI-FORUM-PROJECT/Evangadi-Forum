@@ -18,10 +18,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-//   user = null
-// That means React initially doesn't know about a logged-in user.
+  //   user = null
+  // That means React initially doesn't know about a logged-in user.
 
-// application needs to check whether the user already has a valid/stored session.
+  // application needs to check whether the user already has a valid/stored session.
   // Initialize user state from localStorage on mount
   useEffect(() => {
     const token = authService.getStoredToken();
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
    * Registers a new user. Does not automatically log them in.
    * @param {Object} userData - { firstName, lastName, email, password }
    */
-  const register = async userData => {
+  const register = async (userData) => {
     setLoading(true);
     try {
       const { user } = await authService.register(userData);
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
    * Authenticates a user and updates the session state if successful.
    * @param {Object} credentials - { email, password }
    */
-  const login = async credentials => {
+  const login = async (credentials) => {
     setLoading(true);
     try {
       const { user } = await authService.login(credentials);
@@ -69,11 +69,12 @@ export function AuthProvider({ children }) {
 
   /**
    * Clears the user session and redirects to the login page.
+   * handles removing/clearing the stored authentication session
    */
   const logout = () => {
     authService.logout();
     setUser(null);
-    navigate('/auth');
+    navigate("/auth");
   };
 
   // Context value with state and methods
