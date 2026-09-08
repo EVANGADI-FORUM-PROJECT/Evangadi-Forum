@@ -18,7 +18,7 @@ import {
   Database,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import styles from './Landing.module.css';
+import styles from './Landing.module.css'; // eslint-disable-line import/no-unresolved
 
 export default function Landing() {// eslint-disable-line react/function-component-definition
   const navigate = useNavigate();
