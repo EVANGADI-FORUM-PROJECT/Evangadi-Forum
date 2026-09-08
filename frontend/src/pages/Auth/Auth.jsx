@@ -1,10 +1,10 @@
 /**
  * Auth: combined login + register form; switches mode without changing routes.
  */
-import { useState } from 'react';
+import { useState } from "react";
 
-import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sparkles,
   Code,
@@ -12,10 +12,9 @@ import {
   Eye,
   EyeOff,
   MessageSquare,
-} from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import styles from './Auth.module.css';
-
+} from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import styles from "./Auth.module.css";
 
 export default function Auth() {
   // Get navigation and authentication functions
