@@ -106,6 +106,7 @@ function handleAuthError(error) {
 export const authService = {
   register,
   login,
+  // Log out the current user.
   logout,
   // Retrieve the stored JWT token.
   getStoredToken,
