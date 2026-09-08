@@ -104,6 +104,7 @@ function handleAuthError(error) {
  * Service for handling auth-related requests.
  */
 export const authService = {
+  // Register a new user.
   register,
   // Log in an existing user.
   login,
