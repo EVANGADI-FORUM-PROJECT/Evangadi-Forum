@@ -16,7 +16,11 @@ const apiClient = axios.create({
 });
 
 /**
- * Request interceptor to attach the JWT token to headers.
+ * Request interceptor.
+ *
+ * Runs before every API request and checks localStorage for
+ * the user's JWT authentication token. If a token exists,
+ * it is automatically attached to the Authorization header.
  */
 apiClient.interceptors.request.use(
   config => {
