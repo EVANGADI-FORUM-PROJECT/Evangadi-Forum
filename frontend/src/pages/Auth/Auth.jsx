@@ -60,7 +60,7 @@ export default function Auth() {
       setError("Email is required.");
       return;
     }
-
+    // Check if email format is valid
     if (!emailPattern.test(normalizedEmail)) {
       setError("Please enter a valid email address.");
       return;
