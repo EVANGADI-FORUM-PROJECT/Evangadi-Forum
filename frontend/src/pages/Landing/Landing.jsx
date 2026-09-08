@@ -162,6 +162,7 @@ export default function Landing() {
       {/* ================= MAIN CONTENT AREA ================= */}
 
       <main className={styles.landing__main}>
+        {/* Hero Section */}
         <section className={styles.landing__hero}>
           <div
             className={styles.landing__heroInner}>
@@ -253,6 +254,8 @@ export default function Landing() {
               </Motion.div>
             </div>
 
+            {/* Quick feature list */}
+
             <aside
               className={
                 styles.landing__heroPanel
@@ -314,6 +317,8 @@ export default function Landing() {
             </aside>
           </div>
         </section>
+
+        {/* Course RAG Section */}
 
         <section
           className={styles.landing__rag}
@@ -464,6 +469,8 @@ export default function Landing() {
             </p>
           </div>
         </section>
+
+        {/* Public view only */}
 
         {!isAuthenticated && (
           <>
