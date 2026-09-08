@@ -16,17 +16,26 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Auth.module.css';
 
+
 export default function Auth() {
+  // Get navigation and authentication functions
   const navigate = useNavigate();
   const location = useLocation();
   const { register, login } = useAuth();
+
+  // Controls whether we show Login or Register form
+
   const [isLogin, setIsLogin] = useState(true);
 
+  // Store registration and login form values
+
   // Registration form state
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Controls password visibility
   const [showPassword, setShowPassword] = useState(false);
 
   // Error and loading state
@@ -35,26 +44,30 @@ export default function Auth() {
   const [successMessage, setSuccessMessage] = useState(null);
 
   // Handle form submission for both login and registration
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Clear previous messages
+
     setError(null);
     setSuccessMessage(null);
+    // Clean and normalize the email
     const normalizedEmail = email.trim().toLowerCase();
     // regex for email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    // Check if email was entered
     if (!normalizedEmail) {
-      setError('Email is required.');
+      setError("Email is required.");
       return;
     }
-
+    // Check if email format is valid
     if (!emailPattern.test(normalizedEmail)) {
-      setError('Please enter a valid email address.');
+      setError("Please enter a valid email address.");
       return;
     }
-
+    // Check if password was entered
     if (!password.trim()) {
-      setError('Password is required.');
+      setError("Password is required.");
       return;
     }
 
@@ -63,23 +76,23 @@ export default function Auth() {
 
     if (!isLogin) {
       if (!trimmedFirstName) {
-        setError('First name is required.');
+        setError("First name is required.");
         return;
       }
       if (trimmedFirstName.length < 3) {
-        setError('First name must be at least 3 characters long.');
+        setError("First name must be at least 3 characters long.");
         return;
       }
       if (!trimmedLastName) {
-        setError('Last name is required.');
+        setError("Last name is required.");
         return;
       }
       if (trimmedLastName.length < 3) {
-        setError('Last name must be at least 3 characters long.');
+        setError("Last name must be at least 3 characters long.");
         return;
       }
       if (password.length < 6) {
-        setError('Password must be at least 6 characters long.');
+        setError("Password must be at least 6 characters long.");
         return;
       }
     }
@@ -90,17 +103,17 @@ export default function Auth() {
       if (isLogin) {
         // Login flow
         await login({ email: normalizedEmail, password });
-        setSuccessMessage('Sign-in successful. Redirecting...');
+        setSuccessMessage("Sign-in successful. Redirecting...");
         // Clear form fields
-        setEmail('');
-        setPassword('');
+        setEmail("");
+        setPassword("");
         setShowPassword(false);
         // Delay redirect to show successful message
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Check location state for original URL after login
         // Redirect to original URL if present, otherwise dashboard
-        const from = location.state?.from?.pathname || '/dashboard';
+        const from = location.state?.from?.pathname || "/dashboard";
         navigate(from, { replace: true });
         navigate(from, { replace: true });
       } else {
@@ -111,12 +124,12 @@ export default function Auth() {
           email: normalizedEmail,
           password,
         });
-        setSuccessMessage('Registration successful! Please log in.');
+        setSuccessMessage("Registration successful! Please log in.");
         // Clear form fields
-        setFirstName('');
-        setLastName('');
-        setEmail('');
-        setPassword('');
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
         // Automatically switch to login form after 1.5 seconds
         setTimeout(() => {
           setIsLogin(true);
@@ -124,7 +137,7 @@ export default function Auth() {
         }, 1500);
       }
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred.');
+      setError(err.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -138,14 +151,14 @@ export default function Auth() {
           <header className={styles.auth__infoHeader}>
             <div
               className={styles.auth__infoBranding}
-              onClick={() => navigate('/')}
-              title='Go to Home'
-              role='button'
+              onClick={() => navigate("/")}
+              title="Go to Home"
+              role="button"
               tabIndex={0}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  navigate('/');
+                  navigate("/");
                 }
               }}
             >
@@ -202,13 +215,13 @@ export default function Auth() {
           <div className={styles.auth__infoFooter}>
             <div className={styles.auth__infoFooterContent}>
               <div className={styles.auth__infoAvatars}>
-                {[1, 2, 3].map(i => (
+                {[1, 2, 3].map((i) => (
                   <img
                     key={i}
                     src={`https://picsum.photos/seed/${i + 50}/100/100`}
                     className={styles.auth__infoAvatar}
-                    alt='u'
-                    referrerPolicy='no-referrer'
+                    alt="u"
+                    referrerPolicy="no-referrer"
                   />
                 ))}
               </div>
@@ -223,9 +236,9 @@ export default function Auth() {
       {/* Right: Auth Forms */}
       <section className={styles.auth__formSection}>
         <div className={styles.auth__formContainer}>
-          <AnimatePresence mode='wait'>
+          <AnimatePresence mode="wait">
             <Motion.div
-              key={isLogin ? 'login' : 'register'}
+              key={isLogin ? "login" : "register"}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -233,12 +246,12 @@ export default function Auth() {
             >
               <div className={styles.auth__formHeader}>
                 <h2 className={styles.auth__formTitle}>
-                  {isLogin ? 'Sign in to your account' : 'Create an account'}
+                  {isLogin ? "Sign in to your account" : "Create an account"}
                 </h2>
                 <p className={styles.auth__formSubtitle}>
                   {isLogin
-                    ? 'Enter your email address and password to continue.'
-                    : 'Complete the form below to create your account.'}
+                    ? "Enter your email address and password to continue."
+                    : "Complete the form below to create your account."}
                 </p>
               </div>
 
@@ -246,70 +259,70 @@ export default function Auth() {
                 {!isLogin && (
                   <>
                     <div className={styles.auth__inputGroup}>
-                      <label htmlFor='firstName' className={styles.auth__label}>
+                      <label htmlFor="firstName" className={styles.auth__label}>
                         First Name
                       </label>
                       <input
-                        id='firstName'
-                        type='text'
-                        placeholder='First name'
+                        id="firstName"
+                        type="text"
+                        placeholder="First name"
                         className={styles.auth__input}
                         value={firstName}
-                        onChange={e => setFirstName(e.target.value)}
+                        onChange={(e) => setFirstName(e.target.value)}
                       />
                     </div>
 
                     <div className={styles.auth__inputGroup}>
-                      <label htmlFor='lastName' className={styles.auth__label}>
+                      <label htmlFor="lastName" className={styles.auth__label}>
                         Last Name
                       </label>
                       <input
-                        id='lastName'
-                        type='text'
-                        placeholder='Last name'
+                        id="lastName"
+                        type="text"
+                        placeholder="Last name"
                         className={styles.auth__input}
                         value={lastName}
-                        onChange={e => setLastName(e.target.value)}
+                        onChange={(e) => setLastName(e.target.value)}
                       />
                     </div>
                   </>
                 )}
 
                 <div className={styles.auth__inputGroup}>
-                  <label htmlFor='email' className={styles.auth__label}>
+                  <label htmlFor="email" className={styles.auth__label}>
                     Email Address
                   </label>
                   <input
-                    id='email'
-                    type='email'
-                    placeholder='Enter your email address'
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email address"
                     className={styles.auth__input}
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
                 <div className={styles.auth__inputGroup}>
                   <div className={styles.auth__labelRow}>
-                    <label htmlFor='password' className={styles.auth__label}>
+                    <label htmlFor="password" className={styles.auth__label}>
                       Password
                     </label>
                   </div>
                   <div className={styles.auth__passwordWrap}>
                     <input
-                      id='password'
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder='••••••••'
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
                       className={`${styles.auth__input} ${styles.auth__inputPassword}`}
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <button
-                      type='button'
+                      type="button"
                       className={styles.auth__passwordToggle}
-                      onClick={() => setShowPassword(v => !v)}
+                      onClick={() => setShowPassword((v) => !v)}
                       aria-label={
-                        showPassword ? 'Hide password' : 'Show password'
+                        showPassword ? "Hide password" : "Show password"
                       }
                       aria-pressed={showPassword}
                     >
@@ -330,15 +343,15 @@ export default function Auth() {
 
                 <div className={styles.auth__buttonContainer}>
                   <button
-                    type='submit'
-                    className={`${styles.auth__button} ${styles['auth__button--primary']}`}
+                    type="submit"
+                    className={`${styles.auth__button} ${styles["auth__button--primary"]}`}
                     disabled={loading}
                   >
                     {loading
-                      ? 'Processing...'
+                      ? "Processing..."
                       : isLogin
-                      ? 'Sign In'
-                      : 'Create Account'}
+                        ? "Sign In"
+                        : "Create Account"}
                     {!loading && (
                       <ArrowRight
                         size={16}
@@ -362,12 +375,12 @@ export default function Auth() {
                 <p className={styles.auth__formFooterText}>
                   {isLogin
                     ? "Don't have an account?"
-                    : 'Already have an account?'}
+                    : "Already have an account?"}
                   <button
                     onClick={() => setIsLogin(!isLogin)}
                     className={styles.auth__formFooterLink}
                   >
-                    {isLogin ? 'Create an account' : 'Back to sign in'}
+                    {isLogin ? "Create an account" : "Back to sign in"}
                   </button>
                 </p>
               </footer>
