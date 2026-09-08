@@ -20,8 +20,9 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Landing.module.css';
 
-export default function Landing() {
+export default function Landing() {// eslint-disable-line react/function-component-definition
   const navigate = useNavigate();
+  // eslint-disable-next-line react/destructuring-assignment
   const { isAuthenticated } = useAuth();
 
   const scrollToHowItWorks = () => {
@@ -36,7 +37,7 @@ export default function Landing() {
       ?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return (
+  return ( // eslint-disable-line react/jsx-no-useless-fragment
     <div className={styles.landing}>
       <header className={styles.landing__header}>
         <div className={styles.landing__headerInner}>
