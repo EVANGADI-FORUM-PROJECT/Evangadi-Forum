@@ -68,5 +68,8 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
+/**
+ * Export the configured Axios client so it can be reused
+ * throughout the application.
+ */
 export { apiClient };
