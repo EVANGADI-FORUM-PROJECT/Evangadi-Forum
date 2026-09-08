@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
   };
 
   /**
-   * Authenticates a user and updates the session state if successful.
+   * Authenticates a user and updates the session state if successful..
    * @param {Object} credentials - { email, password }
    */
   const login = async (credentials) => {
