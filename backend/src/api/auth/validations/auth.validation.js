@@ -1,9 +1,6 @@
 import { body } from 'express-validator';
 import { validationErrorHandler } from '../../../middleware/validation-handler.js';
 
-```js
-import { body } from 'express-validator';
-import { validationErrorHandler } from '../../middleware/validation-handler.js';
 
 // Each body() call creates a validation middleware for a field in req.body.
 // The validation rules are executed in order and the results are stored
@@ -43,22 +40,7 @@ export const registerValidation = [
   validationErrorHandler,
 ];
 
-export const loginValidation = [
-  body('email')
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('A valid email address is required')
-    .normalizeEmail(),
 
-  body('password')
-    .notEmpty()
-    .withMessage('Password is required'),
-
-  // Checks the validation results collected above.
-  validationErrorHandler,
-];
-```
 
 
 export const loginValidation = [
