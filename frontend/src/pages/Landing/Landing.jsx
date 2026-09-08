@@ -474,6 +474,7 @@ export default function Landing() {
 
         {!isAuthenticated && (
           <>
+            {/* Feature cards */}
             <section
               className={
                 styles.landing__capabilities
@@ -630,6 +631,8 @@ export default function Landing() {
               </div>
             </section>
 
+            {/* Workflow steps */}
+
             <section
               className={styles.landing__process}
               id="how-it-works"
@@ -784,6 +787,8 @@ export default function Landing() {
               </div>
             </section>
 
+            {/* Bottom CTA */}
+
             <section
               className={styles.landing__cta}>
               <div
@@ -822,6 +827,8 @@ export default function Landing() {
             </section>
           </>
         )}
+
+        {/* Authenticated view only */}
 
         {isAuthenticated && (
           <section
@@ -875,6 +882,8 @@ export default function Landing() {
           </section>
         )}
       </main>
+
+      {/* Footer */}
 
       <footer className={styles.landing__footer}>
         <div
