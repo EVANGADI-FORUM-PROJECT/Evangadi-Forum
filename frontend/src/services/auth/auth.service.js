@@ -105,6 +105,7 @@ function handleAuthError(error) {
  */
 export const authService = {
   register,
+  // Log in an existing user.
   login,
   // Log out the current user.
   logout,
