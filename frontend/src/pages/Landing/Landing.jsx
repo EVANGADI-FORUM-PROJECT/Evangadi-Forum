@@ -25,13 +25,14 @@ export default function Landing() {// eslint-disable-line react/function-compone
   // eslint-disable-next-line react/destructuring-assignment
   const { isAuthenticated } = useAuth();
 
-  const scrollToHowItWorks = () => {
+  const scrollToHowItWorks = () => {// eslint-disable-line no-unused-expressions
+    
     document
       .getElementById('how-it-works')
       ?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const scrollToCourseRag = () => {
+  const scrollToCourseRag = () => {// eslint-disable-line no-unused-expressions
     document
       .getElementById('course-rag')
       ?.scrollIntoView({ behavior: 'smooth' });
