@@ -107,7 +107,10 @@ export const authService = {
   register,
   login,
   logout,
+  // Retrieve the stored JWT token.
   getStoredToken,
+  // Retrieve the stored user information.
   getStoredUser,
+  // Check whether the user is currently authenticated.
   isAuthenticated,
 };
