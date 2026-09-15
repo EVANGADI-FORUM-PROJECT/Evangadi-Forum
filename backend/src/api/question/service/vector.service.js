@@ -113,7 +113,7 @@ export async function storeQuestionVector(payload) {
     validateEmbedding(embedding);
    
 
-    //  prepare the sql statement for inserting a new question vector
+    
     const insertVectorSql = `INSERT INTO QUESTION_VECTORS (question_id, source_text, embedding, status) VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE 
         source_text=VALUES(source_text),  
@@ -131,11 +131,11 @@ export async function storeQuestionVector(payload) {
             status
         ]);
     } catch (error) {
-        //handle specific foreign key constraint error for non-existent question
+        
         if (error.code === 'ER_NO_REFERENCED_ROW_2') {
             throw new BadRequestError("question does not exist");
         }
-        //re-throw any other unexpected errors
+        
         throw error;
     }
 }
