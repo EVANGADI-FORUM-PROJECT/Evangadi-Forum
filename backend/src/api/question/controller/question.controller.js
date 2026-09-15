@@ -23,9 +23,10 @@ export const createQuestionController = async (req, res, next) => {
         return res.status(StatusCodes.CREATED).json({
             success: true,
             message: "Question created successfully",
-            
-  } catch () {
-    
+            data: result.question,
+        })
+  } catch (error) {
+    next(error)
   }
 }
 // ! ===============================================
