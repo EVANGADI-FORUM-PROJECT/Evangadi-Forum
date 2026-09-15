@@ -5,7 +5,7 @@ import { findSimilarQuestionsByQuestionHash, findSimilarQuestionsByText, generat
 import {fetchGeminiJsonTextResponse, parseJsonObjectGeminiText}from"./geminiTextCoach.service.js"
 
 
-const generateQuestionHash = () => crypto.randomBytes(8).toString('hex') //  gives unique string for every question 
+const generateQuestionHash = () => crypto.randomBytes(8).toString('hex')  
 
 // # Task: Create Question & Auto-Embed[T-9]
 // POST /api/questions
