@@ -12,7 +12,9 @@ import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.se
 
 // # Task: Create Question & Auto-Embed[T-9]
 // POST /api/questions
-
+export const createQuestionController = async (req, res, next) => {
+  
+}
 // ! ===============================================
 // # Task: List Questions[T-10]
 //GET /api/questions
