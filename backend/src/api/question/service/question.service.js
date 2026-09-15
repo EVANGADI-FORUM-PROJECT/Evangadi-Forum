@@ -10,14 +10,15 @@ const generateQuestionHash = () => crypto.randomBytes(8).toString('hex') //  giv
 // # Task: Create Question & Auto-Embed[T-9]
 // POST /api/questions
 export const createQuestionWithVectorService = async payload => {
-    //extract payload fields from payload authentication
-    const { userId, title, content } = payload; //the asker, the question title and content
+    
+    const { userId, title, content } = payload; 
 
-    //prepare the sql statement for inserting a new question 
+    
     const insertQuestionsql = 'INSERT INTO QUESTIONS (question_hash, user_id, title, content) VALUES (?, ?, ?, ?)';
 
-    //generate a unique hash for the question
-    const questionHash = generateQuestionHash();// if itsnt unique db throw error
+
+    const questionHash = generateQuestionHash();
+    
     let questionResult;
 
     try {
