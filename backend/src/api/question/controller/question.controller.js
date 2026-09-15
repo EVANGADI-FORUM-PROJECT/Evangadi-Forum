@@ -14,7 +14,16 @@ import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.se
 // POST /api/questions
 export const createQuestionController = async (req, res, next) => {
   try {
-    
+    const {title, content} = req.body;
+        const result= await createQuestionWithVectorService({
+            userId: req.user.id, 
+            title,
+            content
+            })
+        return res.status(StatusCodes.CREATED).json({
+            success: true,
+            message: "Question created successfully",
+            
   } catch () {
     
   }
