@@ -18,12 +18,11 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
 
 
 function normalizeWhiteSpace(value) {
-    return value.replace(/\s+/g, ' ').trim();//replace multiple spaces with single space and trim leading and trailing spaces 
+    return value.replace(/\s+/g, ' ').trim();
 }
 
 export function normalizeQuestionText({ title }) {
-    return normalizeWhiteSpace(`${title || ''}`.normalize('NFKC').toLowerCase());//If title has a truthy value → use title; Otherwise → use '' (empty string)
-    //normalize is js built-in method. Unicode NFKC (Normalization Form KC) is a text standardization process that applies compatibility decomposition followed by canonical composition
+    return normalizeWhiteSpace(`${title || ''}`.normalize('NFKC').toLowerCase());
 }
 
 
