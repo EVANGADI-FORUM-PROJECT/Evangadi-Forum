@@ -3,6 +3,7 @@ import { validationErrorHandler } from "../../../middleware/validation-handler.j
 
 //[T-9]
 export const createQuestionValidation = [
+    //checks the request body title
     body("title")
         .notEmpty()
         .withMessage("Question title is required")
