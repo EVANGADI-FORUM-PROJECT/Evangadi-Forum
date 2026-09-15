@@ -22,7 +22,7 @@ export const createQuestionWithVectorService = async payload => {
     let questionResult;
 
     try {
-        //execute the insertion quesrt safely
+        
         questionResult = await safeExecute(insertQuestionsql, [
             questionHash,
             userId,
@@ -39,10 +39,10 @@ export const createQuestionWithVectorService = async payload => {
 
     }
 
-    //retrive the auto-generated ID of the question
+   
     const questionId = questionResult.insertId;
 
-    // construct the result object representing the creted question
+    
     const creationResult = {
         id: questionId,
         questionHash,
@@ -55,7 +55,7 @@ export const createQuestionWithVectorService = async payload => {
         title: payload.title
     });
 
-    // # after noramlizing the question lets do the embedding
+    
     try {
         const embeddingResult = await generatingQuestionEmbedding(sourceText, { questionId: creationResult.id });
 
