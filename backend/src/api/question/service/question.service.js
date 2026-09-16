@@ -114,6 +114,7 @@ const buildQuestionFilters = filters => {
     }
 
     if (filters.mine && filters.userId) {
+        // Mine filter is optional — only applied when ?mine=true and user is authenticated
         conditions.push(`q.user_id = ?`);//when u select questions only add 'my questions' conditon if mine is truthy and userid exists to show the user's only questions 
         params.push(filters.userId);
     }
