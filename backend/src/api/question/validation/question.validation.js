@@ -31,6 +31,12 @@ export const getQuestionsValidation = [
         .isString()
         .withMessage("Search query must be a string")
         .trim(),
+    // ?mine — optional boolean; when true, only current user's questions
+    query("mine")
+        .optional()
+        .isBoolean()
+        .withMessage("Mine must be a boolean")
+        .trim(),
     validationErrorHandler,
 ]
 
