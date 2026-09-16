@@ -10,8 +10,6 @@ import {
 } from "../service/question.service.js";
 import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.service.js";
 
-// # Task: Create Question & Auto-Embed[T-9]
-// POST /api/questions
 export const createQuestionController = async (req, res, next) => {
   try {
     const { title, content } = req.body;
@@ -29,8 +27,7 @@ export const createQuestionController = async (req, res, next) => {
     next(error);
   }
 };
-// ! ===============================================
-// # Task: List Questions[T-10]
+
 //GET /api/questions
 
 /**
@@ -64,25 +61,35 @@ export const getQuestionsController = async (req, res, next) => {
   }
 };
 
-// ! ===============================================
-// # Task: Semantic Search Questions[T-11]
 // GET /api/questions/search
+export const searchQuestionsSemanticController = async (req, res, next) => {
+  try {
+    const result = await searchQuestionsSemanticService({
+      query: req.query.query,
+      k: req.query.k ? Number(req.query.k) : 0,
+      threshold:
+        req.query.threshold !== undefined
+          ? Number(req.query.threshold)
+          : undefined,
+    });
 
-// ! ===========================================
-// # Task: Get Single Question Details[T-10]
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Questions fetched successfully using semantic search",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // GET /api/questions/:questionHash
-export const getSingleQuestionController = async (
-  req,
-  res,
-  next,
-) => {
+export const getSingleQuestionController = async (req, res, next) => {
   try {
     const { questionHash } = req.params;
     //console.log("questionHash: ",questionHash);
 
-    const result = await getSingleQuestionService(
-      { questionHash },
-    );
+    const result = await getSingleQuestionService({ questionHash });
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -94,27 +101,33 @@ export const getSingleQuestionController = async (
   }
 };
 
-// ! =============================================
-// # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
 
-const result = await assessAnswerAgainstQuestionsService({
-  questionTitle: question.title,
-  questionContent: question.content,
-  answerText,
-});
+export const assessAnswerAgainstQuestionController = async (req, res, next) => {
+  try {
+    const { questionHash } = req.params;
+    const { answerText } = req.body;
+    const { question } = await getSingleQuestionService({
+      questionHash,
+      includeAnswers: false,
+    });
+
+    const result = await assessAnswerAgainstQuestionsService({
+      questionTitle: question.title,
+      questionContent: question.content,
+      answerText,
+    });
 
     res.status(StatusCodes.OK).json({
-			success: true,
-			message: 'Answer assessed successfully',
-			...result,
-		});
-    }catch(error){
-		next(error);
-	}
-}
-// ! ===========================================
-// # Task: AI Question Draft Coach[T-17]
+      success: true,
+      message: "Answer assessed successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 //POST /api/questions/draft-coach
 export const generateQuestionDraftCoachController = async (req, res, next) => {
   try {
@@ -129,7 +142,24 @@ export const generateQuestionDraftCoachController = async (req, res, next) => {
     next(error);
   }
 };
-// ! =========================================
 
-// # Task: Find Similar Questions (T-11)
 //Endpoint: GET /api/questions/:questionHash/similar
+export const getSimilarQuestionsController = async (req, res, next) => {
+  try {
+    const { questionHash } = req.params;
+    const { k, threshold } = req.query;
+
+    const result = await getSimilarQuestionsService({
+      questionHash,
+      k: k ? Number(k) : undefined,
+      threshold: threshold !== undefined ? Number(threshold) : undefined,
+    });
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Similar questions fetched successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
