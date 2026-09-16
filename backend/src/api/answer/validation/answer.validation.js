@@ -26,3 +26,18 @@ export const createAnswerValidation = [
         .withMessage("Answer content is required")
                 // Make sure content is a string
         .isString()
+        // Error message if content is not a string
+        .withMessage("Answer content must be a string")
+
+        // Make sure the content has at least 20 characters
+        .isLength({ min: 20 })
+
+        // Error message if content is shorter than 20 characters
+        // Note: Your message says 50 characters, but the validator checks 20.
+        .withMessage("Answer content must be at least 50 characters long"),
+
+
+    // Run the validation error handler
+    // This checks whether any validation errors occurred above
+    validationErrorHandler
+];
