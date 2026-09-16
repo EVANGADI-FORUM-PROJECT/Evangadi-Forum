@@ -391,7 +391,9 @@ export const assessAnswerAgainstQuestionsService = async ({
     const level =
       levelRaw === "strong" || levelRaw === "partial" || levelRaw === "weak"
         ? levelRaw
-        : "partial"; //if it hallucinates and gives other thing than these three values, make it partial by default
+        : "partial";
+
+    //if it hallucinates and gives other thing than these three values, make it partial by default
     const note =
       typeof noteRaw === "string" && noteRaw.trim()
         ? noteRaw.trim().slice(0, 280)
