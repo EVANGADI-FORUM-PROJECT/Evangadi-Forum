@@ -168,6 +168,7 @@ export const getQuestionsService = async (filters) => {
     //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
     //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).    
 
+    // Execute the query with bound parameters to prevent SQL injection
     const rows = await safeExecute(listSql, params);
 
     return {
