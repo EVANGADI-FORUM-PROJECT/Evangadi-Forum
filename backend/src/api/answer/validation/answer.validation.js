@@ -8,3 +8,5 @@ export const createAnswerValidation = [
 
      // Validate the "questionId" field from the request body
     body("questionId")
+        // Make sure questionId is not empty
+        .notEmpty()
