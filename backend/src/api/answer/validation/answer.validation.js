@@ -60,3 +60,9 @@ export const getAnswerValidation = [
 
         // Convert questionId from a string to an integer
         .toInt(),
+            // Validate the "sortBy" query parameter
+    // Example: /api/answers?questionId=5&sortBy=newest
+    query("sortBy")
+
+        // sortBy is optional, so the request can work without it
+        .optional()
