@@ -404,6 +404,7 @@ export const assessAnswerAgainstQuestionsService = async ({
       note,
     };
   } catch (error) {
+    //Log errors produced during AI evaluation.
     console.error("assessAnswerAgainstQuestionService:", error);
     throw new ServiceUnavailableError(
       "AI fit check is temporarily unavailable, please try again later",
