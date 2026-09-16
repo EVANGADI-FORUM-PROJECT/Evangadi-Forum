@@ -25,6 +25,12 @@ export const createQuestionValidation = [
 
 //[T-10]
 export const getQuestionsValidation = [
+    // ?search — optional keyword; matches title OR content
+    query("search")
+        .optional()
+        .isString()
+        .withMessage("Search query must be a string")
+        .trim(),
     validationErrorHandler,
 ]
 
