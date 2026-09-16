@@ -51,3 +51,15 @@ export const getSingleAnswerService = async (answerId) => {
 //=====================================
 // # Task: Create Answer [T-12]
 // POST: /api/answers
+export const createAnswerService= async({questionId,content,userId})=>{
+    const question = await getQuestionOwner(questionId);
+    if(question.user_id === userId){
+        throw new BadRequestError("you can not answer your own answer");// infronend we dont show answering box if the answerer and owner are same. 
+
+    }
+    const inserSql = `INSERt INTO answers (question_id, user_id, content)
+    VALUES(?,?,?)`;
+    const result = await safeExecute(inserSql, [questionId, userId, content]);
+
+    return getSingleAnswerService(result.insertId);
+}

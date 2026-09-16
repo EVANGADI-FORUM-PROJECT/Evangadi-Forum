@@ -36,6 +36,7 @@ export const createQuestionValidation = [
 ];
 
 //[T-10]
+// T-10: Validates optional ?search and ?mine query params for the list questions endpoint
 export const getQuestionsValidation = [
   query("search")
     .optional() // means search is not mandatory if not provided

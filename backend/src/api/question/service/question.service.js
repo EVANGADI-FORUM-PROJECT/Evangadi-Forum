@@ -136,9 +136,7 @@ const buildQuestionFilters = (filters) => {
   const params = [];
 
   if (filters.search) {
-    conditions.push(
-      `(q.title LIKE ? OR q.content LIKE ?)`,
-    ); //LIKE operator is used to search for pattern inside text : it asks does this search value appears in title or content of the question in db : LIKE %search% means search's value can appear anywher in the text : in sql db its case-sensitive, so we dont need normalize the text that comes from user b/se we used COLLATE=utf8mb4_unicode_ci when we crete the tablle : ci means case-insensitive so The collation handles the case comparison for you.
+    conditions.push(`(q.title LIKE ? OR q.content LIKE ?)`); //LIKE operator is used to search for pattern inside text : it asks does this search value appears in title or content of the question in db : LIKE %search% means search's value can appear anywher in the text : in sql db its case-sensitive, so we dont need normalize the text that comes from user b/se we used COLLATE=utf8mb4_unicode_ci when we crete the tablle : ci means case-insensitive so The collation handles the case comparison for you.
     const searchTerm = `%${filters.search}%`; // any text starts with %search% or ends with %search% or contains %search% in the middle
     params.push(searchTerm, searchTerm); // the first is for title and second is for content
   }
@@ -170,10 +168,13 @@ export const getQuestionsService = async (
   const sortColumn = "q.created_at";
   const normalizedSortOrder = "DESC";
 
-  const { whereClause, params } =
-    buildQuestionFilters(filters);
+  const { whereClause, params } = buildQuestionFilters(filters);
 
-  const listSql = `SELECT q.question_id AS id, 
+    // Build WHERE clause + bound params from the incoming filters
+    const { whereClause, params } = buildQuestionFilters(filters);
+
+    // SQL query: joins users for author info and LEFT JOINs answers to count responses
+    const listSql = `SELECT q.question_id AS id, 
     q.question_hash AS questionHash,
     q.title, 
     q.content,
@@ -190,34 +191,38 @@ export const getQuestionsService = async (
     GROUP BY q.question_id, u.user_id
     ORDER BY ${sortColumn} ${normalizedSortOrder}
     LIMIT ${normalizedLimit}
-    `; // COUNT: counts how many answeres for that question are there; DISTINCT: is used to prevent duplicate answer IDs from being counted if joins later cause duplicated rows
-  // GROUP BY: is needed because we are using an aggregate function COUNT() . it gives  one result per question/user combination and count the answers belonging to that question.
-  //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
-  //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).
+    // COUNT: counts how many answeres for that question are there; DISTINCT: is used to prevent duplicate answer IDs from being counted if joins later cause duplicated rows
+    // GROUP BY: is needed because we are using an aggregate function COUNT() . it gives  one result per question/user combination and count the answers belonging to that question.
+    //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
+    //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).    
 
-  const rows = await safeExecute(listSql, params);
+    // Execute the query with bound parameters to prevent SQL injection
+    const rows = await safeExecute(listSql, params);
 
-  return {
-    data: rows.map((question) => ({
-      id: question.id,
-      questionHash: question.questionHash,
-      title: question.title,
-      content: question.content,
-      createdAt: question.createdAt,
-      updatedAt: question.updatedAt,
-      author: {
-        id: question.userId,
-        firstName: question.firstName,
-        lastName: question.lastName,
-      },
-    })),
-    meta: {
-      limit: normalizedLimit,
-      total: rows.length,
-      sortBy: "newest",
-      sortOrder: normalizedSortOrder,
-    },
-  };
+    return {
+        // Transform each DB row into the API response shape (nested author object)
+        data: rows.map(question => ({
+            id: question.id,
+            questionHash: question.questionHash,
+            title: question.title,
+            content: question.content,
+            createdAt: question.createdAt,
+            updatedAt: question.updatedAt,
+            author: {
+                id: question.userId,
+                firstName: question.firstName,
+                lastName: question.lastName,
+            },
+
+        })),
+        // Include pagination and sort metadata alongside the question list
+        meta: {
+            limit: normalizedLimit,
+            total: rows.length,
+            sortBy: "newest",
+            sortOrder: normalizedSortOrder,
+        },
+    };
 };
 
 // ! ==================================
@@ -252,10 +257,7 @@ export const getSingleQuestionService = async ({
   //console.log('questionsql:', questionSql);
   //console.log('questionHash:', questionHash);
 
-  const questionRows = await safeExecute(
-    questionSql,
-    [questionHash],
-  ); // its array of array and inside the array, the first array is the actual row of table so we access it with questionRows[0]
+  const questionRows = await safeExecute(questionSql, [questionHash]); // its array of array and inside the array, the first array is the actual row of table so we access it with questionRows[0]
 
   //console.log('questionresult:', questionRows);
 
@@ -294,9 +296,7 @@ export const getSingleQuestionService = async ({
 
   //console.log('answerSql:', answerSql);
 
-  const answers = await safeExecute(answerSql, [
-    questionId,
-  ]);
+  const answers = await safeExecute(answerSql, [questionId]);
 
   //console.log('answer:', answers);
   return {
@@ -315,7 +315,6 @@ export const getSingleQuestionService = async ({
       answerCount: question.answerCount,
     },
     answers: answers.map((answer) => ({
-      //map the answers to a more structured format
       id: answer.id,
       content: answer.content,
       createdAt: answer.createdAt,
@@ -363,36 +362,34 @@ and i got the json below from postman
 // ! semantic search : find semantically similar questions to the user's query (new text typed by the user) - from existing questions in db
 // # Task: Semantic Search Questions[T-11]
 // GET /api/questions/search
-export const searchQuestionsSemanticService =
-  async ({ query, k, threshold }) => {
-    //  normalizing the  query to  get the optimized embedding
-    const sourceText = normalizeQuestionText({
-      title: query,
-    }); //the question comes from user as a query
+export const searchQuestionsSemanticService = async ({
+  query,
+  k,
+  threshold,
+}) => {
+  //  normalizing the  query to  get the optimized embedding
+  const sourceText = normalizeQuestionText({ title: query }); //the question comes from user as a query
 
-    const vectorConfig = getVectorConfig(); // it returns the recommended default threshold and k from env
-    const searchThreshold =
-      threshold !== undefined
-        ? threshold
-        : vectorConfig.recommendThreshold; // if the user doesn't provide threshold then use the default value
+  const vectorConfig = getVectorConfig(); // it returns the recommended default threshold and k from env
+  const searchThreshold =
+    threshold !== undefined ? threshold : vectorConfig.recommendThreshold; // if the user doesn't provide threshold then use the default value
 
-    const result =
-      await findSimilarQuestionsByText({
-        sourceText,
-        threshold: searchThreshold,
-        k: k,
-      }); //find the similar questions
+  const result = await findSimilarQuestionsByText({
+    sourceText,
+    threshold: searchThreshold,
+    k: k,
+  }); //find the similar questions
 
-    return {
-      data: result.similarQuestions,
-      meta: {
-        query,
-        k,
-        threshold: searchThreshold,
-        total: result.similarQuestions.length,
-      },
-    };
+  return {
+    data: result.similarQuestions,
+    meta: {
+      query,
+      k,
+      threshold: searchThreshold,
+      total: result.similarQuestions.length,
+    },
   };
+};
 
 //========================================
 // # Task: AI Answer Fit Evaluation[T-18]
