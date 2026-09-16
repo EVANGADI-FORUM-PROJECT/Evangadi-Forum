@@ -107,6 +107,7 @@ const buildQuestionFilters = filters => {
     const params = [];
 
     if (filters.search) {
+        // Search filter is optional — only applied when ?search=<keyword> is present
         conditions.push(`(q.title LIKE ? OR q.content LIKE ?)`);//LIKE operator is used to search for pattern inside text : it asks does this search value appears in title or content of the question in db : LIKE %search% means search's value can appear anywher in the text : in sql db its case-sensitive, so we dont need normalize the text that comes from user b/se we used COLLATE=utf8mb4_unicode_ci when we crete the tablle : ci means case-insensitive so The collation handles the case comparison for you.
         const searchTerm = `%${filters.search}%`; // any text starts with %search% or ends with %search% or contains %search% in the middle
         params.push(searchTerm, searchTerm);// the first is for title and second is for content
