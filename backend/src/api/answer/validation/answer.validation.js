@@ -14,3 +14,5 @@ export const createAnswerValidation = [
         .withMessage("Question ID is required")
                 // Make sure questionId is an integer greater than or equal to 1
         .isInt({ min: 1 })
+                // Error message if questionId is not a positive integer
+        .withMessage("Question ID must be a positive integer")
