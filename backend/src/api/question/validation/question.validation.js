@@ -23,6 +23,8 @@ export const createQuestionValidation = [
     validationErrorHandler,
 ]
 
+// T-10: Query-parameter validation for the list questions endpoint.
+// Both params are optional. Validation rejects malformed inputs (400) before the controller runs.
 //[T-10]
 export const getQuestionsValidation = [
     // ?search — optional keyword; matches title OR content
