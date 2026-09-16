@@ -81,7 +81,15 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
   try {
     // Send the userPrompt to Gemini and wait for the JSON text response
     const raw = await fetchGeminiJsonTextResponse(userPrompt);
+
+    // Convert Gemini's JSON text response into a JavaScript object
+    const parsed = parseJsonObjectGeminiText(raw);
+
+
+
+
     
+
     return { tips };
   } catch (error) {
     console.error("generateQuestionDraftCoachService", error);
