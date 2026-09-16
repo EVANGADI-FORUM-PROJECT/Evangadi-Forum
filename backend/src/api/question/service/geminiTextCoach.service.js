@@ -46,15 +46,36 @@ export function parseJsonObjectGeminiText(text) {
 
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
+// Create and export an asynchronous service function for generating question-draft coaching tips
 export const generateQuestionDraftCoachService = async ({ title, content }) => {
+
+  // Create the prompt that will be sent to Gemini
+  // It includes the learner's question title and question body
   const userPrompt = `you help learners write clearer technical forum posts.
+
+    // Add the question title to the Gemini prompt
     QUESTIONTITILE: ${title}
+
+    // Add the question body to the Gemini prompt
+    // Markdown is allowed in the question body
     QUESTION BODY(markdown allowed) :${content}
     
+    // Tell Gemini to return only JSON without markdown code fences
+    // The response must contain a "tips" array
     reply with ONLY valid JSON (no markdown fences), exactly this shape: {"tips":["...", "..."]}
+
+    // Define the rules Gemini must follow when generating the tips
     RULES: 
-    -tips: array of 3 to  short strings(each under 120 characters).
+
+    // Ask Gemini to provide 3 to 5 short tips
+    // Each tip must be less than 120 characters
+    -tips: array of 3 to 5 short strings(each under 120 characters).
+
+    // Tell Gemini what areas the tips should focus on
     -focus on: missing context(error messages, expected vs actual), reproducibility, a sharper title idea if needed, tone for peers
+
+    // Tell Gemini not to grade the learner's homework
+    // The response should only provide helpful checklist-style suggestions
     - do not claim the question is "correct" or grade homework; give constructive checklist-style tips only.`;
 
   try {
