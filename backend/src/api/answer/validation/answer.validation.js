@@ -24,3 +24,5 @@ export const createAnswerValidation = [
         .notEmpty()
                 // Error message if content is missing
         .withMessage("Answer content is required")
+                // Make sure content is a string
+        .isString()
