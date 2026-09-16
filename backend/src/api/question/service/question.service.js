@@ -126,6 +126,11 @@ const buildQuestionFilters = filters => {
 // ! =================================
 
 // # Task: List Questions[T-10]
+/**
+ * Fetches questions with author info and answer counts.
+ * Supports optional filters: search (keyword) and mine (own questions).
+ * Returns { data: [...], meta: {...} } for the controller.
+ */
 //GET /api/questions
 export const getQuestionsService = async (filters) => {
     const normalizedLimit = 100;
