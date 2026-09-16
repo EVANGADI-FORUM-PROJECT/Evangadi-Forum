@@ -51,6 +51,8 @@ export const createQuestionController = async (req, res, next) => {
 export const generateQuestionDraftCoachController = async (req, res, next)=>{
     try {
          const {title, content}= req.body;
+          const data = await generateQuestionDraftCoachService({title, content});
+
 // ! =========================================
 
 // # Task: Find Similar Questions (T-11)
