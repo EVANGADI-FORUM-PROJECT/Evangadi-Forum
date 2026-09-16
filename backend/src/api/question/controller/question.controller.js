@@ -96,6 +96,10 @@ const result= await assessAnswerAgainstQuestionsService({
 			message: 'Answer assessed successfully',
 			...result,
 		});
+    }catch(error){
+		next(error);
+	}
+}
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
