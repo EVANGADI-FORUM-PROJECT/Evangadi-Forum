@@ -88,34 +88,27 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
     // Check if parsed.tips is an array
     // If it is an array, clean and prepare the tips
     // Otherwise, use an empty array
-    let tips = Array.isArray(parsed?.tips);
+    let tips = Array.isArray(parsed?.tips)
+      ? parsed.tips
+          .filter((t) => typeof t === "string" && t.trim())
+          .map((t) => t.trim())
+      : [];
 
-  // Keep only tips that are strings and are not empty
-    ? parsed.tips
-        .filter((t) => typeof t === "string" && t.trim())
+    // Keep only the first 5 tips
+    // This prevents Gemini from returning more than 5 tips
+    tips = tips.slice(0, 5);
+    // Check if there are no valid tips after cleaning the response
+    if (tips.length === 0) {
+      // Provide a default tip when Gemini doesn't return useful tips
+      tips = [
+        "Add any error message or exact behavior you see.",
 
-        // Remove unnecessary spaces from the beginning and end of each tip
-        .map((t) => t.trim())
+        // Provide another default tip
+        "Say what you already tried and what you expected instead.",
+      ];
+    }
 
- // If parsed.tips is not an array, use an empty array
-    : [];
-
-  // Keep only the first 5 tips
-  // This prevents Gemini from returning more than 5 tips
-  tips = tips.slice(0, 5);
-   // Check if there are no valid tips after cleaning the response
-  if (tips.length === 0) {
-
-    // Provide a default tip when Gemini doesn't return useful tips
-    tips = [
-      "Add any error message or exact behavior you see.",
-
-      // Provide another default tip
-      "Say what you already tried and what you expected instead.",
-    ];
-  } 
-
-
+    
     return { tips };
   } catch (error) {
     console.error("generateQuestionDraftCoachService", error);
@@ -123,7 +116,7 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
       "AI draft sugesstions are temporarily unavailable. please try again later.",
     );
   }
-};;
+};
 /* i got :
 {
     "success": true,
