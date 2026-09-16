@@ -85,7 +85,10 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
     // Convert Gemini's JSON text response into a JavaScript object
     const parsed = parseJsonObjectGeminiText(raw);
 
-
+    // Check if parsed.tips is an array
+    // If it is an array, clean and prepare the tips
+    // Otherwise, use an empty array
+    let tips = Array.isArray(parsed?.tips);
 
 
     
