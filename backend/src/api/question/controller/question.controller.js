@@ -16,6 +16,13 @@ import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.se
 // ! ===============================================
 // # Task: List Questions[T-10]
 //GET /api/questions
+export const getQuestionsController = async (req, res, next) => {
+  try {
+    // TODO:read filters, call service, send response
+  } catch (error) {
+    next(error);
+  }
+};
 
 // ! ===============================================
 // # Task: Semantic Search Questions[T-11]
