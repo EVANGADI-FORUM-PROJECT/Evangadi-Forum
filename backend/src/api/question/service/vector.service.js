@@ -438,7 +438,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
 
   // ! Getting the question ID from the hash
   //first get the questionHash's q_id then get the embedding from q_vectors table by using q_id
-let questionId;
+  let questionId;
   try {
     let sql = `SELECT question_id FROM questions WHERE question_Hash = ? `;
     const rows = await safeExecute(sql, [questionHash]);
@@ -463,7 +463,7 @@ let questionId;
     throw error;
   }
   // ! Get the source embedding
-  let sourceEmbedding;
+let sourceEmbedding;
   try {
     let sql = `SELECT embedding FROM question_vectors WHERE question_id = ? AND status = ?`;
 
@@ -493,7 +493,6 @@ let questionId;
 
     throw error;
   }
-
   // ! Retrieve all embeddings
   const allStoredEmbeddings = await retrieveReadyEmbeddings(); //array of objects
 
