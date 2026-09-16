@@ -33,7 +33,8 @@ export function parseJsonObjectGeminiText(text) {
   try {
       // Convert the text string into a JavaScript object using JSON.parse()
     return JSON.parse(text);
-
+ // If JSON.parse() fails, catch the error here
+  } catch (error) {
 
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
