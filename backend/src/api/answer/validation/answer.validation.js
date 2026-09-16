@@ -2,3 +2,6 @@
 import { body, param, query } from "express-validator";
 // Import our custom middleware that handles validation errors
 import { validationErrorHandler } from "../../../middleware/validation-handler.js";
+
+// Validation rules for creating a new answer
+export const createAnswerValidation = [
