@@ -186,6 +186,7 @@ export const getQuestionsService = async (filters) => {
             },
 
         })),
+        // Include pagination and sort metadata alongside the question list
         meta: {
             limit: normalizedLimit,
             total: rows.length,
