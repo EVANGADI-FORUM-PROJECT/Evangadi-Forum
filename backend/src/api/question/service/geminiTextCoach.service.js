@@ -29,17 +29,20 @@ export async function fetchGeminiJsonTextResponse(userPrompt) {
 }
 // Create and export a function that converts Gemini's text response into a JavaScript object
 export function parseJsonObjectGeminiText(text) {
- // Start a try block to test whether the Gemini response is valid JSON
+  // Start a try block to test whether the Gemini response is valid JSON
   try {
-      // Convert the text string into a JavaScript object using JSON.parse()
+    // Convert the text string into a JavaScript object using JSON.parse()
     return JSON.parse(text);
- // If JSON.parse() fails, catch the error here
+    // If JSON.parse() fails, catch the error here
   } catch (error) {
-      // Show an error message in the console
+    // Show an error message in the console
     console.error("Failed to parse Gemini response as JSON");
-     // Show the original Gemini response to help with debugging
+    // Show the original Gemini response to help with debugging
     console.error("Gemini text:", text);
-
+    // Stop the function and return a clear error message
+    throw new Error("Gemini returned invalid JSON");
+  }
+}
 
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
