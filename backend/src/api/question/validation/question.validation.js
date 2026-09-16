@@ -50,44 +50,6 @@ export const getQuestionsValidation = [
   validationErrorHandler,
 ];
 
-// export const getSingleQuestionValidation = [
-//     param("question")
-export const getSingleQuestionValidation = [
-  param("questionHash")
-    .isString()
-    .withMessage("Question hash must be a string")
-    .matches(/^[a-f0-9]{16}$/)
-    .withMessage(
-      "question hash must be a 16-character hex string",
-    )
-    .trim(),
-  validationErrorHandler,
-];
-
-export const assessAnswerAgainstQuestionsValidation =
-  [
-    param("questionHash")
-      .isString()
-      .withMessage(
-        "Question hash must be a string",
-      )
-      .matches(/^[a-f0-9]{16}$/)
-      .withMessage(
-        "question hash must be a 16-character hex string",
-      ),
-    body("answerText")
-      .notEmpty()
-      .withMessage("Answer text is required")
-      .isString()
-      .withMessage("Answer text must be a string")
-      .isLength({ min: 20 })
-      .withMessage(
-        "Answer text must be at least 20 characters",
-      )
-      .trim(),
-    validationErrorHandler,
-  ];
-
 //[T-11]
 export const searchQuestionsSemanticValidation = [
   query("query")
