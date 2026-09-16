@@ -54,6 +54,8 @@ export const generateQuestionDraftCoachController = async (req, res, next)=>{
           const data = await generateQuestionDraftCoachService({title, content});
  res.status(StatusCodes.OK).json({
    success: true,
+    message:"Draft suggestions Generated.",
+        data,
 // ! =========================================
 
 // # Task: Find Similar Questions (T-11)
