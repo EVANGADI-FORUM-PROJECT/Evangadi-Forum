@@ -20,3 +20,5 @@ export const createAnswerValidation = [
         .toInt(),
     // Validate the "content" field from the request body
     body("content")
+            // Make sure content is not empty
+        .notEmpty()
