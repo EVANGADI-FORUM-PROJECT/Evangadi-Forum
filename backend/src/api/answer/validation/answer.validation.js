@@ -66,3 +66,8 @@ export const getAnswerValidation = [
 
         // sortBy is optional, so the request can work without it
         .optional()
+                // Only allow "newest" or "oldest" as values
+        .isIn(["newest", "oldest"])
+
+        // Error message if another value is provided
+        .withMessage("sortBy must be either newest or oldest"),
