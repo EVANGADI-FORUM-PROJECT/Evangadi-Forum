@@ -147,3 +147,13 @@ export const similarQuestionsValidation = [
 
     validationErrorHandler,
 ]
+
+export const assessAnswerFitValidation = [
+
+  // Validate the question hash from the URL.
+  param('questionHash')
+    .matches(HASH_REGEX)
+    .withMessage('questionHash must be a 16-character hex string'),
+
+  validationErrorHandler,
+];
