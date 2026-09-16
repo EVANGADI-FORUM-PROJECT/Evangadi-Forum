@@ -92,22 +92,30 @@ export const createQuestionWithVectorService = async payload => {
 // ! =======================================
 //used inside // * getQuestionsService[T-10], 
 //it builds the SQL WHERE clause dynamically based on filters passed
+/**
+ * T-10: Build the WHERE clause and params array for the list-questions query.
+ * Supports optional `search` (matches title OR content) and `mine` (own questions).
+ */
+
 const buildQuestionFilters = filters => {
     const conditions = [];
     const params = [];
 
     if (filters.search) {
+        // Search filter is optional — only applied when ?search=<keyword> is present
         conditions.push(`(q.title LIKE ? OR q.content LIKE ?)`);//LIKE operator is used to search for pattern inside text : it asks does this search value appears in title or content of the question in db : LIKE %search% means search's value can appear anywher in the text : in sql db its case-sensitive, so we dont need normalize the text that comes from user b/se we used COLLATE=utf8mb4_unicode_ci when we crete the tablle : ci means case-insensitive so The collation handles the case comparison for you.
         const searchTerm = `%${filters.search}%`; // any text starts with %search% or ends with %search% or contains %search% in the middle
         params.push(searchTerm, searchTerm);// the first is for title and second is for content
     }
 
     if (filters.mine && filters.userId) {
+        // Mine filter is optional — only applied when ?mine=true and user is authenticated
         conditions.push(`q.user_id = ?`);//when u select questions only add 'my questions' conditon if mine is truthy and userid exists to show the user's only questions 
         params.push(filters.userId);
     }
 
     if (conditions.length === 0) {
+        // When no filters were provided, return an empty WHERE clause so the query selects all rows
         return { whereClause: '', params };// to prevent WHERE if no condioons cause we use where to set cdn for our selection , instead if no conditions just select all by removing the where clause
     }
 
@@ -123,14 +131,17 @@ const buildQuestionFilters = filters => {
 // # Task: List Questions[T-10]
 //GET /api/questions
 export const getQuestionsService = async (filters) => {
+    // Query tuning constants — fixed limit and sort order for the question list
     const normalizedLimit = 100;
     const sortColumn = 'q.created_at';
     const normalizedSortOrder = 'DESC';
 
 
 
+    // Build WHERE clause + bound params from the incoming filters
     const { whereClause, params } = buildQuestionFilters(filters);
 
+    // SQL query: joins users for author info and LEFT JOINs answers to count responses
     const listSql = `SELECT q.question_id AS id, 
     q.question_hash AS questionHash,
     q.title, 
@@ -153,9 +164,11 @@ export const getQuestionsService = async (filters) => {
     //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
     //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).    
 
+    // Execute the query with bound parameters to prevent SQL injection
     const rows = await safeExecute(listSql, params);
 
     return {
+        // Transform each DB row into the API response shape (nested author object)
         data: rows.map(question => ({
             id: question.id,
             questionHash: question.questionHash,
@@ -170,6 +183,7 @@ export const getQuestionsService = async (filters) => {
             },
 
         })),
+        // Include pagination and sort metadata alongside the question list
         meta: {
             limit: normalizedLimit,
             total: rows.length,
