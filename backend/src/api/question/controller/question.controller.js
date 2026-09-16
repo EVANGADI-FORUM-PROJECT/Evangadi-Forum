@@ -10,8 +10,6 @@ import {
 } from "../service/question.service.js";
 import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.service.js";
 
-// # Task: Create Question & Auto-Embed[T-9]
-// POST /api/questions
 export const createQuestionController = async (req, res, next) => {
   try {
     const { title, content } = req.body;
@@ -29,8 +27,7 @@ export const createQuestionController = async (req, res, next) => {
     next(error);
   }
 };
-// ! ===============================================
-// # Task: List Questions[T-10]
+
 //GET /api/questions
 
 /**
@@ -64,11 +61,28 @@ export const getQuestionsController = async (req, res, next) => {
   }
 };
 
-// ! ===============================================
-// # Task: Semantic Search Questions[T-11]
 // GET /api/questions/search
+export const searchQuestionsSemanticController = async (req, res, next)=>{
+    try {
+        
+        const result = await searchQuestionsSemanticService({
+            query: req.query.query,
+            k: req.query.k ? Number(req.query.k): 0,
+            threshold: req.query.threshold !== undefined ? Number(req.query.threshold): undefined,
+        });
 
-// ! ===========================================
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Questions fetched successfully using semantic search',
+            ...result,
+            
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 // # Task: Get Single Question Details[T-10]
 // GET /api/questions/:questionHash
 export const getSingleQuestionController = async (
