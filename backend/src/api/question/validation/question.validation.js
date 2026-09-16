@@ -160,7 +160,13 @@ export const assessAnswerFitValidation = [
     .notEmpty()
     .withMessage('answerText is required')
 
+//  Make sure the answer is text.
+    .isString()
+    .withMessage('answerText must be a string')
 
+    //  Require at least 20 characters.
+    .isLength({ min: 20 })
+    .withMessage('answerText must be at least 20 characters long'),
 
   //  Send validation errors to the common error handler.
   validationErrorHandler,
