@@ -14,21 +14,21 @@ import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.se
 // POST /api/questions
 export const createQuestionController = async (req, res, next) => {
   try {
-    const {title, content} = req.body;
-        const result= await createQuestionWithVectorService({
-            userId: req.user.id, 
-            title,
-            content
-            })
-        return res.status(StatusCodes.CREATED).json({
-            success: true,
-            message: "Question created successfully",
-            data: result.question,
-        })
+    const { title, content } = req.body;
+    const result = await createQuestionWithVectorService({
+      userId: req.user.id,
+      title,
+      content,
+    });
+    return res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "Question created successfully",
+      data: result.question,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 // ! ===============================================
 // # Task: List Questions[T-10]
 //GET /api/questions
@@ -44,6 +44,12 @@ export const createQuestionController = async (req, res, next) => {
 // ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
+// ZELEKE: Call the core AI answer-fit evaluation service.
+const result = await assessAnswerAgainstQuestionsService({
+  questionTitle: question.title,
+  questionContent: question.content,
+  answerText,
+});
 
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
