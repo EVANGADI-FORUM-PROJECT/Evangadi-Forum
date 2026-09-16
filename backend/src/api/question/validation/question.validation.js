@@ -25,16 +25,6 @@ export const createQuestionValidation = [
 
 //[T-10]
 export const getQuestionsValidation = [
-    query("search")
-        .optional() // means search is not mandatory if not provided
-        .isString()
-        .withMessage("Search query must be a string")
-        .trim(),
-    query("mine")
-        .optional()
-        .isBoolean() // is it boolean 
-        .withMessage("Mine must be a boolean")
-        .trim(),
     validationErrorHandler,
 ]
 
