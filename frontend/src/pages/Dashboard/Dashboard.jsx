@@ -1,21 +1,9 @@
-/**
- * Dashboard: default home after login; question list, quick actions, URL-driven search.
- * Data: `questionService` (keyword `q`, semantic `semantic`, or full list).
- */
-
-import { useAuth } from '../../contexts/AuthContext';
+// T-14 — Dashboard Page
+// Task: Build /dashboard to list questions and handle keyword/semantic search inputs.
+// Reference: task-dashboard.md
+// TODO: Teammate implementing T-14 should build this page.
 
 export default function Dashboard() {
-  const { user } = useAuth();
-
-  const firstName = user?.firstName?.trim();
-  const welcomeLine = firstName
-    ? `Good to see you, ${firstName}.`
-    : 'Welcome to the forum.';
-
-  return (
-    <div>
-      <h3>{welcomeLine}</h3>
-    </div>
-  );
+  // TODO: Implement question feed, keyword search, semantic search, loading, error, and empty states.
+  return null;
 }
