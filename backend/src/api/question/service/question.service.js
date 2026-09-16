@@ -136,6 +136,7 @@ const buildQuestionFilters = filters => {
 // # Task: List Questions[T-10]
 //GET /api/questions
 export const getQuestionsService = async (filters) => {
+    // Query tuning constants — fixed limit and sort order for the question list
     const normalizedLimit = 100;
     const sortColumn = 'q.created_at';
     const normalizedSortOrder = 'DESC';
