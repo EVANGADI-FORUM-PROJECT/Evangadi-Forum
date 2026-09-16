@@ -3,7 +3,7 @@ import { validationErrorHandler } from "../../../middleware/validation-handler.j
 
 //[T-9]
 export const createQuestionValidation = [
-    //checks the request body title
+    
     body("title")
         .notEmpty()
         .withMessage("Question title is required")
@@ -12,7 +12,7 @@ export const createQuestionValidation = [
         .isLength({ min: 5, max: 255 })
         .withMessage("Question title must be between 5 and 255 characters")
         .trim(),
-    //checks the request body content
+    
     body("content")
         .notEmpty()
         .withMessage("Question content is required")
@@ -25,12 +25,14 @@ export const createQuestionValidation = [
 ]
 
 //[T-10]
+// T-10: Validates optional ?search and ?mine query params for the list questions endpoint
 export const getQuestionsValidation = [
     query("search")
         .optional() // means search is not mandatory if not provided
         .isString()
         .withMessage("Search query must be a string")
         .trim(),
+    // ?mine expects a boolean-like value ("true" / "false") to filter own questions
     query("mine")
         .optional()
         .isBoolean() // is it boolean 

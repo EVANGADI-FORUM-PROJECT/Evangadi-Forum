@@ -137,7 +137,11 @@ export const getQuestionsService = async (filters) => {
 
   const { whereClause, params } = buildQuestionFilters(filters);
 
-  const listSql = `SELECT q.question_id AS id, 
+    // Build WHERE clause + bound params from the incoming filters
+    const { whereClause, params } = buildQuestionFilters(filters);
+
+    // SQL query: joins users for author info and LEFT JOINs answers to count responses
+    const listSql = `SELECT q.question_id AS id, 
     q.question_hash AS questionHash,
     q.title, 
     q.content,
@@ -154,34 +158,38 @@ export const getQuestionsService = async (filters) => {
     GROUP BY q.question_id, u.user_id
     ORDER BY ${sortColumn} ${normalizedSortOrder}
     LIMIT ${normalizedLimit}
-    `; // COUNT: counts how many answeres for that question are there; DISTINCT: is used to prevent duplicate answer IDs from being counted if joins later cause duplicated rows
-  // GROUP BY: is needed because we are using an aggregate function COUNT() . it gives  one result per question/user combination and count the answers belonging to that question.
-  //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
-  //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).
+    // COUNT: counts how many answeres for that question are there; DISTINCT: is used to prevent duplicate answer IDs from being counted if joins later cause duplicated rows
+    // GROUP BY: is needed because we are using an aggregate function COUNT() . it gives  one result per question/user combination and count the answers belonging to that question.
+    //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
+    //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).    
 
-  const rows = await safeExecute(listSql, params);
+    // Execute the query with bound parameters to prevent SQL injection
+    const rows = await safeExecute(listSql, params);
 
-  return {
-    data: rows.map((question) => ({
-      id: question.id,
-      questionHash: question.questionHash,
-      title: question.title,
-      content: question.content,
-      createdAt: question.createdAt,
-      updatedAt: question.updatedAt,
-      author: {
-        id: question.userId,
-        firstName: question.firstName,
-        lastName: question.lastName,
-      },
-    })),
-    meta: {
-      limit: normalizedLimit,
-      total: rows.length,
-      sortBy: "newest",
-      sortOrder: normalizedSortOrder,
-    },
-  };
+    return {
+        // Transform each DB row into the API response shape (nested author object)
+        data: rows.map(question => ({
+            id: question.id,
+            questionHash: question.questionHash,
+            title: question.title,
+            content: question.content,
+            createdAt: question.createdAt,
+            updatedAt: question.updatedAt,
+            author: {
+                id: question.userId,
+                firstName: question.firstName,
+                lastName: question.lastName,
+            },
+
+        })),
+        // Include pagination and sort metadata alongside the question list
+        meta: {
+            limit: normalizedLimit,
+            total: rows.length,
+            sortBy: "newest",
+            sortOrder: normalizedSortOrder,
+        },
+    };
 };
 
 // ! ==================================
