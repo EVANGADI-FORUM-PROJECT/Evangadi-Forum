@@ -5,3 +5,6 @@ import { validationErrorHandler } from "../../../middleware/validation-handler.j
 
 // Validation rules for creating a new answer
 export const createAnswerValidation = [
+
+     // Validate the "questionId" field from the request body
+    body("questionId")
