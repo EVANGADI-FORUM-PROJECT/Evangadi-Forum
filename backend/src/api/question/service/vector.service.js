@@ -534,7 +534,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
     }
   }
   // ! sort scores
-similarities.sort((a, b) => b.score - a.score); //  similarities = [{ questionId: 2, score: 0.94 },{ questionId: 7, score: 0.91 },{ questionId: 4, score: 0.86 },{ questionId: 9, score: 0.81 },{ questionId: 3, score: 0.78 }];
+  similarities.sort((a, b) => b.score - a.score); //  similarities = [{ questionId: 2, score: 0.94 },{ questionId: 7, score: 0.91 },{ questionId: 4, score: 0.86 },{ questionId: 9, score: 0.81 },{ questionId: 3, score: 0.78 }];
 
   const topResults = similarities.slice(0, normalizedK); //its array of normaizedk lrngth if it is 3 : topResults = [{ questionId: 2, score: 0.94 },{ questionId: 7, score: 0.91 },{ questionId: 4, score: 0.86 }];
 
@@ -554,7 +554,7 @@ similarities.sort((a, b) => b.score - a.score); //  similarities = [{ questionId
     } */
 
   // ! Fetch the actual questions with score of >= threshold & k
-  const questionIds = topResults.map((result) => result.questionId); //questionIds = [2, 7, 4];
+const questionIds = topResults.map((result) => result.questionId); //questionIds = [2, 7, 4];
   //console.log('questionIds:', questionIds);
 
   const placeholders = questionIds.map(() => "?").join(","); //placeholders = (?,?,?)
