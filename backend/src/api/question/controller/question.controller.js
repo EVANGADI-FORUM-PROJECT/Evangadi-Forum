@@ -71,6 +71,28 @@ export const getQuestionsController = async (req, res, next) => {
 // ! ===========================================
 // # Task: Get Single Question Details[T-10]
 // GET /api/questions/:questionHash
+export const getSingleQuestionController = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const { questionHash } = req.params;
+    //console.log("questionHash: ",questionHash);
+
+    const result = await getSingleQuestionService(
+      { questionHash },
+    );
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Question fetched successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]

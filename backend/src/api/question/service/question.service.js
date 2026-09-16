@@ -18,84 +18,115 @@ import {
   parseJsonObjectGeminiText,
 } from "./geminiTextCoach.service.js";
 
-const generateQuestionHash = () => crypto.randomBytes(8).toString("hex");
+const generateQuestionHash = () =>
+  crypto.randomBytes(8).toString("hex"); //  gives unique string for every question
 
 // # Task: Create Question & Auto-Embed[T-9]
 // POST /api/questions
-export const createQuestionWithVectorService = async (payload) => {
-  const { userId, title, content } = payload;
+export const createQuestionWithVectorService =
+  async (payload) => {
+    //extract payload fields from payload authentication
+    const { userId, title, content } = payload; //the asker, the question title and content
 
-  const insertQuestionsql =
-    "INSERT INTO QUESTIONS (question_hash, user_id, title, content) VALUES (?, ?, ?, ?)";
+    //prepare the sql statement for inserting a new question
+    const insertQuestionsql =
+      "INSERT INTO QUESTIONS (question_hash, user_id, title, content) VALUES (?, ?, ?, ?)";
 
-  const questionHash = generateQuestionHash();
+    //generate a unique hash for the question
+    const questionHash = generateQuestionHash(); // if itsnt unique db throw error
+    let questionResult;
 
-  let questionResult;
+    try {
+      //execute the insertion quesrt safely
+      questionResult = await safeExecute(
+        insertQuestionsql,
+        [questionHash, userId, title, content],
+      );
+    } catch (error) {
+      //handle specific foreign key constraint error for non-existent user(we cant insert if user doest exist in db first)
+      if (
+        error.code === "ER_NO_REFERENCED_ROW_2"
+      ) {
+        throw new BadRequestError(
+          "user does not exist",
+        );
+      } // to be safe because foregin-key constriant that doesnt let to insert duplicate userid, if user is deleted it also gets deleted because its foreign key constriant (on-delete-cascade)
+      //re-throw any other unexpected errors
+      throw error;
+    }
 
-  try {
-    questionResult = await safeExecute(insertQuestionsql, [
+    //retrive the auto-generated ID of the question
+    const questionId = questionResult.insertId;
+
+    // construct the result object representing the creted question
+    const creationResult = {
+      id: questionId,
       questionHash,
-      userId,
       title,
       content,
-    ]);
-  } catch (error) {
-    if (error.code === "ER_NO_REFERENCED_ROW_2") {
-      throw new BadRequestError("user does not exist");
+      userId,
+    };
+
+    const sourceText = normalizeQuestionText({
+      title: payload.title,
+    }); //to get more optimized embedding
+
+    // # after noramlizing the question lets do the embedding
+    try {
+      const embeddingResult =
+        await generatingQuestionEmbedding(
+          sourceText,
+          { questionId: creationResult.id },
+        );
+
+      //validate that a valid embedding was returned fromthe api cause we may finished our free  tokens
+      if (
+        !embeddingResult
+        || !embeddingResult.embedding
+        || !embeddingResult.embedding.length === 0
+      ) {
+        throw new Error(
+          "gemini Api did not return valid embedding",
+        );
+      }
+      // ! if embedding fails go to catch block to insert empty array, so that later we can try again to generate the embedding
+
+      //if embedding is done successfully, store the generated vector embedding in the database with a 'ready' status
+      await storeQuestionVector({
+        questionId: creationResult.id,
+        sourceText,
+        embedding: embeddingResult.embedding,
+        status: "ready",
+      });
+    } catch (error) {
+      console.error(
+        "failed to store vector for question",
+      );
+      console.error(
+        `Question ID: ${creationResult.id}`,
+      );
+      console.error("question: questioncreation");
+      console.error("error", error);
+      console.error("=====================");
+      //we will not throw error so that user can still see his question
+      // but the question will not be searchable by vector search
+      // so it will not be recommended to other users
+
+      await storeQuestionVector({
+        questionId: creationResult.id,
+        sourceText,
+        embedding: [],
+        status: "failed",
+      }).catch((e) =>
+        console.error(
+          "failed to save failed status:",
+          e,
+        ),
+      );
     }
-    throw error;
-  }
 
-  const questionId = questionResult.insertId;
-
-  const creationResult = {
-    id: questionId,
-    questionHash,
-    title,
-    content,
-    userId,
+    return { question: creationResult }; // we send it to controller  for frontend
   };
-
-  const sourceText = normalizeQuestionText({
-    title: payload.title,
-  });
-
-  try {
-    const embeddingResult = await generatingQuestionEmbedding(sourceText, {
-      questionId: creationResult.id,
-    });
-
-    if (
-      !embeddingResult ||
-      !embeddingResult.embedding ||
-      !embeddingResult.embedding.length === 0
-    ) {
-      throw new Error("gemini Api did not return valid embedding");
-    }
-
-    await storeQuestionVector({
-      questionId: creationResult.id,
-      sourceText,
-      embedding: embeddingResult.embedding,
-      status: "ready",
-    });
-  } catch (error) {
-    console.error("failed to store vector for question");
-    console.error(`Question ID: ${creationResult.id}`);
-    console.error("question: questioncreation");
-    console.error("error", error);
-    console.error("=====================");
-
-    await storeQuestionVector({
-      questionId: creationResult.id,
-      sourceText,
-      embedding: [],
-      status: "failed",
-    }).catch((e) => console.error("failed to save failed status:", e));
-  }
-
-  return { question: creationResult };
-};
 
 // ! =======================================
 //used inside // * getQuestionsService[T-10],
@@ -130,7 +161,9 @@ const buildQuestionFilters = (filters) => {
 
 // # Task: List Questions[T-10]
 //GET /api/questions
-export const getQuestionsService = async (filters) => {
+export const getQuestionsService = async (
+  filters,
+) => {
   const normalizedLimit = 100;
   const sortColumn = "q.created_at";
   const normalizedSortOrder = "DESC";
@@ -361,71 +394,65 @@ export const searchQuestionsSemanticService = async ({
 //========================================
 // # Task: AI Answer Fit Evaluation[T-18]
 // POST /api/questions/:questionHash/answer-fit
-export const assessAnswerAgainstQuestionsService = async ({
-  questionTitle,
-  questionContent,
-  answerText,
-}) => {
-  //we are saying for ai that we gonna give u the  draft answer , title of the question and content of the question so do userPrompt/system-prompt for the answer to check the relevance and completeness of the answer not the factuality of the answer.
-  // ZELEKE: Build the prompt containing the question and answer draft.
-  const userPrompt = `
-        You review whether a forum draft addresses the QUESTION
-        (relevance and completeness of engagement - not whether
-        the answer is factually correct).
+export const assessAnswerAgainstQuestionsService =
+  async ({
+    questionTitle,
+    questionContent,
+    answerText,
+  }) => {
+    //we are saying for ai that we gonna give u the  draft answer , title of the question and content of the question so do userPrompt/system-prompt for the answer to check the relevance and completeness of the answer not the factuality of the answer.
+    const userPrompt = `you review whether a forum draft addresses the QUESTION(relevance and completeness of engagement - not whether the answer is factually correct),
+    QUESTION TITLE: ${questionTitle}
+    QUESTION CONTENT: ${questionContent}
+    ANSWER DRAFT: ${answerText}
 
-        QUESTION TITLE: ${questionTitle}
-
-        QUESTION CONTENT: ${questionContent}
-
-        ANSWER DRAFT: ${answerText}
- Reply with ONLY valid JSON, exactly this shape:
-        {
-            "level": "strong"|"partial"|"weak",
-            "note": "one short sentence"
-        }
-
-        RULES:
-        - strong = clearly engages with the question.
-        - partial = related but missing key parts.
-        - weak = mostly off-topic or too vague.
-        - note = one short sentence about fit/relevance.
+    Reply with ONLY valid JSON(no markdown forces), exactly this shape: {
+    "level":"strong"|"partial"|"weak", 
+    "note":"one short sentence"}
+    RULES: 
+    - level :"strong" if the draft clearly engages with the question; "partial" if somewhat related but missing key parts of the ask; "weak" if mostly off-topic or too vague, 
+    - note: one sentence, plain language, no markdown, under 200 characters, frame as fit/relevance, not grading.
     `;
 
-  try {
-    // Send the evaluation prompt to Gemini.
-    const raw = await fetchGeminiJsonTextResponse(userPrompt);
-    //Parse Gemini's JSON response.
-    const parsed = parseJsonObjectGeminiText(raw);
-    //Read the level returned by Gemini.
-    const levelRaw = parsed?.level;
-    //Read the explanation returned by Gemini.
-    const noteRaw = parsed?.note;
-    // Allow only the three expected evaluation levels.
-    // If Gemini returns another value, use "partial" as the default.
-    const level =
-      levelRaw === "strong" || levelRaw === "partial" || levelRaw === "weak"
-        ? levelRaw
-        : "partial";
+    try {
+      const raw =
+        await fetchGeminiJsonTextResponse(
+          userPrompt,
+        );
 
-    //Clean and limit the explanation returned by Gemini.
-    const note =
-      typeof noteRaw === "string" && noteRaw.trim()
-        ? noteRaw.trim().slice(0, 280)
-        : "Could not summarize fit; treat this as partial match.";
-    // Return the final AI evaluation result.
-    return {
-      level,
-      note,
-    };
-  } catch (error) {
-    //Log errors produced during AI evaluation.
-    console.error("assessAnswerAgainstQuestionService:", error);
-    // Return a service-unavailable error when Gemini fails.
-    throw new ServiceUnavailableError(
-      "AI fit check is temporarily unavailable, please try again later",
-    );
-  }
-};
+      console.log('"Gemini response received"');
+
+      const parsed =
+        parseJsonObjectGeminiText(raw);
+
+      console.log(
+        "Gemini JSON parsed successfully",
+      );
+
+      const levelRaw = parsed?.level;
+      const noteRaw = parsed?.note;
+      const level =
+        levelRaw === "strong"
+        || levelRaw === "partial"
+        || levelRaw === "weak"
+          ? levelRaw
+          : "partial"; //if it hallucinates and gives other thing than these three values, make it partial by default
+      const note =
+        typeof noteRaw === "string"
+        && noteRaw.trim()
+          ? noteRaw.trim().slice(0, 280)
+          : "could not summarize fit; trat this as partial match.";
+      return { level, note };
+    } catch (error) {
+      console.error(
+        "assessAnswerAgainstQuestionService:",
+        error,
+      );
+      throw new ServiceUnavailableError(
+        "AI fit check is temporarily unavailable, please try again later",
+      );
+    }
+  };
 /**i got: {
     "success": true,
     "message": "Answer assessed successfully",
@@ -443,13 +470,16 @@ export const getSimilarQuestionsService = async ({
 }) => {
   const vectorConfig = getVectorConfig();
   const searchThreshold =
-    threshold !== undefined ? threshold : vectorConfig.recommendThreshold;
+    threshold !== undefined
+      ? threshold
+      : vectorConfig.recommendThreshold;
 
-  const result = await findSimilarQuestionsByQuestionHash({
-    questionHash,
-    threshold: searchThreshold,
-    k,
-  });
+  const result =
+    await findSimilarQuestionsByQuestionHash({
+      questionHash,
+      threshold: searchThreshold,
+      k,
+    });
 
   return {
     data: result.similarQuestions,
