@@ -21,3 +21,6 @@ router.post(
   createAnswerValidation, // Validate the request data
   createAnswerController // Handle the request and create the answer
 );
+
+// Export the router so it can be used in another file
+export default router;
