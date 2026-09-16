@@ -18,3 +18,5 @@ export const createAnswerValidation = [
         .withMessage("Question ID must be a positive integer")
                 // Convert questionId from a string to an integer
         .toInt(),
+    // Validate the "content" field from the request body
+    body("content")
