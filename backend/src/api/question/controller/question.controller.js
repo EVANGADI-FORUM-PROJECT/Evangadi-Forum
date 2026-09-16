@@ -26,6 +26,11 @@ export const getQuestionsController = async (req, res, next) => {
     };
     // Delegate to the service which builds and executes the SQL query
     const result = await getQuestionsService(filters);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Questions fetched successfully",
+      ...result,
+    });
   } catch (error) {
     next(error);
   }
