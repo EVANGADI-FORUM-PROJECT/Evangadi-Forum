@@ -30,7 +30,6 @@ export const getQuestionsValidation = [
         .optional() // means search is not mandatory if not provided
         .isString()
         .withMessage("Search query must be a string")
-    // ?mine expects a boolean-like value ("true" / "false") to filter own questions
         .trim(),
     // ?mine expects a boolean-like value ("true" / "false") to filter own questions
     query("mine")
