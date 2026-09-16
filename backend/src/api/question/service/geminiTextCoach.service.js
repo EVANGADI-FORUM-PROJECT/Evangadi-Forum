@@ -48,7 +48,6 @@ export function parseJsonObjectGeminiText(text) {
 //POST /api/questions/draft-coach
 // Create and export an asynchronous service function for generating question-draft coaching tips
 export const generateQuestionDraftCoachService = async ({ title, content }) => {
-
   // Create the prompt that will be sent to Gemini
   // It includes the learner's question title and question body
   const userPrompt = `you help learners write clearer technical forum posts.
@@ -78,21 +77,11 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
     // The response should only provide helpful checklist-style suggestions
     - do not claim the question is "correct" or grade homework; give constructive checklist-style tips only.`;
 
+  // Start a try block so we can safely handle errors
   try {
+    // Send the userPrompt to Gemini and wait for the JSON text response
     const raw = await fetchGeminiJsonTextResponse(userPrompt);
-    const parsed = parseJsonObjectGeminiText(raw);
-    let tips = Array.isArray(parsed?.tips)
-      ? parsed.tips
-          .filter((t) => typeof t === "string" && t.trim())
-          .map((t) => t.trim())
-      : [];
-    tips = tips.slice(0, 5);
-    if (tips.length === 0) {
-      tips = [
-        "Add any error message or exact behavior you see.",
-        "say what you already tried and what you expected instead.",
-      ];
-    }
+    
     return { tips };
   } catch (error) {
     console.error("generateQuestionDraftCoachService", error);
@@ -100,7 +89,7 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
       "AI draft sugesstions are temporarily unavailable. please try again later.",
     );
   }
-};
+};;
 /* i got :
 {
     "success": true,
