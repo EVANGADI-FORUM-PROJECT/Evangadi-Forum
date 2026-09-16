@@ -438,7 +438,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
 
   // ! Getting the question ID from the hash
   //first get the questionHash's q_id then get the embedding from q_vectors table by using q_id
-  let questionId;
+let questionId;
   try {
     let sql = `SELECT question_id FROM questions WHERE question_Hash = ? `;
     const rows = await safeExecute(sql, [questionHash]);
@@ -462,7 +462,6 @@ export const findSimilarQuestionsByQuestionHash = async ({
     console.error("============");
     throw error;
   }
-
   // ! Get the source embedding
   let sourceEmbedding;
   try {
