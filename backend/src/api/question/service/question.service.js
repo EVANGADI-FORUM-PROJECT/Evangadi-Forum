@@ -398,7 +398,11 @@ export const assessAnswerAgainstQuestionsService = async ({
       typeof noteRaw === "string" && noteRaw.trim()
         ? noteRaw.trim().slice(0, 280)
         : "Could not summarize fit; treat this as partial match.";
-    return { level, note };
+    // Return the final AI evaluation result.
+    return {
+      level,
+      note,
+    };
   } catch (error) {
     console.error("assessAnswerAgainstQuestionService:", error);
     throw new ServiceUnavailableError(
