@@ -393,11 +393,11 @@ export const assessAnswerAgainstQuestionsService = async ({
         ? levelRaw
         : "partial";
 
-    //if it hallucinates and gives other thing than these three values, make it partial by default
+    //Clean and limit the explanation returned by Gemini.
     const note =
       typeof noteRaw === "string" && noteRaw.trim()
         ? noteRaw.trim().slice(0, 280)
-        : "could not summarize fit; trat this as partial match.";
+        : "Could not summarize fit; treat this as partial match.";
     return { level, note };
   } catch (error) {
     console.error("assessAnswerAgainstQuestionService:", error);
