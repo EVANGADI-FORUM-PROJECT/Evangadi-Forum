@@ -390,6 +390,7 @@ export const assessAnswerAgainstQuestionsService = async ({
     const parsed = parseJsonObjectGeminiText(raw);
     //Read the level returned by Gemini.
     const levelRaw = parsed?.level;
+    //Read the explanation returned by Gemini.
     const noteRaw = parsed?.note;
     const level =
       levelRaw === "strong" || levelRaw === "partial" || levelRaw === "weak"
