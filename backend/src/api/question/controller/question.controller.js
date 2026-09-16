@@ -24,6 +24,8 @@ export const getQuestionsController = async (req, res, next) => {
       mine: req.query.mine,
       userId: req.user.id,
     };
+    // Delegate to the service which builds and executes the SQL query
+    const result = await getQuestionsService(filters);
   } catch (error) {
     next(error);
   }
