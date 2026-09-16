@@ -370,13 +370,17 @@ export const assessAnswerAgainstQuestionsService = async ({
         QUESTION CONTENT: ${questionContent}
 
         ANSWER DRAFT: ${answerText}
+ Reply with ONLY valid JSON, exactly this shape:
+        {
+            "level": "strong"|"partial"|"weak",
+            "note": "one short sentence"
+        }
 
-    Reply with ONLY valid JSON(no markdown forces), exactly this shape: {
-    "level":"strong"|"partial"|"weak", 
-    "note":"one short sentence"}
-    RULES: 
-    - level :"strong" if the draft clearly engages with the question; "partial" if somewhat related but missing key parts of the ask; "weak" if mostly off-topic or too vague, 
-    - note: one sentence, plain language, no markdown, under 200 characters, frame as fit/relevance, not grading.
+        RULES:
+        - strong = clearly engages with the question.
+        - partial = related but missing key parts.
+        - weak = mostly off-topic or too vague.
+        - note = one short sentence about fit/relevance.
     `;
 
   try {
