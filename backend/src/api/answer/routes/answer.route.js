@@ -11,3 +11,13 @@ import { createAnswerValidation } from "../validation/answer.validation.js";
 const router = express.Router();
 // # Task: Create Answer [T-12]
 // POST: /api/answers
+
+// Define the endpoint for creating a new answer
+// HTTP Method: POST
+// Endpoint: /api/answers
+router.post(
+  "/",                    // Route path
+  authenticateUser,       // Check whether the user is authenticated
+  createAnswerValidation, // Validate the request data
+  createAnswerController // Handle the request and create the answer
+);
