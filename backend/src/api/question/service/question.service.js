@@ -388,6 +388,7 @@ export const assessAnswerAgainstQuestionsService = async ({
     const raw = await fetchGeminiJsonTextResponse(userPrompt);
     //Parse Gemini's JSON response.
     const parsed = parseJsonObjectGeminiText(raw);
+    //Read the level returned by Gemini.
     const levelRaw = parsed?.level;
     const noteRaw = parsed?.note;
     const level =
