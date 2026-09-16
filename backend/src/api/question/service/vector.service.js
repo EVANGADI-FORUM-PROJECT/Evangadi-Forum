@@ -554,7 +554,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
     } */
 
   // ! Fetch the actual questions with score of >= threshold & k
-const questionIds = topResults.map((result) => result.questionId); //questionIds = [2, 7, 4];
+  const questionIds = topResults.map((result) => result.questionId); //questionIds = [2, 7, 4];
   //console.log('questionIds:', questionIds);
 
   const placeholders = questionIds.map(() => "?").join(","); //placeholders = (?,?,?)
@@ -631,7 +631,7 @@ const questionIds = topResults.map((result) => result.questionId); //questionIds
   }
 
   // ! map db questions
-  //as we see the score is in js and the question info from db so lets combine both using the score from js to the question info from db using the questionId as the key : it results in
+//as we see the score is in js and the question info from db so lets combine both using the score from js to the question info from db using the questionId as the key : it results in
   const questionMap = {};
 
   rows.forEach((row) => {
@@ -670,7 +670,6 @@ const questionIds = topResults.map((result) => result.questionId); //questionIds
         ...
     }
 };*/
-
   // ! filter  questions by topResults
   const similarQuestions = topResults
     .filter(
