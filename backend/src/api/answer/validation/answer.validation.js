@@ -47,3 +47,11 @@ export const getAnswerValidation = [
     // Validate the "questionId" query parameter
     // Example: /api/answers?questionId=5
     query("questionId")
+            // Make sure questionId is provided
+        .notEmpty()
+
+        // Error message if questionId is missing
+        .withMessage("Question ID is required")
+
+        // Make sure questionId is an integer
+        .isInt()
