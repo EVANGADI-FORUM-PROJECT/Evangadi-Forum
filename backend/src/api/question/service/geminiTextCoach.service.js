@@ -97,7 +97,13 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
         // Remove unnecessary spaces from the beginning and end of each tip
         .map((t) => t.trim())
 
+ // If parsed.tips is not an array, use an empty array
+    : [];
 
+  // Keep only the first 5 tips
+  // This prevents Gemini from returning more than 5 tips
+  tips = tips.slice(0, 5);
+  
 
 
     return { tips };
