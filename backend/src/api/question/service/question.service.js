@@ -146,6 +146,7 @@ export const getQuestionsService = async (filters) => {
     // Build WHERE clause + bound params from the incoming filters
     const { whereClause, params } = buildQuestionFilters(filters);
 
+    // SQL query: joins users for author info and LEFT JOINs answers to count responses
     const listSql = `SELECT q.question_id AS id, 
     q.question_hash AS questionHash,
     q.title, 
