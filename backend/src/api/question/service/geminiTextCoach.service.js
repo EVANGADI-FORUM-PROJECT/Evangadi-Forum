@@ -31,6 +31,9 @@ export async function fetchGeminiJsonTextResponse(userPrompt) {
 export function parseJsonObjectGeminiText(text) {
  // Start a try block to test whether the Gemini response is valid JSON
   try {
+      // Convert the text string into a JavaScript object using JSON.parse()
+    return JSON.parse(text);
+
 
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
