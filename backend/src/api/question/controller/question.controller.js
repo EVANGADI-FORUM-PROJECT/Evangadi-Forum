@@ -79,7 +79,19 @@ export const getQuestionsController = async (req, res, next) => {
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
-
+export const generateQuestionDraftCoachController = async (req, res, next) => {
+  try {
+    const { title, content } = req.body;
+    const data = await generateQuestionDraftCoachService({ title, content });
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Draft suggestions Generated.",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 // ! =========================================
 
 // # Task: Find Similar Questions (T-11)
