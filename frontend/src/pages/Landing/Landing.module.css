@@ -677,3 +677,25 @@
   color: var(--text-placeholder);
   user-select: none;
 }
+
+@media(max-width:900px){
+  .landing__headerInner{padding:.75rem 1rem;}
+  .landing__nav{order:3;flex:1 1 100%;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;}
+  .landing__nav::-webkit-scrollbar{display:none;}
+  .landing__navLink{white-space:nowrap;padding:.45rem .6rem;font-size:.78rem;}
+  .landing__hero{padding:var(--spacing-xl) 0 var(--spacing-2xl);}
+  .landing__heroInner{padding:0 1rem;gap:var(--spacing-xl);}
+}
+@media(max-width:560px){
+  .landing__headerInner{padding:.65rem .75rem;gap:.5rem;}
+  .landing__brand{gap:.6rem;max-width:calc(100% - 7rem);}
+  .landing__brandMark{width:2.1rem;height:2.1rem;}
+  .landing__brandLine{display:none;}
+  .landing__brandName{font-size:.9rem;}
+  .landing__headerActions{margin-left:auto;}
+  .landing__btnPrimary,.landing__btnGhost{padding:.45rem .6rem;font-size:.72rem;}
+  .landing__btnPrimary svg{display:none;}
+  .landing__sectionInner{padding-left:.75rem;padding-right:.75rem;}
+  .landing__heroInner{padding:0 .75rem;}
+  .landing__hero{padding:1.5rem 0 2rem;}
+}
