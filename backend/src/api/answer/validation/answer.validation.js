@@ -10,3 +10,5 @@ export const createAnswerValidation = [
     body("questionId")
         // Make sure questionId is not empty
         .notEmpty()
+                // Error message if questionId is missing
+        .withMessage("Question ID is required")
