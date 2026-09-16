@@ -53,12 +53,14 @@ router.get(
   searchQuestionsSemanticValidation,
   searchQuestionsSemanticController,
 );
-//===================================
 
-// # Task: AI Question Draft Coach
 //POST /api/questions/draft-coach
-
-//=================================
+router.post(
+  "/draft-coach",
+  authenticateUser,
+  generateQuestionDraftCoachValidation,
+  generateQuestionDraftCoachController,
+);
 
 // # Task: Get Single Question Details[T-10]
 // GET /api/questions/:questionHash    >>>> Route definition for fetching a specific question by its unique hash
