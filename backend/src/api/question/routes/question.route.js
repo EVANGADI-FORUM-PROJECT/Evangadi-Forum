@@ -60,6 +60,8 @@ router.get(
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
 
+router.post("/:questionHash/answer-fit", authenticateUser, assessAnswerAgainstQuestionsValidation, assessAnswerAgainstQuestionController);
+
 // # Task: Find Similar Questions(t-11)
 // GET /api/questions/:questionHash/similar
 //this request will be send by front end app not by user to show similar questions the user watching the question deatils

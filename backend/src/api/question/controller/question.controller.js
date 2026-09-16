@@ -97,13 +97,22 @@ export const getSingleQuestionController = async (
 // ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
-// ZELEKE: Call the core AI answer-fit evaluation service.
+
 const result = await assessAnswerAgainstQuestionsService({
   questionTitle: question.title,
   questionContent: question.content,
   answerText,
 });
 
+    res.status(StatusCodes.OK).json({
+			success: true,
+			message: 'Answer assessed successfully',
+			...result,
+		});
+    }catch(error){
+		next(error);
+	}
+}
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
