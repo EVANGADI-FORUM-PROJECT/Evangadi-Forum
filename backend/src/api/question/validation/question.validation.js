@@ -24,12 +24,15 @@ export const createQuestionValidation = [
 ]
 
 //[T-10]
+// T-10: Validates optional ?search and ?mine query params for the list questions endpoint
 export const getQuestionsValidation = [
     query("search")
         .optional() // means search is not mandatory if not provided
         .isString()
         .withMessage("Search query must be a string")
+    // ?mine expects a boolean-like value ("true" / "false") to filter own questions
         .trim(),
+    // ?mine expects a boolean-like value ("true" / "false") to filter own questions
     query("mine")
         .optional()
         .isBoolean() // is it boolean 
