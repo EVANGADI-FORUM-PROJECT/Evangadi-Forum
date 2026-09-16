@@ -155,5 +155,13 @@ export const assessAnswerFitValidation = [
     .matches(HASH_REGEX)
     .withMessage('questionHash must be a 16-character hex string'),
 
+  //  Validate that an answer was provided.
+  body('answerText')
+    .notEmpty()
+    .withMessage('answerText is required')
+
+
+
+  //  Send validation errors to the common error handler.
   validationErrorHandler,
 ];
