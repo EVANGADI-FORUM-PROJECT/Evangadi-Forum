@@ -171,6 +171,7 @@ export const getQuestionsService = async (filters) => {
     const rows = await safeExecute(listSql, params);
 
     return {
+        // Transform each DB row into the API response shape (nested author object)
         data: rows.map(question => ({
             id: question.id,
             questionHash: question.questionHash,
