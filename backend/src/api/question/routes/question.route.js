@@ -45,7 +45,7 @@ const router = express.Router();
 //=================================
 
 // # Task: Get Single Question Details[T-10]
-// GET /api/questions/:questionHash
+// GET /api/questions/:questionHash    >>>> Route definition for fetching a specific question by its unique hash
 router.get(
   "/:questionHash",
   authenticateUser,
