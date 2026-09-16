@@ -27,17 +27,9 @@ export async function fetchGeminiJsonTextResponse(userPrompt) {
   const text = response?.text;
   return typeof text === "string" ? text : "";
 }
-
+// Create and export a function that converts Gemini's text response into a JavaScript object
 export function parseJsonObjectGeminiText(text) {
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("Failed to parse Gemini response as JSON");
-    console.error("Gemini text:", text);
 
-    throw new Error("Gemini returned invalid JSON");
-  }
-}
 
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
