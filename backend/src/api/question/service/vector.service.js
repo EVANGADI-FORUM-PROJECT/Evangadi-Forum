@@ -631,7 +631,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
   }
 
   // ! map db questions
-//as we see the score is in js and the question info from db so lets combine both using the score from js to the question info from db using the questionId as the key : it results in
+  //as we see the score is in js and the question info from db so lets combine both using the score from js to the question info from db using the questionId as the key : it results in
   const questionMap = {};
 
   rows.forEach((row) => {
@@ -671,7 +671,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
     }
 };*/
   // ! filter  questions by topResults
-  const similarQuestions = topResults
+const similarQuestions = topResults
     .filter(
       (result) => questionMap[String(result.questionId)], //Does questionMap have questionId 2? YES → keep it so we are checking if db actually returned detailes for each questionId of topResults ena this filter keeps only the actual rresults that successfully retrived
       //we have [{ questionId: 2, score: 0.94 },{ questionId: 4, score: 0.86 }] lets say questionId: 7 isnt retrived
@@ -708,7 +708,6 @@ export const findSimilarQuestionsByQuestionHash = async ({
 
 
 */
-
   // ! return the filtered similar questions
   return {
     similarQuestions, //its array of objects
