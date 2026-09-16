@@ -75,6 +75,15 @@ export const getQuestionsController = async (req, res, next) => {
 // ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
+export const assessAnswerAgainstQuestionController = async (req, res, next)=>{
+	try{
+        const {questionHash}= req.params;
+        const {answerText} = req.body;
+        const {question}= await getSingleQuestionService({
+            questionHash,
+            includeAnswers: false 
+        });
+        
 
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
