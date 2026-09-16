@@ -20,9 +20,8 @@ export async function fetchGeminiJsonTextResponse(userPrompt) {
     config: {
       maxOutputTokens: 300,
     },
-//   max out put Token
-
-});
+    //   max out put Token
+  });
   console.log(response);
 
   const text = response?.text;
