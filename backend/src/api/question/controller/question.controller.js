@@ -89,6 +89,7 @@ const result= await assessAnswerAgainstQuestionsService({
 			questionContent: question.content,
 			answerText,
 		});
+    console.log('assessAnswerAgainstQuestionsService', result);
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
