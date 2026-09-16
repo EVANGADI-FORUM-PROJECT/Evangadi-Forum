@@ -504,12 +504,12 @@ export const findSimilarQuestionsByQuestionHash = async ({
   }
 
   // ! exculde source question
-const otherEmbeddings = allStoredEmbeddings.filter(
+  const otherEmbeddings = allStoredEmbeddings.filter(
     (singleEmbedding) => singleEmbedding.questionId !== questionId,
   );
 
   // ! calculate similarities
-  const similarities = [];
+const similarities = [];
 
   for (const stored of otherEmbeddings) {
     try {
@@ -533,7 +533,6 @@ const otherEmbeddings = allStoredEmbeddings.filter(
       continue;
     }
   }
-
   // ! sort scores
   similarities.sort((a, b) => b.score - a.score); //  similarities = [{ questionId: 2, score: 0.94 },{ questionId: 7, score: 0.91 },{ questionId: 4, score: 0.86 },{ questionId: 9, score: 0.81 },{ questionId: 3, score: 0.78 }];
 
