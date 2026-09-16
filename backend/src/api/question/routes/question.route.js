@@ -46,9 +46,14 @@ const router = express.Router();
 
 // # Task: Get Single Question Details[T-10]
 // GET /api/questions/:questionHash
+router.get(
+  "/:questionHash",
+  authenticateUser,
+  getSingleQuestionValidation,
+  getSingleQuestionController,
+);
 
 //==========================================
-
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
 
