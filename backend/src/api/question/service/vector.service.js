@@ -709,10 +709,10 @@ const similarQuestions = topResults
 
 */
   // ! return the filtered similar questions
-  return {
+ return {
     similarQuestions, //its array of objects
     k: normalizedK,
     threshold: normalizedThreshold,
     questionHash,
   };
-};
+}; 
