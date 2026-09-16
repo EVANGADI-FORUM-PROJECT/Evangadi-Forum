@@ -18,7 +18,12 @@ import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.se
 //GET /api/questions
 export const getQuestionsController = async (req, res, next) => {
   try {
-    // TODO:read filters, call service, send response
+    // GET requests have no body, so filters come via query params
+    const filters = {
+      search: req.query.search,
+      mine: req.query.mine,
+      userId: req.user.id,
+    };
   } catch (error) {
     next(error);
   }
