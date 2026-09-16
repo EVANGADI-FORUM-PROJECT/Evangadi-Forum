@@ -463,7 +463,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
     throw error;
   }
   // ! Get the source embedding
-let sourceEmbedding;
+  let sourceEmbedding;
   try {
     let sql = `SELECT embedding FROM question_vectors WHERE question_id = ? AND status = ?`;
 
@@ -494,7 +494,7 @@ let sourceEmbedding;
     throw error;
   }
   // ! Retrieve all embeddings
-  const allStoredEmbeddings = await retrieveReadyEmbeddings(); //array of objects
+const allStoredEmbeddings = await retrieveReadyEmbeddings(); //array of objects
 
   // console.log("all retrived embdikngs:", allStoredEmbeddings);
   // console.log("is allStoredEmbeddings is an array:", Array.isArray(allStoredEmbeddings));
