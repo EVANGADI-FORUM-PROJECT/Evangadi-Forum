@@ -83,7 +83,7 @@ export const assessAnswerAgainstQuestionController = async (req, res, next)=>{
             questionHash,
             includeAnswers: false 
         });
-        
+        //tocheck user's draft  answer is correct by ai we need the question title, question content, and the users draft-answer thats goona be checked by ai
 
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
