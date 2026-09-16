@@ -120,6 +120,7 @@ const buildQuestionFilters = filters => {
     }
 
     if (conditions.length === 0) {
+        // When no filters were provided, return an empty WHERE clause so the query selects all rows
         return { whereClause: '', params };// to prevent WHERE if no condioons cause we use where to set cdn for our selection , instead if no conditions just select all by removing the where clause
     }
 
