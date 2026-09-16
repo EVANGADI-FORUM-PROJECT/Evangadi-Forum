@@ -12,3 +12,5 @@ export const createAnswerValidation = [
         .notEmpty()
                 // Error message if questionId is missing
         .withMessage("Question ID is required")
+                // Make sure questionId is an integer greater than or equal to 1
+        .isInt({ min: 1 })
