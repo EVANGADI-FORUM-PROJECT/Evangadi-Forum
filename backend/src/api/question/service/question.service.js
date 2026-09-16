@@ -359,10 +359,17 @@ export const assessAnswerAgainstQuestionsService = async ({
   answerText,
 }) => {
   //we are saying for ai that we gonna give u the  draft answer , title of the question and content of the question so do userPrompt/system-prompt for the answer to check the relevance and completeness of the answer not the factuality of the answer.
-  const userPrompt = `you review whether a forum draft addresses the QUESTION(relevance and completeness of engagement - not whether the answer is factually correct),
-    QUESTION TITLE: ${questionTitle}
-    QUESTION CONTENT: ${questionContent}
-    ANSWER DRAFT: ${answerText}
+  // ZELEKE: Build the prompt containing the question and answer draft.
+  const userPrompt = `
+        You review whether a forum draft addresses the QUESTION
+        (relevance and completeness of engagement - not whether
+        the answer is factually correct).
+
+        QUESTION TITLE: ${questionTitle}
+
+        QUESTION CONTENT: ${questionContent}
+
+        ANSWER DRAFT: ${answerText}
 
     Reply with ONLY valid JSON(no markdown forces), exactly this shape: {
     "level":"strong"|"partial"|"weak", 
