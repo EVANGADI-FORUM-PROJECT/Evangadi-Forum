@@ -90,8 +90,15 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
     // Otherwise, use an empty array
     let tips = Array.isArray(parsed?.tips);
 
+  // Keep only tips that are strings and are not empty
+    ? parsed.tips
+        .filter((t) => typeof t === "string" && t.trim())
 
-    
+        // Remove unnecessary spaces from the beginning and end of each tip
+        .map((t) => t.trim())
+
+
+
 
     return { tips };
   } catch (error) {
