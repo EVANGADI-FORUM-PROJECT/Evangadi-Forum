@@ -392,6 +392,8 @@ export const assessAnswerAgainstQuestionsService = async ({
     const levelRaw = parsed?.level;
     //Read the explanation returned by Gemini.
     const noteRaw = parsed?.note;
+    // Allow only the three expected evaluation levels.
+    // If Gemini returns another value, use "partial" as the default.
     const level =
       levelRaw === "strong" || levelRaw === "partial" || levelRaw === "weak"
         ? levelRaw
