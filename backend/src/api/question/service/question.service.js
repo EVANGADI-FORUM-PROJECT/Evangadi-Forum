@@ -412,6 +412,7 @@ export const assessAnswerAgainstQuestionsService = async ({
   } catch (error) {
     //Log errors produced during AI evaluation.
     console.error("assessAnswerAgainstQuestionService:", error);
+    // Return a service-unavailable error when Gemini fails.
     throw new ServiceUnavailableError(
       "AI fit check is temporarily unavailable, please try again later",
     );
