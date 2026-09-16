@@ -71,3 +71,6 @@ export const getAnswerValidation = [
 
         // Error message if another value is provided
         .withMessage("sortBy must be either newest or oldest"),
+    // Check whether any validation errors occurred
+    validationErrorHandler
+];
