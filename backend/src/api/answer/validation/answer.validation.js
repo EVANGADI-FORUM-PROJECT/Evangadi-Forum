@@ -55,3 +55,8 @@ export const getAnswerValidation = [
 
         // Make sure questionId is an integer
         .isInt()
+                // Error message if questionId is not a number
+        .withMessage("Question ID must be a number")
+
+        // Convert questionId from a string to an integer
+        .toInt(),
