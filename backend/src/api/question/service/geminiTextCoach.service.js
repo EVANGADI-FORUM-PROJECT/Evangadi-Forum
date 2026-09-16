@@ -37,6 +37,9 @@ export function parseJsonObjectGeminiText(text) {
   } catch (error) {
       // Show an error message in the console
     console.error("Failed to parse Gemini response as JSON");
+     // Show the original Gemini response to help with debugging
+    console.error("Gemini text:", text);
+
 
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
