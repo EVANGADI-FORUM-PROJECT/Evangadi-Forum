@@ -494,7 +494,7 @@ export const findSimilarQuestionsByQuestionHash = async ({
     throw error;
   }
   // ! Retrieve all embeddings
-const allStoredEmbeddings = await retrieveReadyEmbeddings(); //array of objects
+  const allStoredEmbeddings = await retrieveReadyEmbeddings(); //array of objects
 
   // console.log("all retrived embdikngs:", allStoredEmbeddings);
   // console.log("is allStoredEmbeddings is an array:", Array.isArray(allStoredEmbeddings));
@@ -504,7 +504,7 @@ const allStoredEmbeddings = await retrieveReadyEmbeddings(); //array of objects
   }
 
   // ! exculde source question
-  const otherEmbeddings = allStoredEmbeddings.filter(
+const otherEmbeddings = allStoredEmbeddings.filter(
     (singleEmbedding) => singleEmbedding.questionId !== questionId,
   );
 
