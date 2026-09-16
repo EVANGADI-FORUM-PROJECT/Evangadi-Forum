@@ -97,6 +97,13 @@ export const createQuestionWithVectorService = async payload => {
 // ! =======================================
 //used inside // * getQuestionsService[T-10], 
 //it builds the SQL WHERE clause dynamically based on filters passed
+/**
+ * T-10: Dynamic WHERE clause builder for the list questions query.
+ * Supports two optional filters:
+ *   - search: matches `?search` against question title OR content
+ *   - mine:   matches `?mine=true` to return only the current user's rows
+ * Returns { whereClause, params } — both ready to pass to safeExecute.
+ */
 const buildQuestionFilters = filters => {
     const conditions = [];
     const params = [];
