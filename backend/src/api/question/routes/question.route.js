@@ -22,24 +22,37 @@ import {
 
 const router = express.Router();
 
-// # Task: Create Question & Auto-Embed[T-9]
 // POST /api/questions
-router.post("/", authenticateUser, createQuestionValidation, createQuestionController);
-//=================================================
-// # Task: List Questions [T-10]
+router.post(
+  "/",
+  authenticateUser,
+  createQuestionValidation,
+  createQuestionController,
+);
+
 // GET /api/questions : used for fetching all questions and again for filtering the current user questions
 // Middleware: authenticateUser -> getQuestionsValidation -> getQuestionsController
 // Query params: ?search (keyword match on title/content), ?mine=true (only own questions)
-router.get("/", authenticateUser, getQuestionsValidation, getQuestionsController);
+router.get(
+  "/",
+  authenticateUser,
+  getQuestionsValidation,
+  getQuestionsController,
+);
 
 //==================================
 /**
  * @param GET /api/questions/search
  * @desc semantic search for questions using vector embeddings based on a text query
  */
-// # Task: Semantic Search Questions[T-11]
-//GET /api/questions/search
 
+//GET /api/questions/search
+router.get(
+  "/search",
+  authenticateUser,
+  searchQuestionsSemanticValidation,
+  searchQuestionsSemanticController,
+);
 //===================================
 
 // # Task: AI Question Draft Coach
@@ -60,7 +73,12 @@ router.get(
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
 
-router.post("/:questionHash/answer-fit", authenticateUser, assessAnswerAgainstQuestionsValidation, assessAnswerAgainstQuestionController);
+router.post(
+  "/:questionHash/answer-fit",
+  authenticateUser,
+  assessAnswerAgainstQuestionsValidation,
+  assessAnswerAgainstQuestionController,
+);
 
 // # Task: Find Similar Questions(t-11)
 // GET /api/questions/:questionHash/similar
