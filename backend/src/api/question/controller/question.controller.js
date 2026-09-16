@@ -48,7 +48,8 @@ export const createQuestionController = async (req, res, next) => {
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
-
+export const generateQuestionDraftCoachController = async (req, res, next)=>{
+    try {
 // ! =========================================
 
 // # Task: Find Similar Questions (T-11)
