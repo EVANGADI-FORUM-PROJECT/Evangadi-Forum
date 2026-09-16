@@ -16,3 +16,5 @@ export const createAnswerValidation = [
         .isInt({ min: 1 })
                 // Error message if questionId is not a positive integer
         .withMessage("Question ID must be a positive integer")
+                // Convert questionId from a string to an integer
+        .toInt(),
