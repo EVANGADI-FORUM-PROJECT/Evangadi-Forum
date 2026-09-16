@@ -7,6 +7,7 @@ import { createAnswerController } from "../controller/answer.controller.js";
 // Import validation middleware for validating the answer request
 import { createAnswerValidation } from "../validation/answer.validation.js";
 
+// Create a new Express router instance
 const router = express.Router();
 // # Task: Create Answer [T-12]
 // POST: /api/answers
