@@ -14,21 +14,21 @@ import { generateQuestionDraftCoachService } from "../service/geminiTextCoach.se
 // POST /api/questions
 export const createQuestionController = async (req, res, next) => {
   try {
-    const {title, content} = req.body;
-        const result= await createQuestionWithVectorService({
-            userId: req.user.id, 
-            title,
-            content
-            })
-        return res.status(StatusCodes.CREATED).json({
-            success: true,
-            message: "Question created successfully",
-            data: result.question,
-        })
+    const { title, content } = req.body;
+    const result = await createQuestionWithVectorService({
+      userId: req.user.id,
+      title,
+      content,
+    });
+    return res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "Question created successfully",
+      data: result.question,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 // ! ===============================================
 // # Task: List Questions[T-10]
 //GET /api/questions
@@ -71,25 +71,38 @@ export const getQuestionsController = async (req, res, next) => {
 // ! ===========================================
 // # Task: Get Single Question Details[T-10]
 // GET /api/questions/:questionHash
+export const getSingleQuestionController = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const { questionHash } = req.params;
+    //console.log("questionHash: ",questionHash);
+
+    const result = await getSingleQuestionService(
+      { questionHash },
+    );
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Question fetched successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
-export const assessAnswerAgainstQuestionController = async (req, res, next)=>{
-	try{
-        const {questionHash}= req.params;
-        const {answerText} = req.body;
-        const {question}= await getSingleQuestionService({
-            questionHash,
-            includeAnswers: false 
-        });
-        //tocheck user's draft  answer is correct by ai we need the question title, question content, and the users draft-answer thats goona be checked by ai
-const result= await assessAnswerAgainstQuestionsService({
-			questionTitle: question.title,
-			questionContent: question.content,
-			answerText,
-		});
-    console.log('assessAnswerAgainstQuestionsService', result);
+
+const result = await assessAnswerAgainstQuestionsService({
+  questionTitle: question.title,
+  questionContent: question.content,
+  answerText,
+});
 
     res.status(StatusCodes.OK).json({
 			success: true,
