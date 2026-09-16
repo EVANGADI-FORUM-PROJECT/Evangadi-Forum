@@ -41,3 +41,9 @@ export const createAnswerValidation = [
     // This checks whether any validation errors occurred above
     validationErrorHandler
 ];
+// Validation rules for getting answers
+export const getAnswerValidation = [
+
+    // Validate the "questionId" query parameter
+    // Example: /api/answers?questionId=5
+    query("questionId")
