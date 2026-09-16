@@ -143,6 +143,7 @@ export const getQuestionsService = async (filters) => {
 
 
 
+    // Build WHERE clause + bound params from the incoming filters
     const { whereClause, params } = buildQuestionFilters(filters);
 
     const listSql = `SELECT q.question_id AS id, 
