@@ -103,7 +103,17 @@ export const generateQuestionDraftCoachService = async ({ title, content }) => {
   // Keep only the first 5 tips
   // This prevents Gemini from returning more than 5 tips
   tips = tips.slice(0, 5);
-  
+   // Check if there are no valid tips after cleaning the response
+  if (tips.length === 0) {
+
+    // Provide a default tip when Gemini doesn't return useful tips
+    tips = [
+      "Add any error message or exact behavior you see.",
+
+      // Provide another default tip
+      "Say what you already tried and what you expected instead.",
+    ];
+  } 
 
 
     return { tips };
