@@ -5,23 +5,24 @@ import { findSimilarQuestionsByQuestionHash, findSimilarQuestionsByText, generat
 import {fetchGeminiJsonTextResponse, parseJsonObjectGeminiText}from"./geminiTextCoach.service.js"
 
 
-const generateQuestionHash = () => crypto.randomBytes(8).toString('hex') //  gives unique string for every question 
+const generateQuestionHash = () => crypto.randomBytes(8).toString('hex')  
 
 // # Task: Create Question & Auto-Embed[T-9]
 // POST /api/questions
 export const createQuestionWithVectorService = async payload => {
-    //extract payload fields from payload authentication
-    const { userId, title, content } = payload; //the asker, the question title and content
+    
+    const { userId, title, content } = payload; 
 
-    //prepare the sql statement for inserting a new question 
+    
     const insertQuestionsql = 'INSERT INTO QUESTIONS (question_hash, user_id, title, content) VALUES (?, ?, ?, ?)';
 
-    //generate a unique hash for the question
-    const questionHash = generateQuestionHash();// if itsnt unique db throw error
+
+    const questionHash = generateQuestionHash();
+
     let questionResult;
 
     try {
-        //execute the insertion quesrt safely
+        
         questionResult = await safeExecute(insertQuestionsql, [
             questionHash,
             userId,
@@ -30,19 +31,18 @@ export const createQuestionWithVectorService = async payload => {
         ]);
 
     } catch (error) {
-        //handle specific foreign key constraint error for non-existent user(we cant insert if user doest exist in db first)
+        
         if (error.code === 'ER_NO_REFERENCED_ROW_2') {
             throw new BadRequestError("user does not exist");
-        } // to be safe because foregin-key constriant that doesnt let to insert duplicate userid, if user is deleted it also gets deleted because its foreign key constriant (on-delete-cascade)
-        //re-throw any other unexpected errors
+        } 
         throw error
 
     }
 
-    //retrive the auto-generated ID of the question
+   
     const questionId = questionResult.insertId;
 
-    // construct the result object representing the creted question
+    
     const creationResult = {
         id: questionId,
         questionHash,
@@ -53,19 +53,17 @@ export const createQuestionWithVectorService = async payload => {
 
     const sourceText = normalizeQuestionText({
         title: payload.title
-    });//to get more optimized embedding
+    });
 
-    // # after noramlizing the question lets do the embedding
+    
     try {
         const embeddingResult = await generatingQuestionEmbedding(sourceText, { questionId: creationResult.id });
 
-        //validate that a valid embedding was returned fromthe api cause we may finished our free  tokens
+    
         if (!embeddingResult || !embeddingResult.embedding || !embeddingResult.embedding.length === 0) {
             throw new Error('gemini Api did not return valid embedding')
         }
-        // ! if embedding fails go to catch block to insert empty array, so that later we can try again to generate the embedding
-
-        //if embedding is done successfully, store the generated vector embedding in the database with a 'ready' status
+       
         await storeQuestionVector({
             questionId: creationResult.id,
             sourceText,
@@ -78,9 +76,7 @@ export const createQuestionWithVectorService = async payload => {
         console.error('question: questioncreation')
         console.error('error', error);
         console.error('=====================')
-        //we will not throw error so that user can still see his question
-        // but the question will not be searchable by vector search
-        // so it will not be recommended to other users
+       
 
         await storeQuestionVector({
             questionId: creationResult.id,
@@ -90,8 +86,7 @@ export const createQuestionWithVectorService = async payload => {
         }).catch((e) => console.error("failed to save failed status:", e))
     }
 
-    return { question: creationResult }; // we send it to controller  for frontend
-
+    return { question: creationResult }; 
 }
 
 // ! =======================================

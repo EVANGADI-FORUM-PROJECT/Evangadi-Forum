@@ -18,12 +18,11 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
 
 
 function normalizeWhiteSpace(value) {
-    return value.replace(/\s+/g, ' ').trim();//replace multiple spaces with single space and trim leading and trailing spaces 
+    return value.replace(/\s+/g, ' ').trim();
 }
 
 export function normalizeQuestionText({ title }) {
-    return normalizeWhiteSpace(`${title || ''}`.normalize('NFKC').toLowerCase());//If title has a truthy value → use title; Otherwise → use '' (empty string)
-    //normalize is js built-in method. Unicode NFKC (Normalization Form KC) is a text standardization process that applies compatibility decomposition followed by canonical composition
+    return normalizeWhiteSpace(`${title || ''}`.normalize('NFKC').toLowerCase());
 }
 
 
@@ -76,12 +75,12 @@ export async function generatingQuestionEmbedding(sourceText, options = {}) {
             }
         });
 
-        const values = response?.embeddings?.[0]?.values;//the array of 768 floating point values representing the question
+        const values = response?.embeddings?.[0]?.values;
 
         if (!Array.isArray(values) || values.length == 0) {
             throw new Error('invalid embedding returned by Gemini API');
         }
-        return { embedding: values } // its a promise so we have to await it
+        return { embedding: values } 
     } catch (error) {
         console.error("error:", error);
         console.error("=================")
@@ -91,17 +90,17 @@ export async function generatingQuestionEmbedding(sourceText, options = {}) {
 
 //====================================
 export async function storeQuestionVector(payload) {
-    //extract payload fields from payload
+    
     const { questionId, sourceText, embedding, status = 'ready' } = payload;
 
-    //handle empty embeddigs for failed status
+  
     if (status === 'failed' || !embedding || embedding.length === 0) {
         const sql = `INSERT INTO question_vectors(question_id, source_text,embedding, status) VALUES (?,?,?,?)
         ON DUPLICATE KEY UPDATE 
         source_text=VALUES(source_text),  
         embedding=VALUES(embedding), 
         status=VALUES(status), 
-        updated_at = CURRENT_TIMESTAMP`; // called mysql-upsert: means Try to insert a new row. If a row with the same unique key already exists, update that row instead cause in our first try if thw embedding fails we can try to generate it again (retry)
+        updated_at = CURRENT_TIMESTAMP`; 
 
         await safeExecute(sql, [
             questionId,
@@ -109,13 +108,11 @@ export async function storeQuestionVector(payload) {
             JSON.stringify([]),
             "failed"]);
         return
-    }// we are saying: If the embedding generation failed OR there is no embedding, save the question in the database with an empty embedding
-
-
+    }
     validateEmbedding(embedding);
-    // * const embeddingJson = JSON.stringify(embedding);//we dont need this line : MySQL treats the JSON column as a native data structure, and MySQL drivers automatically convert JavaScript objects and arrays into MySQL's internal JSON format.
+   
 
-    //  prepare the sql statement for inserting a new question vector
+    
     const insertVectorSql = `INSERT INTO QUESTION_VECTORS (question_id, source_text, embedding, status) VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE 
         source_text=VALUES(source_text),  
@@ -133,11 +130,11 @@ export async function storeQuestionVector(payload) {
             status
         ]);
     } catch (error) {
-        //handle specific foreign key constraint error for non-existent question
+        
         if (error.code === 'ER_NO_REFERENCED_ROW_2') {
             throw new BadRequestError("question does not exist");
         }
-        //re-throw any other unexpected errors
+        
         throw error;
     }
 }
