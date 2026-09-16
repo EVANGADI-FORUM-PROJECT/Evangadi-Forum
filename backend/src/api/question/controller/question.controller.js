@@ -90,6 +90,12 @@ const result= await assessAnswerAgainstQuestionsService({
 			answerText,
 		});
     console.log('assessAnswerAgainstQuestionsService', result);
+
+    res.status(StatusCodes.OK).json({
+			success: true,
+			message: 'Answer assessed successfully',
+			...result,
+		});
 // ! ===========================================
 // # Task: AI Question Draft Coach[T-17]
 //POST /api/questions/draft-coach
