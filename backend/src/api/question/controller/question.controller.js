@@ -36,6 +36,7 @@ export const getQuestionsController = async (req, res, next) => {
 
     const result = await getQuestionsService(filters);
 
+    // T-10: Return 200 OK with the question list wrapped in a standard envelope
     res.status(StatusCodes.OK).json({
       success: true,
       message: "Questions fetched successfully",
