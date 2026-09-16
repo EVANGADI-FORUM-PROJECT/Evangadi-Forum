@@ -384,6 +384,7 @@ export const assessAnswerAgainstQuestionsService = async ({
     `;
 
   try {
+    // ZELEKE: Send the evaluation prompt to Gemini.
     const raw = await fetchGeminiJsonTextResponse(userPrompt);
     const parsed = parseJsonObjectGeminiText(raw);
     const levelRaw = parsed?.level;
