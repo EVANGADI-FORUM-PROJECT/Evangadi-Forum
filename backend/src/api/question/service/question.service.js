@@ -133,15 +133,16 @@ const buildQuestionFilters = filters => {
  */
 //GET /api/questions
 export const getQuestionsService = async (filters) => {
-    const normalizedLimit = 100;
-    const sortColumn = 'q.created_at';
-    const normalizedSortOrder = 'DESC';
+    const resultLimit = 100;
+    // Query tuning: fixed cap of 100 rows, newest first
+    const orderColumn = 'q.created_at';
+    const orderDirection = 'DESC';
 
 
 
     const { whereClause, params } = buildQuestionFilters(filters);
 
-    const listSql = `SELECT q.question_id AS id, 
+    const questionsSql = `SELECT q.question_id AS id, 
     q.question_hash AS questionHash,
     q.title, 
     q.content,
@@ -156,14 +157,14 @@ export const getQuestionsService = async (filters) => {
     LEFT JOIN answers a ON a.question_id = q.question_id
     ${whereClause}
     GROUP BY q.question_id, u.user_id
-    ORDER BY ${sortColumn} ${normalizedSortOrder}
-    LIMIT ${normalizedLimit}
+    ORDER BY ${orderColumn} ${orderDirection}
+    LIMIT ${resultLimit}
     `// COUNT: counts how many answeres for that question are there; DISTINCT: is used to prevent duplicate answer IDs from being counted if joins later cause duplicated rows
     // GROUP BY: is needed because we are using an aggregate function COUNT() . it gives  one result per question/user combination and count the answers belonging to that question.
     //JOIN: connects the question to the user who created it. and its an inner join, so a question must have a matching user to appear in the result.
     //LEFT JOIN: ensures that a question appears in the results even if it has no answers (the count will be 0).    
 
-    const rows = await safeExecute(listSql, params);
+    const rows = await safeExecute(questionsSql, params);
 
     return {
         data: rows.map(question => ({
@@ -181,10 +182,10 @@ export const getQuestionsService = async (filters) => {
 
         })),
         meta: {
-            limit: normalizedLimit,
+            limit: resultLimit,
             total: rows.length,
             sortBy: "newest",
-            sortOrder: normalizedSortOrder,
+            sortOrder: orderDirection,
         },
     };
 };
