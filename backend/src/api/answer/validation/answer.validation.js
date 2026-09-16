@@ -22,3 +22,5 @@ export const createAnswerValidation = [
     body("content")
             // Make sure content is not empty
         .notEmpty()
+                // Error message if content is missing
+        .withMessage("Answer content is required")
