@@ -19,3 +19,6 @@ import MarkdownEditor from '../../components/MarkdownEditor/MarkdownEditor.jsx';
 
 // Import the question service used to communicate with the backend API 
 import { questionService } from '../../services/question/question.service.js';
+
+// Import CSS module styles for this component 
+import styles from './PostQuestion.module.css';
