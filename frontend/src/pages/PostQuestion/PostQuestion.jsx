@@ -28,3 +28,27 @@ const initialForm = {
     title: '', 
     content: '', 
 };
+/** 
+ * PostQuestion Component 
+ * This component allows a user to: 
+ * 1. Enter a question title. 
+ * 2. Write the question body using Markdown. 
+ * 3. Get AI-powered feedback on the question. 
+ * 4. Submit/publish the question. 
+ * 5. Navigate back or return to the dashboard after publishing. 
+ */ 
+export default function PostQuestion() { 
+    // React Router navigation function 
+    const navigate = useNavigate();
+    
+    // Store the question title and content 
+    const [formData, setFormData] = useState(initialForm); 
+    
+    // Track whether the question is currently being submitted 
+    const [isSubmitting, setIsSubmitting] = useState(false); 
+    
+    // Track whether the AI Draft Coach is generating feedback 
+    const [isCoaching, setIsCoaching] = useState(false); 
+    
+    // Store the feedback returned by the AI Draft Coach 
+    const [coachFeedback, setCoachFeedback] = useState(null);
