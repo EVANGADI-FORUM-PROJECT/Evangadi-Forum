@@ -39,6 +39,20 @@ export default function Layout() {
 
   return(
     <div className={`${styles.layout} ${sidebarOpen ? styles['layout--sidebarOpen'] : styles['layout--sidebarClosed']}`}>
+      <Sidebar isOpen={sidebarOpen} onClose={closeSidebarOnMobile} />
+      {!sidebarOpen && (
+        <button
+          type="button"
+          className={styles.sidebarShowButton}
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Show navigation"
+          title="Show navigation"
+        >
+          <Menu size={22} />
+        </button>
+      )}
+      {sidebarOpen && <button className={styles.sidebarOverlay} aria-label="Close navigation" onClick={closeSidebarOnMobile} />}
+
       
     </div>
   )
