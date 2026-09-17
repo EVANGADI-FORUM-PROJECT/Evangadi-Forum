@@ -236,3 +236,81 @@
     transform: rotate(360deg);
   }
 }
+
+/* Adjust the grid layout for medium-sized screens */
+@media (max-width: 850px) {
+  .quickGrid,
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Adjust the layout for smaller screens */
+@media (max-width: 600px) {
+  .quickGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsIntro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Additional responsive adjustments for screens below 900px */
+@media (max-width: 900px) {
+  .page {
+    gap: var(--spacing-lg);
+  }
+
+  .hero {
+    padding: var(--spacing-lg);
+  }
+
+  .quickGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .feedHeader {
+    gap: .75rem;
+    align-items: flex-start;
+  }
+}
+
+/* Final adjustments for very small mobile screens */
+@media (max-width: 520px) {
+  .hero {
+    padding: var(--spacing-md);
+  }
+
+  .hero h1 {
+    font-size: 1.3rem;
+  }
+
+  .quickGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quickCard {
+    min-width: 0;
+  }
+
+  .feedHeader {
+    padding: var(--spacing-md);
+    flex-direction: column;
+  }
+
+  .feedBadge {
+    align-self: flex-start;
+  }
+}
