@@ -1,15 +1,11 @@
-/**
- * Route map: public pages live outside `Layout`; forum tools use `Layout` + `ProtectedRoute`.
- * Add new `<Route>` entries here, then wire navigation in `Sidebar.jsx` and
- * `Layout.jsx` (`getTitle` / `getSubtitle`) so the shell stays in sync.
- */
+// T-13 — Layout Shell
+// Task: Wire Layout, Navbar, Sidebar, ProtectedRoute, and protected forum routes.
+// TODO: Teammate implementing T-13 should complete the protected route structure.
+
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import Layout from './components/Layout/Layout';
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Auth from './pages/Auth/Auth';
-import Dashboard from './pages/Dashboard/Dashboard';
 import Landing from './pages/Landing/Landing';
 
 function App() {
@@ -17,56 +13,12 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public routes */}
+          {/* Public routes — existing project functionality */}
           <Route path='/' element={<Landing />} />
           <Route path='/auth' element={<Auth />} />
 
-          {/* Protected routes with Layout */}
-          <Route element={<Layout />}>
-            <Route
-              path='/dashboard'
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/questions/ask'
-              element={
-                <ProtectedRoute>
-                  <h1>Ask a Question Page</h1>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/my-questions'
-              element={
-                <ProtectedRoute>
-                  <h1>My Questions Page</h1>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/question/:id'
-              element={
-                <ProtectedRoute>
-                  <h1>Question Detail Page</h1>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/rag-documents'
-              element={
-                <ProtectedRoute>
-                  <h1>RAG Documents Page</h1>
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-
-          {/* Catch-all redirect */}
-          <Route path='*' element={<Navigate to='/' replace />} />
+          {/* T-13 — Protected forum route shell */}
+          {/* TODO: Add Layout + ProtectedRoute and the T-14/T-15/T-16/T-20/T-21 routes here. */}
         </Routes>
       </AuthProvider>
     </BrowserRouter>

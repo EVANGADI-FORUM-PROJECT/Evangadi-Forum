@@ -344,3 +344,19 @@
     color: rgb(239, 68, 68);
     /* text-red-500 */
 }
+.sidebar__close { display:none; margin-left:auto; border:0; background:transparent; color:var(--text-secondary); padding:.4rem; border-radius:var(--radius-md); }
+.sidebar__close:hover { background:var(--surface-container-low); color:var(--text-primary); }
+.sidebar { transition:transform var(--transition-slow), box-shadow var(--transition-slow); }
+.sidebar--closed { transform:translateX(-105%); box-shadow:none; }
+.sidebar--open { transform:translateX(0); }
+@media (max-width:900px) {
+  .sidebar { width:min(var(--app-sidebar-width), 88vw); box-shadow:var(--shadow-xl); }
+  .sidebar__close { display:inline-flex; align-items:center; justify-content:center; position:absolute; top:.75rem; right:.75rem; }
+  .sidebar__header { padding-right:3rem; }
+}
+@media (max-width:480px) {
+  .sidebar { width:min(18rem, 92vw); padding-top:var(--spacing-md); padding-bottom:var(--spacing-md); }
+  .sidebar__header { padding-left:var(--spacing-md); padding-right:3rem; }
+  .sidebar__footer { padding-left:var(--spacing-md); padding-right:var(--spacing-md); }
+}
+.sidebar--closed { visibility:hidden; pointer-events:none; }

@@ -1,0 +1,42 @@
+/* Task-specific styles for the corresponding frontend task.\n   TODO: Implement styles together with the task. */\n
+/* =========================
+   Layout / Shell
+========================= */
+.page{display:flex;flex-direction:column;gap:var(--spacing-lg)}.back{align-self:flex-start;border:0;background:transparent;color:var(--text-secondary);display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;padding:0}.back:hover{color:var(--primary)}
+.columns{display:grid;grid-template-columns:minmax(0,1fr) 18rem;gap:var(--spacing-xl);align-items:start}.questionCard,.answerCard,.answerFormCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
+/* =========================
+   Question Detail Card
+========================= */
+.questionCard{padding:var(--spacing-xl)}.author{display:flex;align-items:center;gap:.6rem;margin-bottom:var(--spacing-lg)}.avatar{width:2.4rem;height:2.4rem;border-radius:50%;display:grid;place-items:center;background:var(--primary-light);color:var(--primary-dark);font-size:.65rem;font-weight:var(--font-semibold)}.author>div:last-child{display:flex;flex-direction:column}.author strong{font-size:.75rem}.author span{font-size:.62rem;color:var(--text-tertiary)}.questionCard h1{font-size:1.45rem;line-height:1.25;margin-bottom:var(--spacing-lg)}
+/* =========================
+   Markdown Content
+========================= */
+.markdown{font-size:.78rem;line-height:1.65;color:var(--text-secondary)}.markdown p{margin:0 0 .8rem}.markdown h2{font-size:1.05rem;margin:1rem 0 .3rem}.markdown h3{font-size:.9rem;margin:.8rem 0 .25rem}.markdown ul,.markdown ol{padding-left:1.2rem;margin:0 0 .8rem}.markdown li{margin:.25rem 0}.markdown blockquote{border-left:3px solid var(--primary);padding-left:.8rem;color:var(--text-tertiary)}.markdown code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface-container-low);color:var(--primary-dark);padding:.12rem .3rem;border-radius:.25rem;font-size:.9em}.markdown pre{background:var(--tertiary);color:#e2e8f0;border-radius:var(--radius-md);padding:1rem;overflow:auto}.markdown pre code{background:transparent;color:inherit;padding:0}
+/* =========================
+   Question Actions
+========================= */
+.questionActions{display:flex;gap:.5rem;border-top:1px solid var(--border);margin-top:var(--spacing-lg);padding-top:var(--spacing-md)}.questionActions button,.questionActions span{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-container-low);padding:.45rem .65rem;font-size:.67rem;color:var(--text-secondary)}.questionActions button:hover{border-color:var(--primary)}
+/* =========================
+   Answers Section
+========================= */
+.answersSection{margin-top:var(--spacing-xl)}.sectionHeader{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:var(--spacing-md)}.sectionHeader h2{font-size:.95rem}.sectionHeader span{font-size:.62rem;color:var(--text-tertiary)}.answers{display:flex;flex-direction:column;gap:.75rem}.answerCard{padding:var(--spacing-lg)}.answerCard .author{margin-bottom:var(--spacing-md)}
+.emptyAnswers{padding:2rem;text-align:center;background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-lg);color:var(--text-secondary)}.emptyAnswers svg{color:var(--text-placeholder);margin-bottom:.5rem}.emptyAnswers strong{display:block;font-size:.75rem}.emptyAnswers p{font-size:.65rem;margin-top:.2rem}
+
+/* =========================
+   Answer Form / Actions
+========================= */
+.answerFormCard{padding:var(--spacing-lg);margin-top:var(--spacing-xl)}.formHeading{display:flex;gap:.55rem;align-items:flex-start;margin-bottom:var(--spacing-md)}.formHeading>svg{color:var(--primary);margin-top:.15rem}.formHeading h2{font-size:.9rem}.formHeading p{font-size:.64rem;color:var(--text-tertiary)}.answerFormCard textarea{width:100%;resize:vertical;min-height:10rem;border:1px solid var(--border);border-radius:var(--radius-md);padding:.7rem;font-size:.75rem;line-height:1.55}.formBottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:.6rem}.formBottom small{font-size:.62rem;color:var(--text-tertiary)}.formBottom>div{display:flex;gap:.5rem}.primary,.secondary{border:0;border-radius:var(--radius-md);padding:.55rem .75rem;font-size:.67rem;font-weight:var(--font-semibold);display:inline-flex;align-items:center;gap:.35rem}.primary{background:var(--primary);color:#fff}.primary:hover{background:var(--primary-hover)}.secondary{background:var(--surface-container-low);border:1px solid var(--border);color:var(--text-primary)}.secondary:hover{border-color:var(--primary)}
+/* =========================
+   Validation / Notices / Sidebar
+========================= */
+.error{background:var(--error-light);border:1px solid rgba(239,68,68,.25);color:#b91c1c;padding:.55rem .7rem;border-radius:var(--radius-md);font-size:.67rem;margin-bottom:.7rem}.fitPanel{display:flex;gap:.5rem;align-items:flex-start;margin-top:.75rem;padding:.7rem;border-radius:var(--radius-md);border:1px solid var(--border);font-size:.7rem}.fitPanel svg{margin-top:.1rem}.fitPanel strong{display:block}.fitPanel p{font-size:.65rem;margin-top:.15rem;color:var(--text-secondary)}.fit--strong{background:var(--success-light);color:#047857}.fit--partial{background:var(--warning-light);color:#92400e}.fit--weak{background:var(--error-light);color:#b91c1c}
+.ownerNote{display:flex;gap:.5rem;align-items:center;margin-top:var(--spacing-xl);padding:.75rem 1rem;background:var(--surface-container-low);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-secondary)}.ownerNote p{font-size:.67rem}.related{position:sticky;top:5rem}.relatedHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}.relatedHeader h2{font-size:.9rem}.relatedHeader svg{color:var(--primary)}.relatedCard{display:flex;flex-direction:column;gap:.35rem;padding:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:.65rem;color:var(--text-primary)}.relatedCard strong{font-size:.7rem;line-height:1.35;color:var(--primary-dark)}.relatedCard span{font-size:.58rem;color:var(--text-tertiary)}.relatedCard:hover{border-color:var(--primary);color:var(--text-primary)}.relatedLoading,.relatedEmpty{padding:.8rem;border:1px dashed var(--border);border-radius:var(--radius-md);font-size:.65rem;color:var(--text-tertiary);background:var(--surface)}.fullState{min-height:50vh}.spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}/* =========================
+   Responsive Rules
+========================= */
+@media(max-width:900px){.columns{grid-template-columns:1fr}.related{position:static;order:-1}.relatedCard{margin-bottom:.5rem}}@media(max-width:600px){.questionCard{padding:var(--spacing-lg)}.formBottom{align-items:stretch;flex-direction:column}.formBottom>div{flex-direction:column}.primary,.secondary{justify-content:center}}
+
+.page,.columns,main { min-width:0; }
+.questionCard,.answerCard,.answerFormCard { min-width:0; }
+.markdown { overflow-wrap:anywhere; }
+@media(max-width:900px){ .columns{grid-template-columns:minmax(0,1fr);}.related{order:-1;}.questionCard{padding:var(--spacing-lg);} }
+@media(max-width:600px){ .page{width:100%;}.questionCard{padding:var(--spacing-md);}.questionCard h1{font-size:1.25rem;}.questionActions{flex-wrap:wrap;}.questionActions button,.questionActions span{font-size:.65rem;}.answerFormCard{padding:var(--spacing-md);}.formBottom>div{width:100%;}.primary,.secondary{width:100%;justify-content:center;}.relatedCard{padding:.7rem;} }

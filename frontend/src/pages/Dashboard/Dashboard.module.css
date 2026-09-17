@@ -1,0 +1,316 @@
+/* Main Dashboard page layout */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* Shared styling for the hero and discussion feed */
+.hero,
+.feed {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Spacing inside the hero section */
+.hero {
+  padding: var(--spacing-xl);
+}
+
+/* Small label displayed above the welcome heading */
+.kicker {
+  color: var(--primary-dark);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: var(--font-bold);
+  margin-bottom: .25rem;
+}
+
+/* Style the main welcome heading */
+.hero h1 {
+  font-size: 1.55rem;
+  margin-bottom: .35rem;
+}
+
+/* Supporting description below the welcome heading */
+.heroText {
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  max-width: 48rem;
+}
+
+/* Arrange the quick navigation cards in three columns */
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+  margin-top: var(--spacing-lg);
+}
+
+/* Basic appearance of each quick navigation card */
+.quickCard {
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+  padding: .75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* Change the card border when the user hovers over it */
+.quickCard:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
+/* Container for the icon inside each quick card */
+.quickIcon {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  background: var(--surface);
+}
+
+/* Stack the title and description vertically */
+.quickCard span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the quick card title */
+.quickCard strong {
+  font-size: .75rem;
+}
+
+/* Style the smaller description inside each card */
+.quickCard small {
+  color: var(--text-tertiary);
+  font-size: .64rem;
+  line-height: 1.4;
+  margin-top: .15rem;
+}
+
+/* Layout for the statistics introduction and optional search indicator */
+.statsIntro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+}
+
+/* Small explanatory text above the statistics */
+.statsIntro p {
+  font-size: .67rem;
+  color: var(--text-tertiary);
+}
+
+/* Small label showing the active search type and query */
+.searchPill {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .62rem;
+  padding: .3rem .5rem;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  white-space: nowrap;
+}
+
+/* Arrange the four statistics in columns */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+/* Basic styling for each individual statistic */
+.stat {
+  padding: .65rem .75rem;
+  border: 1px solid var(--border);
+  background: var(--surface-container-low);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the statistic label */
+.stat span {
+  font-size: .62rem;
+  color: var(--text-tertiary);
+}
+
+/* Style the statistic value */
+.stat strong {
+  font-size: 1rem;
+  margin-top: .1rem;
+}
+
+/* Prevent content inside the feed from overflowing */
+.feed {
+  overflow: hidden;
+}
+
+/* Header layout for the discussion feed */
+.feedHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    var(--surface-hover),
+    var(--surface)
+  );
+}
+
+/* Style the discussion feed heading */
+.feedHeader h2 {
+  font-size: 1rem;
+}
+
+/* Supporting description below the feed heading */
+.feedHeader p {
+  font-size: .63rem;
+  color: var(--text-tertiary);
+  margin-top: .1rem;
+}
+
+/* Badge showing whether the feed contains AI matches or newest threads */
+.feedBadge {
+  background: var(--primary);
+  color: #fff;
+  font-size: .58rem;
+  font-weight: var(--font-bold);
+  border-radius: var(--radius-md);
+  padding: .32rem .5rem;
+}
+
+/* Container for the list of questions */
+.questionList {
+  background: var(--surface);
+}
+
+/* Main button used when there are no questions */
+.primaryButton {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: .55rem .85rem;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: var(--font-semibold);
+}
+
+/* Change the button background when the user hovers */
+.primaryButton:hover {
+  color: #fff;
+  background: var(--primary-hover);
+}
+
+/* Rotate the loading icon continuously */
+.spin {
+  animation: spin 1s linear infinite;
+  margin-bottom: .5rem;
+}
+
+/* Define the rotation used by the loading icon */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Adjust the grid layout for medium-sized screens */
+@media (max-width: 850px) {
+  .quickGrid,
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Adjust the layout for smaller screens */
+@media (max-width: 600px) {
+  .quickGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsIntro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Additional responsive adjustments for screens below 900px */
+@media (max-width: 900px) {
+  .page {
+    gap: var(--spacing-lg);
+  }
+
+  .hero {
+    padding: var(--spacing-lg);
+  }
+
+  .quickGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .feedHeader {
+    gap: .75rem;
+    align-items: flex-start;
+  }
+}
+
+/* Final adjustments for very small mobile screens */
+@media (max-width: 520px) {
+  .hero {
+    padding: var(--spacing-md);
+  }
+
+  .hero h1 {
+    font-size: 1.3rem;
+  }
+
+  .quickGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quickCard {
+    min-width: 0;
+  }
+
+  .feedHeader {
+    padding: var(--spacing-md);
+    flex-direction: column;
+  }
+
+  .feedBadge {
+    align-self: flex-start;
+  }
+}

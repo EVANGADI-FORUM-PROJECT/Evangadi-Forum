@@ -1,28 +1,26 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, LogOut, MessageSquare, FileText } from 'lucide-react';
+import { LayoutDashboard, LogOut, MessageSquare, FileText, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Sidebar.module.css';
 
-/**
- * Primary navigation: paths must match `App.jsx` routes.
- * Add rows here when you ship new sections (e.g. Admin, Bookmarks).
- */
+
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Home', path: '/dashboard' },
   { icon: MessageSquare, label: 'Your Topics', path: '/my-questions' },
   { icon: FileText, label: 'Knowledge Base', path: '/rag-documents' },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-
+  
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${isOpen ? styles['sidebar--open'] : styles['sidebar--closed']}`} aria-hidden={!isOpen}>
       <div className={styles.sidebar__header}>
+        <button type="button" className={styles.sidebar__close} onClick={onClose} aria-label="Hide sidebar" title="Hide sidebar"><X size={18} /></button>
         <div
           className={styles.sidebar__branding}
-          onClick={() => navigate('/')}
+          onClick={() => { navigate('/'); onClose?.(); }}
           title='Go to Home'
           role='button'
           tabIndex={0}
@@ -51,6 +49,7 @@ export default function Sidebar() {
           <div key={item.path} className={styles['sidebar__nav-item-wrapper']}>
             <NavLink
               to={item.path}
+              onClick={onClose}
               className={({ isActive }) =>
                 `${styles.sidebar__link} ${
                   isActive
@@ -80,7 +79,7 @@ export default function Sidebar() {
       <div className={styles.sidebar__footer}>
         <button
           type='button'
-          onClick={() => navigate('/questions/ask')}
+          onClick={() => { navigate('/questions/ask'); onClose?.(); }}
           className={styles.sidebar__button}
         >
           New Question

@@ -1,7 +1,3 @@
-/**
- * Navbar.module.css: sticky header, search field, user menu.
- */
-
 .navbar {
   position: sticky;
   top: 0;
@@ -79,6 +75,7 @@
   transition: var(--transition-base);
   color: var(--text-primary);
 }
+
 
 .navbar__semantic-button {
   position: absolute;
@@ -208,4 +205,20 @@
 .navbar__logout:focus {
   outline: none;
   box-shadow: var(--shadow-focus);
+}
+
+@media (max-width:900px) {
+  .navbar { padding-left:.75rem; padding-right:.75rem; gap:.65rem; flex-wrap:wrap; min-height:auto; padding-top:.65rem; padding-bottom:.65rem; }
+  .navbar__titleBlock { order:2; flex:1 1 calc(100% - 3rem); max-width:none; }
+  .navbar__search { order:3; flex:1 1 100%; max-width:none; }
+  .navbar__actions { order:1; margin-left:auto; }
+  
+}
+@media (max-width:600px) {
+  .navbar__user { padding-left:.5rem; border-left:0; }
+  .navbar__logout { display:none; }
+  .navbar__search-input { padding-right:3rem; font-size:.8rem; }
+  .navbar__semantic-button { width:2rem; height:2rem; justify-content:center; padding:.25rem; }
+  .navbar__semantic-text { display:none; }
+  .navbar__pageTitle { font-size:1rem; }
 }

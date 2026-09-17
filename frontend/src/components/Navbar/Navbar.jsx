@@ -3,21 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, LogOut, Sparkles } from 'lucide-react';
 import styles from './Navbar.module.css';
 
-/**
- * Top bar: page title, debounced text search → `/dashboard?q=…`, optional AI semantic search.
- * Search state is driven by the URL on the dashboard so bookmarks and refresh keep context.
- */
 export default function Navbar({ title, subtitle, user, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Initialize searchTerm from URL if we are already on the dashboard
   const [searchTerm, setSearchTerm] = useState(() => {
     const params = new URLSearchParams(location.search);
     return params.get('q') || params.get('semantic') || '';
   });
 
-  // Keep input in sync with URL if it changes externally
   useEffect(() => {
     if (location.pathname === '/dashboard') {
       const params = new URLSearchParams(location.search);
@@ -27,7 +21,7 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
     }
   }, [location.search, location.pathname]);
 
-  // Debounced keyword search: updates `?q=` on the dashboard (500ms quiet period).
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim() !== '') {
@@ -45,7 +39,7 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
 
   const handleSemanticSearch = e => {
     e.preventDefault();
-    if (searchTerm.trim().length >= 3) {
+    if (searchTerm.trim().length >= 5) {
       navigate(`/dashboard?semantic=${encodeURIComponent(searchTerm)}`);
     }
   };
@@ -59,7 +53,7 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
 
   return (
     <header className={styles.navbar}>
-      <div className={styles.navbar__titleBlock}>
+          <div className={styles.navbar__titleBlock}>
         <h2 className={styles.navbar__pageTitle}>{title}</h2>
         {subtitle ? (
           <p className={styles.navbar__pageSubtitle}>{subtitle}</p>
@@ -79,7 +73,7 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
           className={styles['navbar__search-input']}
           aria-label='Search questions by keyword'
         />
-        {searchTerm.length >= 3 && (
+        {searchTerm.length >= 5 && (
           <button
             type='button'
             onClick={handleSemanticSearch}
