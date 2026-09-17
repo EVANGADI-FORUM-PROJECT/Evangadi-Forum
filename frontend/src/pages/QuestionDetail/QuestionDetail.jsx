@@ -45,3 +45,18 @@ export default function QuestionDetail() {
     const [isCheckingFit, setIsCheckingFit] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
+// Fetch the main question and its answers
+  useEffect(() => {
+    let cancelled = false;
+    setIsLoading(true); setError('');
+    questionService.getSingleQuestion(questionHash)
+      .then(result => {
+        if (cancelled) return;
+        setQuestion(result.question);
+        setAnswers(result.answers || []);
+      })
+      .catch(err => { if (!cancelled) setError(err.message); })
+      .finally(() => { if (!cancelled) setIsLoading(false); });
+    return () => { cancelled = true; };
+  }, [questionHash]);
+  
