@@ -71,4 +71,10 @@ export default function QuestionDetail() {
     }, [questionHash]);
     // Ownership check
      const isOwner = question?.author?.id === user?.id;
-     
+// Form validation helpers
+       const validateAnswer = () => {
+    const text = answerText.trim();
+    if (!text) return 'Answer content is required.';
+    if (text.length < 20) return 'Answer must be at least 20 characters.';
+    return '';
+  };
