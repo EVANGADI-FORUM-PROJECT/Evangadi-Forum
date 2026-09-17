@@ -106,3 +106,10 @@ const stats = useMemo(() => {
     yours,
   };
 }, [questions, user?.id]);
+
+const firstName = user?.firstName?.trim();
+
+// Use the user's name when available, otherwise show a default welcome
+const welcomeLine = firstName
+  ? `Good to see you, ${firstName}.`
+  : 'Welcome to the forum.';
