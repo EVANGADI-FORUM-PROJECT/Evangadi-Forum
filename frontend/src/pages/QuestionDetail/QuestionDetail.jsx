@@ -78,3 +78,14 @@ export default function QuestionDetail() {
     if (text.length < 20) return 'Answer must be at least 20 characters.';
     return '';
   };
+   // Answer fit checker
+     const handleFit = async () => {
+       const validationError = validateAnswer();
+       if (validationError) { setSubmitError(validationError); return; }
+       setIsCheckingFit(true); setFitError(''); setSubmitError('');
+       try {
+         const result = await questionService.assessAnswerFit(questionHash, answerText.trim());
+         setFitResult({ level: result.level, note: result.note });
+       } catch (err) { setFitError(err.message); }
+       finally { setIsCheckingFit(false); }
+     };
