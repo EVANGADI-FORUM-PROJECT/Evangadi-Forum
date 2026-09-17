@@ -1,1 +1,30 @@
-/* Task-specific styles for the corresponding frontend task.\n   TODO: Implement styles together with the task. */\n
+/* Main Dashboard page layout */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* Shared styling for the hero and discussion feed */
+.hero,
+.feed {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Spacing inside the hero section */
+.hero {
+  padding: var(--spacing-xl);
+}
+
+/* Small label displayed above the welcome heading */
+.kicker {
+  color: var(--primary-dark);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: var(--font-bold);
+  margin-bottom: .25rem;
+}
