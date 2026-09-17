@@ -70,3 +70,11 @@ export default function PostQuestion() {
             ...prev, 
             [field]: value, 
         }));
+    // Clear any previous error when the user starts editing 
+    setError(''); 
+    
+    // Clear old AI feedback because the question has changed 
+    if (coachFeedback) { 
+        setCoachFeedback(null); 
+    } 
+};
