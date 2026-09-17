@@ -226,3 +226,8 @@ h5 {
 h6 {
   font-size: var(--text-base);
 }
+
+html, body, #root { min-height:100%; }
+html, body { overflow-x:hidden; }
+img, svg, video, canvas { max-width:100%; }
+button, input, textarea, select { max-width:100%; }
