@@ -36,4 +36,10 @@ export default function Layout() {
     if (path === '/rag-documents') return 'Private PDF library: reader, semantic search, and AI answers with citations per document.';
     return '';
   };
+
+  return(
+    <div className={`${styles.layout} ${sidebarOpen ? styles['layout--sidebarOpen'] : styles['layout--sidebarClosed']}`}>
+      
+    </div>
+  )
 }
