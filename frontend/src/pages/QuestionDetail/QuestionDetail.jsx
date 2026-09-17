@@ -69,4 +69,6 @@ export default function QuestionDetail() {
         .finally(() => { if (!cancelled) setRelatedLoading(false); });
       return () => { cancelled = true; };
     }, [questionHash]);
-    
+    // Ownership check
+     const isOwner = question?.author?.id === user?.id;
+     
