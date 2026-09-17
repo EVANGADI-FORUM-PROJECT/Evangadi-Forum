@@ -88,3 +88,10 @@ const validate = () => {
     // Check whether the title has been provided if (!title) { 
     return 'Question title is required.'; 
 }
+// Ensure the title is at least 5 characters long if (title.length < 5) { 
+return 'Title must be at least 5 characters.'; 
+} 
+// Ensure the title does not exceed the database/API limit 
+if (title.length > 255) { 
+    return 'Title must be 255 characters or fewer.'; 
+}
