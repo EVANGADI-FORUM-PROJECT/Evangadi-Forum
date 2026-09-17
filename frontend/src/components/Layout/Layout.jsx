@@ -26,4 +26,14 @@ export default function Layout() {
     if (path === '/rag-documents') return 'Knowledge base';
     return 'Forum';
   };
+
+  const getSubtitle = () => {
+    const path = location.pathname;
+    if (path === '/dashboard') return 'Browse the feed, search by keyword, or run AI similarity search.';
+    if (path === '/my-questions') return 'Questions you have posted. Open any thread to read replies or edit context.';
+    if (path === '/questions/ask') return 'A clear title and reproducible steps get faster, more accurate answers.';
+    if (path.startsWith('/question/') || path.startsWith('/questions/')) return 'Read the thread, review related topics, and reply with markdown if you can help.';
+    if (path === '/rag-documents') return 'Private PDF library: reader, semantic search, and AI answers with citations per document.';
+    return '';
+  };
 }
