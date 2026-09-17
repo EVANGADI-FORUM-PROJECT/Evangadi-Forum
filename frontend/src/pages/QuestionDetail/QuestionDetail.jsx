@@ -25,7 +25,23 @@ import ui from '../../styles/pageStates.module.css';
 // Import QuestionDetail page styles
 import styles from './QuestionDetail.module.css';
 
-export default function QuestionDetail() {
   // TODO: Implement question details, answers, answer form, and AI Answer Fit.
-  return null;
-}
+  // Question detail page
+export default function QuestionDetail() {
+   // Route and auth data
+  const { questionHash } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  // Local state
+    const [question, setQuestion] = useState(null);
+    const [answers, setAnswers] = useState([]);
+    const [related, setRelated] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [relatedLoading, setRelatedLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [answerText, setAnswerText] = useState('');
+    const [fitResult, setFitResult] = useState(null);
+    const [fitError, setFitError] = useState('');
+    const [isCheckingFit, setIsCheckingFit] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
