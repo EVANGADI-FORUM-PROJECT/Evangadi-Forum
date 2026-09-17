@@ -58,3 +58,15 @@ export default function PostQuestion() {
     
     // Track whether the question was successfully published 
     const [success, setSuccess] = useState(false);
+
+    /** 
+     * Update a specific form field. 
+     *  @param {string} field - The field to update, such as title or content 
+     ** @param {string} value - The new value 
+     */ 
+    const update = (field, value) => { 
+        // Update only the selected field while keeping the other fields unchanged 
+        setFormData(prev => ({ 
+            ...prev, 
+            [field]: value, 
+        }));
