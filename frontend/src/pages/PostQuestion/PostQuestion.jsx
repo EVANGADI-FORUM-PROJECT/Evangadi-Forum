@@ -95,3 +95,12 @@ return 'Title must be at least 5 characters.';
 if (title.length > 255) { 
     return 'Title must be 255 characters or fewer.'; 
 }
+// Check whether the question body has been provided 
+if (!content) { 
+    return 'Question content is required.'; } 
+    // Ensure the question body contains enough information 
+    if (content.length < 10) { 
+        return 'Question content must be at least 10 characters.'; } 
+    // Empty string means validation passed
+    return ''; 
+};
