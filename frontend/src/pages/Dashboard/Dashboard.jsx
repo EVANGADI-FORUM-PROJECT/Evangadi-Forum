@@ -19,10 +19,10 @@ export default function Dashboard() {
   const [searchParams] = useSearchParams();
 
   // "q" is used for normal keyword search
-  const search = searchParams.get('q') || '';
+  const search = searchParams.get('q') || ''; // || '' -> If the parameter doesn't exist in the URL, we use an empty string instead of getting null
 
   // "semantic" is used for AI-powered semantic search
   const semantic = searchParams.get('semantic') || '';
-  
+
   return null;
 }
