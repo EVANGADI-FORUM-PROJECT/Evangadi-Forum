@@ -24,5 +24,14 @@ export default function Dashboard() {
   // "semantic" is used for AI-powered semantic search
   const semantic = searchParams.get('semantic') || '';
 
+  // Store the questions returned from the API
+const [questions, setQuestions] = useState([]);
+
+// Track whether the questions are currently being loaded
+const [isLoading, setIsLoading] = useState(true);
+
+// Store an error message if loading questions fails
+const [error, setError] = useState('');
+
   return null;
 }
