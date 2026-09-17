@@ -14,3 +14,5 @@ import {
     } from 'lucide-react';
 // Import ReactMarkdown to render Markdown content as HTML 
 import ReactMarkdown from 'react-markdown';
+// Import the custom Markdown editor component 
+import MarkdownEditor from '../../components/MarkdownEditor/MarkdownEditor.jsx';
