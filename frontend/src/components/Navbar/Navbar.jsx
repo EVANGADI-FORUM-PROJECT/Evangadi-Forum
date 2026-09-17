@@ -11,6 +11,18 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
     const params = new URLSearchParams(location.search);
     return params.get('q') || params.get('semantic') || '';
   });
+
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      const params = new URLSearchParams(location.search);
+      setSearchTerm(params.get('q') || params.get('semantic') || '');
+    } else {
+      setSearchTerm('');
+    }
+  }, [location.search, location.pathname]);
+
+
+
   return (
 
   );
