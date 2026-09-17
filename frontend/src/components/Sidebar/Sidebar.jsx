@@ -1,8 +1,9 @@
-// T-13 — Layout Shell
-// Task: Create the Sidebar component.
-// TODO: Teammate implementing T-13 should build this component.
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, LogOut, MessageSquare, FileText, X } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
-  // TODO: Implement sidebar navigation and responsive behavior.
-  return null;
+  
+  return ();
 }
