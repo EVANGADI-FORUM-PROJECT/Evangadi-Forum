@@ -7,6 +7,17 @@ import ui from '../../styles/pageStates.module.css';
 import styles from './MyQuestions.module.css';
 
 export default function MyQuestions() {
-  // TODO: Implement personalized question loading, display, loading, error, and empty states.
+  const [questions, setQuestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    questionService.getQuestions({ mine: true })
+      .then(result => { if (!cancelled) setQuestions(result.data || []); })
+      .catch(err => { if (!cancelled) setError(err.message); })
+      .finally(() => { if (!cancelled) setIsLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
   return null;
 }
