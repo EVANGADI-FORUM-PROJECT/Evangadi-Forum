@@ -90,26 +90,177 @@ useEffect(() => {
 }, [search, semantic, searchMode]);
 
 // Calculate summary statistics for the questions displayed in the feed
-const stats = useMemo(() => {
-  // Add up the number of answers across all questions
-  const replies = questions.reduce(
-    (sum, q) => sum + Number(q.answerCount || 0),
-    0
+  const stats = useMemo(() => {
+    // Add up the number of answers across all questions
+    const replies = questions.reduce(
+      (sum, q) => sum + Number(q.answerCount || 0),
+      0
+    );
+
+    const yours = questions.filter(q => q.author?.id === user?.id).length;
+
+    return {
+      questions: questions.length,
+      replies,
+      unanswered: questions.filter(q => !Number(q.answerCount)).length,
+      yours,
+    };
+  }, [questions, user?.id]);
+
+  const firstName = user?.firstName?.trim();
+
+  // Use the user's name when available, otherwise show a default welcome
+  const welcomeLine = firstName
+    ? `Good to see you, ${firstName}.`
+    : 'Welcome to the forum.';
+
+  return (
+    <div className={styles.page}>
+      {/* Show the welcome section only when there is no active search */}
+      {!activeQuery && (
+        <section className={styles.hero}>
+          <div className={styles.kicker}>Forum home</div>
+
+          <h1>{welcomeLine}</h1>
+
+          <p className={styles.heroText}>
+            Start a topic, revisit your own threads, or simply scan the live feed.
+            Search above works from any page once you are back on Home.
+          </p>
+
+          <div className={styles.quickGrid}>
+            <Link to="/questions/ask" className={styles.quickCard}>
+              <span className={styles.quickIcon}>
+                <MessageSquarePlus size={18} />
+              </span>
+
+              <span>
+                <strong>New question</strong>
+                <small>
+                  Share context, errors, and what you already tried.
+                </small>
+              </span>
+            </Link>
+
+            <Link to="/my-questions" className={styles.quickCard}>
+              <span className={styles.quickIcon}>
+                <Users size={18} />
+              </span>
+
+              <span>
+                <strong>Your topics</strong>
+                <small>Find the threads you authored.</small>
+              </span>
+            </Link>
+
+            <Link to="/rag-documents" className={styles.quickCard}>
+              <span className={styles.quickIcon}>
+                <BookOpen size={18} />
+              </span>
+
+              <span>
+                <strong>Knowledge base</strong>
+                <small>
+                  Course library and retrieval-backed context for threads.
+                </small>
+              </span>
+            </Link>
+          </div>
+
+          <div className={styles.statsIntro}>
+            <p>
+              Figures below describe the newest threads in this feed (up to 100 from the API).
+            </p>
+
+            {activeQuery && (
+              <span className={styles.searchPill}>
+                {searchMode === 'semantic' ? <Sparkles size={13} /> : null}
+                {searchMode === 'semantic'
+                  ? 'AI similarity'
+                  : 'Keyword'}: “{activeQuery}”
+              </span>
+            )}
+          </div>
+
+          <div className={styles.statsGrid}>
+            <Stat label="Questions" value={stats.questions} />
+            <Stat label="Replies" value={stats.replies} />
+            <Stat label="Unanswered" value={stats.unanswered} />
+            <Stat label="Yours" value={stats.yours} />
+          </div>
+        </section>
+      )}
+
+      <section className={styles.feed}>
+        <div className={styles.feedHeader}>
+          <div>
+            <h2>Discussion feed</h2>
+            <p>Your threads use a slim left accent in this list.</p>
+          </div>
+
+          {/* Change the badge text depending on the current search type */}
+          <span className={styles.feedBadge}>
+            {searchMode === 'semantic' ? 'AI MATCHES' : 'NEWEST THREADS'}
+          </span>
+        </div>
+
+        {/* Show a loading message while the API request is in progress */}
+        {isLoading ? (
+          <div
+            className={`${ui.pageStates__message} ${ui['pageStates__message--loading']}`}
+            role="status"
+          >
+            <RefreshCw className={styles.spin} size={20} />
+            <p>Loading questions…</p>
+          </div>
+        ) : error ? (
+          <div
+            className={`${ui.pageStates__message} ${ui['pageStates__message--error']}`}
+            role="alert"
+          >
+            <strong>We couldn't load the discussion feed.</strong>
+            <p>{error}</p>
+          </div>
+        ) : questions.length === 0 ? (
+          <div
+            className={`${ui.pageStates__message} ${ui['pageStates__message--empty']}`}
+          >
+            <strong>
+              {activeQuery ? 'No questions found' : 'No questions yet'}
+            </strong>
+
+            <p>
+              {activeQuery
+                ? 'Try a different keyword or use a longer phrase for AI search.'
+                : 'Be the first to start a discussion.'}
+            </p>
+
+            <Link to="/questions/ask" className={styles.primaryButton}>
+              Ask a question
+            </Link>
+          </div>
+        ) : (
+          <div className={styles.questionList}>
+            {/* Create a QuestionCard for each question returned by the API */}
+            {questions.map(question => (
+              <QuestionCard
+                key={question.questionHash || question.id}
+                question={question}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
   );
+}
 
-  const yours = questions.filter(q => q.author?.id === user?.id).length;
-
-  return {
-    questions: questions.length,
-    replies,
-    unanswered: questions.filter(q => !Number(q.answerCount)).length,
-    yours,
-  };
-}, [questions, user?.id]);
-
-const firstName = user?.firstName?.trim();
-
-// Use the user's name when available, otherwise show a default welcome
-const welcomeLine = firstName
-  ? `Good to see you, ${firstName}.`
-  : 'Welcome to the forum.';
+// Reusable component for displaying one Dashboard statistic
+function Stat({ label, value }) {
+  return (
+    <div className={styles.stat}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
