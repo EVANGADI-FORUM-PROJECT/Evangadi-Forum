@@ -155,3 +155,28 @@ if (validationError) {
     setError(validationError); 
     return; 
 }
+// Show the publishing/loading state 
+setIsSubmitting(true); 
+
+// Clear previous errors 
+setError(''); 
+
+try { 
+// Send the question to the backend API 
+await questionService.createQuestion({ 
+    title: formData.title.trim(), 
+    content: formData.content.trim(), 
+}); 
+
+// Mark the question as successfully published 
+setSuccess(true); 
+// Redirect the user to the dashboard after 1.2 seconds 
+setTimeout(() => navigate('/dashboard'), 1200); 
+} catch (err) { 
+
+// Display the error if publishing fails 
+setError(err.message); 
+} finally { 
+// Stop the publishing/loading state setIsSubmitting(false); 
+} 
+};
