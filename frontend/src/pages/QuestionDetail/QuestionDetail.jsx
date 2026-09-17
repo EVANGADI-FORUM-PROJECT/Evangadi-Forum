@@ -353,3 +353,20 @@ export default function QuestionDetail() {
     </div>
   );
 }
+// Author section component
+function Author({ author, date }) {
+  const name =
+    `${author?.firstName || "Unknown"} ${author?.lastName || ""}`.trim();
+  return (
+    <div className={styles.author}>
+      <div className={styles.avatar}>
+        {`${author?.firstName?.[0] || ""}${author?.lastName?.[0] || ""}`.toUpperCase() ||
+          "U"}
+      </div>
+      <div>
+        <strong>{name}</strong>
+        <span>Posted {date ? new Date(date).toLocaleDateString() : ""}</span>
+      </div>
+    </div>
+  );
+}
