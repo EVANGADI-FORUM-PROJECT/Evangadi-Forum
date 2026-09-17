@@ -370,3 +370,8 @@ function Author({ author, date }) {
     </div>
   );
 }
+// Single answer card
+function AnswerCard({ answer }) {
+  return <article className={styles.answerCard}><Author author={answer.author || answer.user} date={answer.createdAt}/><div className={styles.markdown}><ReactMarkdown>{answer.content}</ReactMarkdown></div></article>;
+}
+
