@@ -159,3 +159,44 @@
   font-size: 1rem;
   margin-top: .1rem;
 }
+
+/* Prevent content inside the feed from overflowing */
+.feed {
+  overflow: hidden;
+}
+
+/* Header layout for the discussion feed */
+.feedHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    var(--surface-hover),
+    var(--surface)
+  );
+}
+
+/* Style the discussion feed heading */
+.feedHeader h2 {
+  font-size: 1rem;
+}
+
+/* Supporting description below the feed heading */
+.feedHeader p {
+  font-size: .63rem;
+  color: var(--text-tertiary);
+  margin-top: .1rem;
+}
+
+/* Badge showing whether the feed contains AI matches or newest threads */
+.feedBadge {
+  background: var(--primary);
+  color: #fff;
+  font-size: .58rem;
+  font-weight: var(--font-bold);
+  border-radius: var(--radius-md);
+  padding: .32rem .5rem;
+}
