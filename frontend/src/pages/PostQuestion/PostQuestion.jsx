@@ -130,3 +130,15 @@ const result = await questionService.generateQuestionDraftCoach({
     title: formData.title.trim(), 
     content: formData.content.trim(), 
 });
+
+// Save the returned AI feedback 
+// // If no data is returned, use an empty tips array 
+setCoachFeedback(result.data || { tips: [] }); 
+} catch (err) { 
+// Display the error returned by the API/service 
+setError(err.message); 
+} finally { 
+// Always stop the loading state, whether the request succeeds or fails 
+setIsCoaching(false); 
+} 
+};
