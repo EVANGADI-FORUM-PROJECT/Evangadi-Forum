@@ -54,6 +54,17 @@ export default function Layout() {
       {sidebarOpen && <button className={styles.sidebarOverlay} aria-label="Close navigation" onClick={closeSidebarOnMobile} />}
 
       <div className={styles.layout__content}>
+        <Navbar
+          title={getTitle()}
+          subtitle={getSubtitle()}
+          user={user}
+          onLogout={logout}
+        />
+        <main className={styles.layout__main}>
+          <div className={styles.layout__mainInner}>
+            <Outlet />
+          </div>
+        </main>
         
       </div>
     </div>
