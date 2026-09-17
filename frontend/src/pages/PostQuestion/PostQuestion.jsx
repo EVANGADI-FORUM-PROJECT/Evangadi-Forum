@@ -142,3 +142,16 @@ setError(err.message);
 setIsCoaching(false); 
 } 
 };
+/** 
+ * Submit/publish the question. 
+ */ 
+const handleSubmit = async e => { 
+// Prevent the browser from performing a normal form submission 
+e.preventDefault(); 
+// Validate the question before sending it to the backend 
+const validationError = validate(); 
+// Stop submission if validation fails 
+if (validationError) { 
+    setError(validationError); 
+    return; 
+}
