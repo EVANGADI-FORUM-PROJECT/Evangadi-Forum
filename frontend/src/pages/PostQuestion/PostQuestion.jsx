@@ -22,3 +22,9 @@ import { questionService } from '../../services/question/question.service.js';
 
 // Import CSS module styles for this component 
 import styles from './PostQuestion.module.css';
+
+// Initial/default values for the question form 
+const initialForm = { 
+    title: '', 
+    content: '', 
+};
