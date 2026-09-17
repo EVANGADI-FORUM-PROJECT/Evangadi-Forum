@@ -374,4 +374,21 @@ function Author({ author, date }) {
 function AnswerCard({ answer }) {
   return <article className={styles.answerCard}><Author author={answer.author || answer.user} date={answer.createdAt}/><div className={styles.markdown}><ReactMarkdown>{answer.content}</ReactMarkdown></div></article>;
 }
-
+// Fit result badge
+function FitPanel({ result }) {
+  const label =
+    result.level === "strong"
+      ? "Strong fit"
+      : result.level === "weak"
+        ? "Weak fit"
+        : "Partial fit";
+  return (
+    <div className={`${styles.fitPanel} ${styles[`fit--${result.level}`]}`}>
+      <CheckCircle2 size={17} />
+      <div>
+        <strong>{label}</strong>
+        <p>{result.note}</p>
+      </div>
+    </div>
+  );
+}
