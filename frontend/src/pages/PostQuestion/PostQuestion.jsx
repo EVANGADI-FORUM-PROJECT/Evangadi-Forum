@@ -78,3 +78,13 @@ export default function PostQuestion() {
         setCoachFeedback(null); 
     } 
 };
+/** 
+ *  Validate the question before submitting or requesting AI feedback. 
+ *  @returns {string} An error message, or an empty string if valid 
+ */ 
+const validate = () => { 
+    // Remove unnecessary spaces from the beginning and end 
+    const title = formData.title.trim(); const content = formData.content.trim(); 
+    // Check whether the title has been provided if (!title) { 
+    return 'Question title is required.'; 
+}
