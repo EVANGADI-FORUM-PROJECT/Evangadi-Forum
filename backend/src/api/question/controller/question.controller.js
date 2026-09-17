@@ -29,6 +29,25 @@ export const createQuestionController = async (req, res, next) => {
 };
 
 //GET /api/questions
+export const getQuestionsController = async (req, res, next) => {
+  try {
+    // GET requests have no body, so filters come via query params
+    const filters = {
+      search: req.query.search,
+      mine: req.query.mine,
+      userId: req.user.id,
+    };
+    // Delegate to the service which builds and executes the SQL query
+    const result = await getQuestionsService(filters);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Questions fetched successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 /**
  * T-10: List Questions

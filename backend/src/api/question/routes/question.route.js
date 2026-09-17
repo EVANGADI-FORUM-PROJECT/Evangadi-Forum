@@ -32,13 +32,7 @@ router.post(
 
 // GET /api/questions : used for fetching all questions and again for filtering the current user questions
 // Middleware: authenticateUser -> getQuestionsValidation -> getQuestionsController
-// Query params: ?search (keyword match on title/content), ?mine=true (only own questions)
-router.get(
-  "/",
-  authenticateUser,
-  getQuestionsValidation,
-  getQuestionsController,
-);
+router.get("/", authenticateUser, getQuestionsValidation, getQuestionsController);
 
 //==================================
 /**

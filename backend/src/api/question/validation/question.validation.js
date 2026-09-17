@@ -35,21 +35,29 @@ export const createQuestionValidation = [
   validationErrorHandler,
 ];
 
+// T-10: Query-parameter validation for the list questions endpoint.
+// Both params are optional. Validation rejects malformed inputs (400) before the controller runs.
 //[T-10]
 // T-10: Validates optional ?search and ?mine query params for the list questions endpoint
 export const getQuestionsValidation = [
-  query("search")
-    .optional() // means search is not mandatory if not provided
-    .isString()
-    .withMessage("Search query must be a string")
-    .trim(),
-  query("mine")
-    .optional()
-    .isBoolean() // is it boolean
-    .withMessage("Mine must be a boolean")
-    .trim(),
-  validationErrorHandler,
-];
+    // ?search — optional keyword; matches title OR content
+    query("search")
+        .optional()
+        .isString()
+        .withMessage("Search query must be a string")
+        .trim(),
+    // ?mine — optional boolean; when true, only current user's questions
+    query("mine")
+        .optional()
+        .isBoolean()
+        .withMessage("Mine must be a boolean")
+        .trim(),
+    validationErrorHandler,
+]
+
+// export const getSingleQuestionValidation = [
+//     param("question")
+// ]
 
 //[T-11]
 export const searchQuestionsSemanticValidation = [

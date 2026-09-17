@@ -102,35 +102,47 @@ export const createQuestionWithVectorService = async (payload) => {
 // ! =======================================
 //used inside // * getQuestionsService[T-10],
 //it builds the SQL WHERE clause dynamically based on filters passed
-const buildQuestionFilters = (filters) => {
-  const conditions = [];
-  const params = [];
+/**
+ * T-10: Dynamic WHERE clause builder for the list questions query.
+ * Supports two optional filters:
+ *   - search: matches `?search` against question title OR content
+ *   - mine:   matches `?mine=true` to return only the current user's rows
+ * Returns { whereClause, params } — both ready to pass to safeExecute.
+ */
+const buildQuestionFilters = filters => {
+    const conditions = [];
+    const params = [];
 
-  if (filters.search) {
-    conditions.push(`(q.title LIKE ? OR q.content LIKE ?)`);
-    const searchTerm = `%${filters.search}%`;
-    params.push(searchTerm, searchTerm);
-  }
+    if (filters.search) {
+        conditions.push(`(q.title LIKE ? OR q.content LIKE ?)`);//LIKE operator is used to search for pattern inside text : it asks does this search value appears in title or content of the question in db : LIKE %search% means search's value can appear anywher in the text : in sql db its case-sensitive, so we dont need normalize the text that comes from user b/se we used COLLATE=utf8mb4_unicode_ci when we crete the tablle : ci means case-insensitive so The collation handles the case comparison for you.
+        const searchTerm = `%${filters.search}%`; // any text starts with %search% or ends with %search% or contains %search% in the middle
+        params.push(searchTerm, searchTerm);// the first is for title and second is for content
+    }
 
-  if (filters.mine && filters.userId) {
-    conditions.push(`q.user_id = ?`);
-    params.push(filters.userId);
-  }
+    if (filters.mine && filters.userId) {
+        conditions.push(`q.user_id = ?`);//when u select questions only add 'my questions' conditon if mine is truthy and userid exists to show the user's only questions 
+        params.push(filters.userId);
+    }
 
-  if (conditions.length === 0) {
-    return { whereClause: "", params };
-  }
+    if (conditions.length === 0) {
+        return { whereClause: '', params };// to prevent WHERE if no condioons cause we use where to set cdn for our selection , instead if no conditions just select all by removing the where clause
+    }
 
-  // *  if there are cdns:-
-  return {
-    whereClause: `WHERE ${conditions.join(" AND ")}`,
-    params,
-  };
+    // *  if there are cdns:-
+    return {
+        whereClause: `WHERE ${conditions.join(' AND ')}`,
+        params,
+    };
 };
 
 // ! =================================
 
 // # Task: List Questions[T-10]
+/**
+ * Fetches questions with author info and answer counts.
+ * Supports optional filters: search (keyword) and mine (own questions).
+ * Returns { data: [...], meta: {...} } for the controller.
+ */
 //GET /api/questions
 export const getQuestionsService = async (filters) => {
   const normalizedLimit = 100;
