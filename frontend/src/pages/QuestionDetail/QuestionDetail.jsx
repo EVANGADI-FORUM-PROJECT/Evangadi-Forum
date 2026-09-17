@@ -110,4 +110,13 @@ export default function QuestionDetail() {
       await navigator.clipboard.writeText(window.location.href);
     } catch { /* clipboard may be unavailable */ }
   };
+    // Rendering states
+     if (isLoading) {
+        return <div className={`${ui.pageStates__message} ${ui['pageStates__message--loading']} ${styles.fullState}`} role="status"><Loader2 className={styles.spin} size={22} /><p>Loading question…</p></div>;
+      }
+    
+      if (error) {
+        return <div className={`${ui.pageStates__message} ${ui['pageStates__message--error']} ${styles.fullState}`} role="alert"><strong>We couldn't load this question.</strong><p>{error}</p><button onClick={() => navigate('/dashboard')} className={styles.primary}>Back to home</button></div>;
+      }
+      
 
