@@ -225,3 +225,114 @@ if (success) {
             </div> 
             ); 
         }
+        
+        /** 
+         * Main question posting form. 
+         */ 
+        return ( 
+        <div className={styles.page}> 
+        {/* Back button - returns to the previous page */} 
+        <button 
+            className={styles.back} 
+            onClick={() => navigate(-1)} 
+            type="button" 
+            > 
+            
+            <ArrowLeft size={15} /> 
+            Back 
+            </button> 
+            
+            {/* Main question form card */} 
+            <section className={styles.card}>
+
+            {/* Introduction section */} 
+            <div className={styles.intro}> 
+                
+            {/* Small label above the main heading */} 
+            <span className={styles.kicker}> 
+            Start a discussion 
+            </span> 
+            
+            <h1>Ask a question</h1> 
+            
+            <p> 
+                Give other learners enough context to reproduce the problem and help you quickly. 
+            </p> 
+            </div> 
+            
+            {/* Information box explaining the AI Draft Coach */} 
+            <div className={styles.coachInfo}> 
+                
+            {/* AI icon */} 
+            <div className={styles.coachIcon}> 
+                <Sparkles size={17} /> 
+            </div> 
+            
+            {/* AI Draft Coach description */} 
+            <div> 
+                <strong>AI Draft Coach</strong> 
+            <p> Get constructive checklist-style suggestions before you publish. 
+            </p> 
+            </div> 
+            </div> 
+            
+            {/* Display validation/API errors when available */} 
+            {error && ( 
+                <div 
+                className={styles.error} 
+                role="alert" 
+                >
+            {error} 
+            </div> 
+            )} 
+            
+            {/* Question form */} 
+            <form onSubmit={handleSubmit} className={styles.form}>
+          <label>
+            <span>Question title</span>
+            <input
+              value={formData.title}
+              onChange={e => update('title', e.target.value)}
+              placeholder="e.g. Why does my React route break after refresh?"
+              maxLength={255}
+              disabled={isSubmitting}
+            />
+            <small>{formData.title.length}/255 · minimum 5 characters</small>
+          </label>
+
+          <label>
+            <span>Question body</span>
+            <MarkdownEditor
+              value={formData.content}
+              onChange={value => update('content', value)}
+              placeholder="Describe what you are trying to do, what you expected, what happened, and any relevant code or errors."
+              rows={13}
+              disabled={isSubmitting}
+              ariaLabel="Question body markdown editor"
+            />
+            <small>Use the formatting toolbar to add headings, lists, quotes, links, inline code, and code blocks.</small>
+          </label>
+
+          <div className={styles.actions}>
+            <button type="button" onClick={handleCoach} className={styles.coachButton} disabled={isCoaching || isSubmitting}>
+              {isCoaching ? <><Loader2 className={styles.spin} size={15} /> Thinking…</> : <><Lightbulb size={15} /> Get AI feedback</>}
+            </button>
+            <button type="submit" className={styles.primary} disabled={isSubmitting || isCoaching}>
+              {isSubmitting ? <><Loader2 className={styles.spin} size={15} /> Publishing…</> : 'Post question'}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {coachFeedback && (
+        <section className={styles.feedback}>
+          <div className={styles.feedbackHeader}><Sparkles size={16} /><div><h2>Draft coach</h2><p>Suggestions to make the question easier to answer.</p></div></div>
+          <div className={styles.tips}>
+            {(coachFeedback.tips || []).map((tip, i) => <div className={styles.tip} key={`${tip}-${i}`}><span>{i + 1}</span><p>{tip}</p></div>)}
+          </div>
+          {formData.content && <details className={styles.preview}><summary>Preview markdown</summary><ReactMarkdown>{formData.content}</ReactMarkdown></details>}
+        </section>
+      )}
+    </div>
+  );
+}
