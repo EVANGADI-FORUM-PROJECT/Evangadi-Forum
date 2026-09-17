@@ -15,5 +15,14 @@ import styles from "./Dashboard.module.css";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  // Read search values from the URL
+  const [searchParams] = useSearchParams();
+
+  // "q" is used for normal keyword search
+  const search = searchParams.get('q') || '';
+
+  // "semantic" is used for AI-powered semantic search
+  const semantic = searchParams.get('semantic') || '';
+  
   return null;
 }
