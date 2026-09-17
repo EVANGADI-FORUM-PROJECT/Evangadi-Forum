@@ -59,4 +59,14 @@ export default function QuestionDetail() {
       .finally(() => { if (!cancelled) setIsLoading(false); });
     return () => { cancelled = true; };
   }, [questionHash]);
-  
+  // Load related questions for the sidebar
+  useEffect(() => {
+      let cancelled = false;
+      setRelatedLoading(true);
+      questionService.getSimilarQuestions(questionHash, { k: 5 })
+        .then(result => { if (!cancelled) setRelated(result.data || result.similarQuestions || []); })
+        .catch(() => { if (!cancelled) setRelated([]); })
+        .finally(() => { if (!cancelled) setRelatedLoading(false); });
+      return () => { cancelled = true; };
+    }, [questionHash]);
+    
