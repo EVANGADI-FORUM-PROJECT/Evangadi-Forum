@@ -12,3 +12,5 @@ import {
     Loader2, 
     Sparkles, 
     } from 'lucide-react';
+// Import ReactMarkdown to render Markdown content as HTML 
+import ReactMarkdown from 'react-markdown';
