@@ -28,3 +28,74 @@
   font-weight: var(--font-bold);
   margin-bottom: .25rem;
 }
+
+/* Style the main welcome heading */
+.hero h1 {
+  font-size: 1.55rem;
+  margin-bottom: .35rem;
+}
+
+/* Supporting description below the welcome heading */
+.heroText {
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  max-width: 48rem;
+}
+
+/* Arrange the quick navigation cards in three columns */
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+  margin-top: var(--spacing-lg);
+}
+
+/* Basic appearance of each quick navigation card */
+.quickCard {
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+  padding: .75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* Change the card border when the user hovers over it */
+.quickCard:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
+/* Container for the icon inside each quick card */
+.quickIcon {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  background: var(--surface);
+}
+
+/* Stack the title and description vertically */
+.quickCard span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the quick card title */
+.quickCard strong {
+  font-size: .75rem;
+}
+
+/* Style the smaller description inside each card */
+.quickCard small {
+  color: var(--text-tertiary);
+  font-size: .64rem;
+  line-height: 1.4;
+  margin-top: .15rem;
+}
