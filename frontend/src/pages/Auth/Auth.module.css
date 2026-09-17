@@ -535,3 +535,24 @@
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
+
+@media(max-width:767px){
+  .auth__info{padding:2rem 1rem;}
+  .auth__infoHeader{margin-bottom:1.5rem;}
+  .auth__infoDescription{font-size:.9rem;}
+  .auth__features{gap:.75rem;margin-bottom:1.5rem;}
+  .auth__feature{padding:1rem;}
+  .auth__featureTitle{font-size:1rem;}
+  .auth__featureDescription{font-size:.78rem;}
+  .auth__infoFooter{padding-top:1rem;}
+  .auth__formSection{padding:1rem .75rem 2rem;align-items:flex-start;}
+  .auth__formContainer{padding:1.25rem;border-radius:var(--radius-lg);}
+}
+@media(max-width:420px){
+  .auth__info{padding:1.5rem .75rem;}
+  .auth__infoTitle{font-size:1.3rem;}
+  .auth__infoTagline{font-size:.72rem;}
+  .auth__featureIcon{width:2rem;height:2rem;}
+  .auth__formSection{padding-left:.5rem;padding-right:.5rem;}
+  .auth__formContainer{padding:1rem;}
+}
