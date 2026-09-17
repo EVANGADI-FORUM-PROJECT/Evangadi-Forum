@@ -88,3 +88,21 @@ useEffect(() => {
     cancelled = true;
   };
 }, [search, semantic, searchMode]);
+
+// Calculate summary statistics for the questions displayed in the feed
+const stats = useMemo(() => {
+  // Add up the number of answers across all questions
+  const replies = questions.reduce(
+    (sum, q) => sum + Number(q.answerCount || 0),
+    0
+  );
+
+  const yours = questions.filter(q => q.author?.id === user?.id).length;
+
+  return {
+    questions: questions.length,
+    replies,
+    unanswered: questions.filter(q => !Number(q.answerCount)).length,
+    yours,
+  };
+}, [questions, user?.id]);
