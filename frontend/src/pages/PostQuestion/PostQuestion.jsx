@@ -16,3 +16,6 @@ import {
 import ReactMarkdown from 'react-markdown';
 // Import the custom Markdown editor component 
 import MarkdownEditor from '../../components/MarkdownEditor/MarkdownEditor.jsx';
+
+// Import the question service used to communicate with the backend API 
+import { questionService } from '../../services/question/question.service.js';
