@@ -22,6 +22,34 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
   }, [location.search, location.pathname]);
 
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim() !== '') {
+        navigate(`/dashboard?q=${encodeURIComponent(searchTerm)}`);
+      } else if (
+        location.pathname === '/dashboard' &&
+        !new URLSearchParams(location.search).get('semantic')
+      ) {
+        navigate('/dashboard');
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, navigate, location.pathname]);
+
+  const handleSemanticSearch = e => {
+    e.preventDefault();
+    if (searchTerm.trim().length >= 5) {
+      navigate(`/dashboard?semantic=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
+  const handleSearchSubmit = e => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/dashboard?q=${encodeURIComponent(searchTerm)}`);
+    }
+  };
 
   return (
 
