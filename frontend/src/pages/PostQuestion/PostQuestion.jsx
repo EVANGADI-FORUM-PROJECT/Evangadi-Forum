@@ -180,3 +180,48 @@ setError(err.message);
 // Stop the publishing/loading state setIsSubmitting(false); 
 } 
 };
+
+/**
+ * Display the success screen after the question is published. 
+ *
+ * This prevents the question form from being displayed 
+ * after a successful submission. 
+ */ 
+if (success) { 
+    return ( 
+    <div className={styles.successPage}> 
+        <div className={styles.successCard}> 
+            {/* Success/check icon */}
+             <CheckCircle2 
+             size={42} 
+             className={styles.successIcon} 
+             /> 
+             {/* Success message */} 
+             <h1>Thread published</h1> 
+             <p> Your question is now part of the community feed. </p> 
+             
+             {/* Actions available after publishing */} 
+             <div className={styles.successActions}> 
+                
+            {/* Return to the dashboard/home page */} 
+            <button 
+                onClick={() => navigate('/dashboard')} 
+                className={styles.primary} 
+            > 
+            Go to home 
+            </button> 
+
+            {/* Reset the form so the user can ask another question */} <button 
+            onClick={() => { 
+                setSuccess(false); 
+                setFormData(initialForm); 
+            }} 
+            className={styles.secondary} 
+            > 
+            Ask another 
+            </button> 
+            </div> 
+            </div> 
+            </div> 
+            ); 
+        }
