@@ -1,1 +1,33 @@
-/* Task-specific styles for the corresponding frontend task.\n   TODO: Implement styles together with the task. */\n
+.layout { min-height:100vh; background-color:var(--background); }
+.layout__content { margin-left:var(--app-sidebar-width); min-height:100vh; min-width:0; display:flex; flex-direction:column; transition:margin-left var(--transition-slow); }
+.layout--sidebarClosed .layout__content { margin-left:0; }
+.layout__main { flex:1; min-width:0; padding:var(--spacing-lg) var(--spacing-xl) var(--spacing-2xl); max-width:100%; display:flex; flex-direction:column; }
+.layout__mainInner { width:100%; max-width:var(--app-content-max); margin:0 auto; flex:1; min-width:0; display:flex; flex-direction:column; }
+.sidebarOverlay { display:none; }
+
+.sidebarShowButton {
+  display: none;
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 60;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.sidebarShowButton:hover {
+  background: var(--surface-container-low);
+  color: var(--text-primary);
+}
+.sidebarShowButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
