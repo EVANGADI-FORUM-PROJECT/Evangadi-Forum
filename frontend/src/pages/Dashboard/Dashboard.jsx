@@ -33,5 +33,12 @@ const [isLoading, setIsLoading] = useState(true);
 // Store an error message if loading questions fails
 const [error, setError] = useState('');
 
+// Determine which type of search is currently active
+// semantic = AI search, keyword = normal search, all = no search
+const searchMode = semantic ? 'semantic' : search ? 'keyword' : 'all';
+
+// Get the actual search text, whether it came from keyword or semantic search
+const activeQuery = semantic || search;
+
   return null;
 }
