@@ -89,3 +89,18 @@ export default function QuestionDetail() {
        } catch (err) { setFitError(err.message); }
        finally { setIsCheckingFit(false); }
      };
+      // Submit a new answer
+        const handlePostAnswer = async e => {
+          e.preventDefault();
+          const validationError = validateAnswer();
+          if (validationError) { setSubmitError(validationError); return; }
+          setIsSubmitting(true); setSubmitError('');
+          try {
+            const result = await answerService.postAnswer(question.id, answerText.trim());
+            const posted = result.data;
+            setAnswers(prev => [posted, ...prev]);
+            setAnswerText('');
+            setFitResult(null);
+          } catch (err) { setSubmitError(err.message); }
+          finally { setIsSubmitting(false); }
+        };
