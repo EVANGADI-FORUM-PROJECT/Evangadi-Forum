@@ -104,3 +104,10 @@ export default function QuestionDetail() {
           } catch (err) { setSubmitError(err.message); }
           finally { setIsSubmitting(false); }
         };
+        // Share current page URL
+        const share = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+    } catch { /* clipboard may be unavailable */ }
+  };
+
