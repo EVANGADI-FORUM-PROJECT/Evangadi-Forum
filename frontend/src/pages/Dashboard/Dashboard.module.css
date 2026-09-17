@@ -99,3 +99,63 @@
   line-height: 1.4;
   margin-top: .15rem;
 }
+
+/* Layout for the statistics introduction and optional search indicator */
+.statsIntro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+}
+
+/* Small explanatory text above the statistics */
+.statsIntro p {
+  font-size: .67rem;
+  color: var(--text-tertiary);
+}
+
+/* Small label showing the active search type and query */
+.searchPill {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .62rem;
+  padding: .3rem .5rem;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  white-space: nowrap;
+}
+
+/* Arrange the four statistics in columns */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+/* Basic styling for each individual statistic */
+.stat {
+  padding: .65rem .75rem;
+  border: 1px solid var(--border);
+  background: var(--surface-container-low);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the statistic label */
+.stat span {
+  font-size: .62rem;
+  color: var(--text-tertiary);
+}
+
+/* Style the statistic value */
+.stat strong {
+  font-size: 1rem;
+  margin-top: .1rem;
+}
