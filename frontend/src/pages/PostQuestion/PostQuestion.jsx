@@ -52,3 +52,9 @@ export default function PostQuestion() {
     
     // Store the feedback returned by the AI Draft Coach 
     const [coachFeedback, setCoachFeedback] = useState(null);
+
+    // Store any validation or API error message 
+    const [error, setError] = useState(''); 
+    
+    // Track whether the question was successfully published 
+    const [success, setSuccess] = useState(false);
