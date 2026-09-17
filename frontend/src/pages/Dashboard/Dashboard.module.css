@@ -200,3 +200,39 @@
   border-radius: var(--radius-md);
   padding: .32rem .5rem;
 }
+
+/* Container for the list of questions */
+.questionList {
+  background: var(--surface);
+}
+
+/* Main button used when there are no questions */
+.primaryButton {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: .55rem .85rem;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: var(--font-semibold);
+}
+
+/* Change the button background when the user hovers */
+.primaryButton:hover {
+  color: #fff;
+  background: var(--primary-hover);
+}
+
+/* Rotate the loading icon continuously */
+.spin {
+  animation: spin 1s linear infinite;
+  margin-bottom: .5rem;
+}
+
+/* Define the rotation used by the loading icon */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
