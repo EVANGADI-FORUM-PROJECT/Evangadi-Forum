@@ -118,3 +118,15 @@ if (validationError) {
     setError(validationError); 
     return; 
 }
+// Show the loading state for the AI feedback button se
+setIsCoaching(true); 
+
+// Clear any previous error 
+setError(''); 
+
+try {   
+// Send the question title and content to the AI coaching service 
+const result = await questionService.generateQuestionDraftCoach({ 
+    title: formData.title.trim(), 
+    content: formData.content.trim(), 
+});
