@@ -104,3 +104,17 @@ if (!content) {
     // Empty string means validation passed
     return ''; 
 };
+
+/** 
+ * Request AI feedback for the question draft. 
+ * The AI Draft Coach provides suggestions to improve 
+ * the question before it is published. 
+ */ 
+const handleCoach = async () => { 
+    // Validate the form before sending it to the AI service 
+const validationError = validate(); 
+// Stop if validation fails 
+if (validationError) { 
+    setError(validationError); 
+    return; 
+}
