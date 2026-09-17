@@ -65,7 +65,25 @@ export default function Layout() {
             <Outlet />
           </div>
         </main>
-        
+
+
+        <footer className={styles.layout__footer}>
+          <div className={styles['layout__footer-content']}>
+            <div className={styles['layout__footer-branding']}>
+              <h4 className={styles['layout__footer-title']}>Evangadi Forum</h4>
+              <p className={styles['layout__footer-tagline']}>
+                A practice space for technical Q&A, peer feedback, and AI-assisted search, built for Evangadi learners and mentors.
+              </p>
+              <p className={styles['layout__footer-copyright']}>© 2026 Evangadi Forum. For educational use.</p>
+            </div>
+            <nav className={styles['layout__footer-nav']} aria-label="Footer navigation">
+              <a href="#" className={styles['layout__footer-link']}>About</a>
+              <a href="#" className={styles['layout__footer-link']}>Privacy</a>
+              <a href="#" className={styles['layout__footer-link']}>Terms</a>
+              <a href="#" className={styles['layout__footer-link']}>Contact</a>
+            </nav>
+          </div>
+        </footer>
       </div>
     </div>
   )
