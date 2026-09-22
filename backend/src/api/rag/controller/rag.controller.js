@@ -93,3 +93,5 @@ export const getDocumentFileController = async (req, res, next) => {
     next(error);
   }
 };
+export const listDocumentsController = async (req, res, next) => {
+    try {
