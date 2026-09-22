@@ -9,6 +9,10 @@ import RagSearch from "./RagSearch";
 
 // While a document is still being processed the list is refreshed this often.
 const POLL_INTERVAL_MS = 3000;
+function isProcessing(status) {
+  return status === "processing" || status === "pending";
+}
+
 export default function RagDocuments() {
   // TODO [FE-RAG]: Implement the Milestone 3 RAG Documents page.
   return <div>TODO: Implement RAG Documents page</div>;
