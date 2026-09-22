@@ -157,7 +157,7 @@ export default function RagDocuments() {
           <p className={styles.cardHint}>
             Add PDFs here. Processing runs once per upload.
           </p>
-          <div
+          <
             className={`${styles.dropzone} ${isDragging ? styles.dropzoneActive : ''}`}
             onDragOver={(event) => {
               event.preventDefault();
@@ -165,6 +165,9 @@ export default function RagDocuments() {
             }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
-          ></div>
+          >
+          <p className={styles.dropText}>
+              Accepted format: PDF. Maximum file size is enforced by the server.
+            </p>
   }
 }
