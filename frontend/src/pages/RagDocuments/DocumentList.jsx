@@ -33,5 +33,6 @@ export default function DocumentList({
      {documents.map((doc) => (
        <DocumentListItem
         key={doc.document_id}
+        isActive={doc.document_id === selectedId}
  )
 }
