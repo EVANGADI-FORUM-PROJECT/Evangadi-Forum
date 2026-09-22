@@ -32,4 +32,6 @@ export default function RagDocuments() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [libraryError, setLibraryError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
+  const fileInputRef = useRef(null);
 }
