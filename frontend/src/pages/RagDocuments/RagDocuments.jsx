@@ -17,6 +17,11 @@ function formatFileSize(bytes) {
   if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))} KB`;
   return `${(size / (1024 * 1024)).toFixed(2)} MB`;
 }
+function isPdfFile(file) {
+  return (
+    file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+  );
+}
 
 export default function RagDocuments() {
   // TODO [FE-RAG]: Implement the Milestone 3 RAG Documents page.
