@@ -22,4 +22,5 @@ export default function DocumentList({
       return (
         <p className={styles.listMessage}></p>
          Your library is empty. Upload a PDF to index it 
+         for search and Q&amp;A.
 }
