@@ -21,7 +21,7 @@ export default function DocumentList({
   if (documents.length === 0) {
       return (
         <p className={styles.listMessage}>
-          
+
         </p>
          Your library is empty. Upload a PDF to index it 
          for search and Q&amp;A.
@@ -29,6 +29,6 @@ export default function DocumentList({
            );
 }
  return (
-  
+   <ul className={styles.docList}>
  )
 }
