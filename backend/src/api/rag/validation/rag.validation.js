@@ -24,11 +24,13 @@ export const documentIdParamValidation1 = [
     .isInt()
     .withMessage('documentId must be an integer'),
     validationErrorHandler
-
 ];
 
 export const documentIdParamValidation2 = [
-  // TODO [T-24]: Validate documentId for GET /documents/:documentId/file.
+ param("documentId")
+    .isInt()
+    .withMessage('documentId must be an integer'),
+    validationErrorHandler
 ];
 
 export const deleteDocumentValidation = [
