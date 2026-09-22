@@ -199,6 +199,19 @@ export default function RagDocuments() {
                 {isUploading ? 'Uploading…' : 'Upload'}
               </button>
             </div>
+             {selectedFile ? (
+              <div className={styles.fileChip}>
+                <FileText size={15} aria-hidden />
+                <span className={styles.fileChipName}>{selectedFile.name}</span>
+                <span className={styles.fileChipSize}>
+                  {formatFileSize(selectedFile.size)}
+                </span>
+              </div>
+            ) : (
+              <p className={styles.noFile}>No file selected.</p>
+            )}
+          </div>
+
 
   }
 }
