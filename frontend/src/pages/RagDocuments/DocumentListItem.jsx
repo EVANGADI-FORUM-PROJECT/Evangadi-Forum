@@ -22,6 +22,14 @@ export default function DocumentListItem({
         </span>
         <StatusBadge status={doc.status} />
       </button>
+      <button
+        type="button"
+        className={styles.deleteButton}
+        onClick={() => onDelete(doc)}
+        disabled={isDeleting}
+        aria-label={`Delete ${doc.title}`}
+        title="Delete document"
+      ></button>
     </li>
   );
 }
