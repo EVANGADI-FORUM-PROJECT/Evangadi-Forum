@@ -197,6 +197,14 @@ export const getDocumentMetaService = async (documentId, userId) => {
         WHERE document_id = ?
           AND user_id = ?
     `;
+
+    const rows = await safeExecute(sql, [documentId, userId]);
+
+    if (rows.length === 0) {
+        throw new NotFoundError('Document not found.');
+    }
+
+    return rows[0];
 };
 
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
