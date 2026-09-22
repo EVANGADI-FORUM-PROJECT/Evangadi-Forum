@@ -91,6 +91,10 @@ export default function RagDocuments() {
     if (isUploading) return;
     chooseFile(event.dataTransfer.files?.[0]);
   };
+ const handleUpload = async () => {
+    if (!selectedFile || isUploading) return;
 
+    setIsUploading(true);
+    setLibraryError('');
   );
 }
