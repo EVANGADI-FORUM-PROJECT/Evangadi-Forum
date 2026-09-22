@@ -32,5 +32,6 @@ export default function DocumentList({
    <ul className={styles.docList}>
      {documents.map((doc) => (
        <DocumentListItem
+        key={doc.document_id}
  )
 }
