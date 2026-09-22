@@ -181,8 +181,22 @@ export const queryDocumentService = async (documentId, searchQuery, userId) => {
 };
 
 export const getDocumentMetaService = async (documentId, userId) => {
-  // TODO [T-24]: Fetch document metadata after verifying ownership.
-  throw new Error("TODO: Implement T-24 metadata");
+  const sql = `
+        SELECT
+            document_id,
+            title,
+            mime_type,
+            byte_size,
+            status,
+            error_message,
+            created_at,
+            updated_at,
+            user_id,
+            storage_path
+        FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
 };
 
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
