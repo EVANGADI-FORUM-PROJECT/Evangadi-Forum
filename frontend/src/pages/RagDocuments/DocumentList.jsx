@@ -38,5 +38,7 @@ export default function DocumentList({
         onSelect={onSelect}
           onDelete={onDelete}
            />
+   ))}
+    </ul>
  )
 }
