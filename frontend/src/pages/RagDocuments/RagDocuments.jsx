@@ -157,5 +157,14 @@ export default function RagDocuments() {
           <p className={styles.cardHint}>
             Add PDFs here. Processing runs once per upload.
           </p>
+          <div
+            className={`${styles.dropzone} ${isDragging ? styles.dropzoneActive : ''}`}
+            onDragOver={(event) => {
+              event.preventDefault();
+              if (!isUploading) setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+          ></div>
   }
 }
