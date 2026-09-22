@@ -10,8 +10,13 @@ export default function DocumentListItem({
   onDelete,
 }) {
   return (
-    <li
-      className={`${styles.docItem} ${isActive ? styles.docItemActive : ""}`}
-    ></li>
+    <li className={`${styles.docItem} ${isActive ? styles.docItemActive : ""}`}>
+      <button
+        type="button"
+        className={styles.docSelect}
+        onClick={() => onSelect(doc.document_id)}
+        aria-pressed={isActive}
+      ></button>
+    </li>
   );
 }
