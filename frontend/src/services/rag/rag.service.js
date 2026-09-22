@@ -42,10 +42,40 @@ const handleSubmit = async (event) => {
       setIsSearching(false);
     }
   };
-  deleteDocument: async (documentId) => {
-    // TODO [T-24]: DELETE /api/rag/documents/:documentId
-    throw new Error("TODO: Implement T-24 deleteDocument");
-  },
+ return (
+    <div className={`${styles.section} ${styles.sectionDivided}`}>
+      <h2 className={styles.cardTitle}>Semantic search</h2>
+      <p className={styles.cardHint}>
+        Finds passages by meaning (embeddings), not only exact keywords.
+      </p>
+
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label htmlFor={`rag-search-${documentId}`} className={styles.label}>
+          Search query
+        </label>
+        <input
+          id={`rag-search-${documentId}`}
+          type="text"
+          className={styles.input}
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Describe the topic or phrase you are looking for"
+          maxLength={500}
+          disabled={isSearching}
+        />
+        <div>
+          <button type="submit" className={styles.primaryButton} disabled={isSearching}>
+            {isSearching ? (
+              <Loader2 size={15} className={styles.spin} aria-hidden />
+            ) : (
+              <Sparkles size={15} aria-hidden />
+            )}
+            {isSearching ? 'Searching…' : 'Search'}
+          </button>
+        </div>
+      </form>
+    </div>
+  };
 
   searchInDocument: async (documentId, query, k) => {
     // TODO [T-23]: GET /api/rag/documents/:documentId/search
