@@ -85,5 +85,12 @@ export default function RagDocuments() {
   const handleFileInputChange = (event) => {
     chooseFile(event.target.files?.[0]);
   };
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    if (isUploading) return;
+    chooseFile(event.dataTransfer.files?.[0]);
+  };
+
   );
 }
