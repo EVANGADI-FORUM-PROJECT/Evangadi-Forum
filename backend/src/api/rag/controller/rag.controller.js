@@ -22,7 +22,10 @@ export const createDocumentController = async (req, res, next) => {
 
 export const searchInDocumentController = async (req, res, next) => {
   try {
-    
+const documentId = req.params.documentId;
+        const searchQuery = req.query.query;
+        const k = req.query.k ? Number(req.query.k) : undefined;
+        const userId = req.user.id;
   } catch (error) {
     
   }
