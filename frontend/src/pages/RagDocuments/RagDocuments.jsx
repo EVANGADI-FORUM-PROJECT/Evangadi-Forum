@@ -211,6 +211,11 @@ export default function RagDocuments() {
               <p className={styles.noFile}>No file selected.</p>
             )}
           </div>
+           {libraryError && (
+            <p className={styles.inlineError} role="alert">
+              {libraryError}
+            </p>
+          )}
 
 
   }
