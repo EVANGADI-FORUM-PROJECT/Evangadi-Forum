@@ -34,5 +34,6 @@ export const documentIdParamValidation2 = [
 ];
 
 export const deleteDocumentValidation = [
-  // TODO [T-24]: Validate documentId for DELETE /documents/:documentId.
+  param("documentId").isInt().withMessage("documentId must be an integer"),
+  validationErrorHandler,
 ];
