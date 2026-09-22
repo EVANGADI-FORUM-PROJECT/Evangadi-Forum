@@ -107,3 +107,7 @@ export const listDocumentsController = async (req, res, next) => {
 };
 export const deleteDocumentController = async (req, res, next) => {
     try {
+      const result = await deleteDocumentService(
+            req.params.documentId,
+            req.user.id
+        );
