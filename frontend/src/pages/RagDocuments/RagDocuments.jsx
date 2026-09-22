@@ -30,4 +30,6 @@ export default function RagDocuments() {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [libraryError, setLibraryError] = useState("");
 }
