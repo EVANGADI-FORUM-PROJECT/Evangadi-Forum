@@ -75,20 +75,48 @@ const handleSubmit = async (event) => {
         </div>
       </form>
     </div>
+
+
+
+
+
+      {error && (
+        <p className={styles.errorBox} role="alert">
+          {error}
+        </p>
+      )}
+
+      {results && results.length === 0 && (
+        <p className={styles.emptyResults}>
+          No matching passages found. Try describing the topic in different words.
+        </p>
+      )}
+
+      {results && results.length > 0 && (
+        <ol className={styles.results}>
+          {results.map((result) => (
+            <li key={result.chunkId} className={styles.result}>
+              <div className={styles.resultHeader}>
+                <span className={styles.resultChunk}>Chunk {result.chunkIndex}</span>
+                <span className={styles.resultScore}>
+                  {Math.round(result.score * 100)}% match
+                </span>
+              </div>
+              <p className={styles.excerpt}>{result.excerpt}</p>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+
+
+
+
+
+
+
   };
 
-  searchInDocument: async (documentId, query, k) => {
-    // TODO [T-23]: GET /api/rag/documents/:documentId/search
-    throw new Error("TODO: Implement T-23 searchInDocument");
-  },
-
-  queryDocument: async (documentId, query) => {
-    // TODO [T-23]: POST /api/rag/documents/:documentId/query
-    throw new Error("TODO: Implement T-23 queryDocument");
-  },
-
-  fetchPdfObjectUrl: async (documentId) => {
-    // TODO [T-24]: GET /api/rag/documents/:documentId/file and create a Blob URL.
-    throw new Error("TODO: Implement T-24 fetchPdfObjectUrl");
-  },
-};
+  
