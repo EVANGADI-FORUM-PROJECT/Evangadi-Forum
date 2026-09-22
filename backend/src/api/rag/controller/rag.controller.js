@@ -111,3 +111,8 @@ export const deleteDocumentController = async (req, res, next) => {
             req.params.documentId,
             req.user.id
         );
+  res.status(200).json({
+            success: true,
+            message: 'Document deleted successfully.',
+            data: result
+        });
