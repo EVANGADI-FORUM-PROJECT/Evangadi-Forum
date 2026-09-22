@@ -36,4 +36,7 @@ export default function RagDocuments() {
   const fileInputRef = useRef(null);
   const activeDocument =
     documents.find((doc) => doc.document_id === selectedId) || null;
+  const hasProcessingDocuments = documents.some((doc) =>
+    isProcessing(doc.status),
+  );
 }
