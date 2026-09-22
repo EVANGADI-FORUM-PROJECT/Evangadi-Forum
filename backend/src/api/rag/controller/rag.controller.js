@@ -33,6 +33,15 @@ export const searchInDocumentController = async (req, res, next) => {
             k,
             userId
         );
+
+        res.status(200).json({
+            success: true,
+            message: 'Ranked chunk excerpts',
+            data: {
+                query: searchQuery,
+                results
+            }
+        });
         
   } catch (error) {
     
