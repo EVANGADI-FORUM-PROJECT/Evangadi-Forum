@@ -82,5 +82,8 @@ export default function RagDocuments() {
     }
     setSelectedFile(file);
   };
+  const handleFileInputChange = (event) => {
+    chooseFile(event.target.files?.[0]);
+  };
   );
 }
