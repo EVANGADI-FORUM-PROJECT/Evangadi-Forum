@@ -23,4 +23,7 @@ function isPdfFile(file) {
   );
 }
 
-export default function RagDocuments() {}
+export default function RagDocuments() {
+  const [documents, setDocuments] = useState([]);
+  const [isListLoading, setIsListLoading] = useState(true);
+}
