@@ -21,8 +21,11 @@ export const createDocumentController = async (req, res, next) => {
 };
 
 export const searchInDocumentController = async (req, res, next) => {
-  // TODO [T-23]: Read documentId/query/k/userId, call the service, return ranked results.
-  throw new Error("TODO: Implement T-23 search controller");
+  try {
+    
+  } catch (error) {
+    
+  }
 };
 
 export const queryDocumentController = async (req, res, next) => {
