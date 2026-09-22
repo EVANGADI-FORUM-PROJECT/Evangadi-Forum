@@ -44,7 +44,7 @@ export const searchInDocumentController = async (req, res, next) => {
         });
         
   } catch (error) {
-    
+    next(error);
   }
 };
 
