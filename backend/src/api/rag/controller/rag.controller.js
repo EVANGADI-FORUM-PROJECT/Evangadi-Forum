@@ -50,8 +50,31 @@ export const createDocumentController = async (req, res, next) => {
 };
 
 export const searchInDocumentController = async (req, res, next) => {
-  // TODO [T-23]: Read documentId/query/k/userId, call the service, return ranked results.
-  throw new Error("TODO: Implement T-23 search controller");
+  try {
+        const documentId = req.params.documentId;
+        const searchQuery = req.query.query;
+        const k = req.query.k ? Number(req.query.k) : undefined;
+        const userId = req.user.id;
+
+        const results = await searchInDocumentService(
+            documentId,
+            searchQuery,
+            k,
+            userId
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Ranked chunk excerpts',
+            data: {
+                query: searchQuery,
+                results
+            }
+        });
+        
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const queryDocumentController = async (req, res, next) => {
