@@ -1,11 +1,4 @@
-/*
- * TASK: Frontend RAG Document List Item
- *
- * TODO [T-24]:
- * - Show document title/status.
- * - Select the document.
- * - Delete the document.
- */
+import { Loader2, Trash2 } from "lucide-react";
 
 export default function DocumentListItem() {
   // TODO [T-24]: Implement document list item.
