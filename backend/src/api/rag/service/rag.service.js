@@ -208,8 +208,12 @@ export const getDocumentMetaService = async (documentId, userId) => {
 };
 
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
-  // TODO [T-24]: Verify ownership and return the absolute PDF path.
-  throw new Error("TODO: Implement T-24 PDF file streaming");
+  const sql = `
+        SELECT storage_path, mime_type
+        FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
 };
 
 export const listDocumentsForUserService = async (userId) => {
