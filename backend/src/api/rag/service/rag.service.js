@@ -214,6 +214,8 @@ export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
         WHERE document_id = ?
           AND user_id = ?
     `;
+
+     const rows = await safeExecute(sql, [documentId, userId]);
 };
 
 export const listDocumentsForUserService = async (userId) => {
