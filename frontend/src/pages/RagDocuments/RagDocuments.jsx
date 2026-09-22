@@ -71,5 +71,16 @@ export default function RagDocuments() {
 
     return () => clearInterval(timer);
   }, [hasProcessingDocuments]);
+  const chooseFile = (file) => {
+    setLibraryError('');
+    if (!file) return;
+
+    if (!isPdfFile(file)) {
+      setSelectedFile(null);
+      setLibraryError('Only PDF files are supported.');
+      return;
+    }
+    setSelectedFile(file);
+  };
   );
 }
