@@ -21,11 +21,27 @@ export default function RagSearch({ documentId }) {
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
 
-  uploadPdf: async (file) => {
-    // TODO [T-22]: POST /api/rag/documents using multipart/form-data.
-    throw new Error("TODO: Implement T-22 uploadPdf");
-  },
 
+const handleSubmit = async (event) => {
+    event.preventDefault();
+    const trimmed = query.trim();
+    if (!trimmed || isSearching) {
+      if (!trimmed) setError('Enter something to search for.');
+      return;
+    }
+
+    setIsSearching(true);
+    setError('');
+    try {
+      const result = await ragService.searchInDocument(documentId, trimmed);
+      setResults(result.data?.results || []);
+    } catch (err) {
+      setResults(null);
+      setError(err.message);
+    } finally {
+      setIsSearching(false);
+    }
+  };
   deleteDocument: async (documentId) => {
     // TODO [T-24]: DELETE /api/rag/documents/:documentId
     throw new Error("TODO: Implement T-24 deleteDocument");
