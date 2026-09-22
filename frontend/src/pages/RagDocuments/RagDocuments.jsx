@@ -133,5 +133,18 @@ export default function RagDocuments() {
       setDeletingId(null);
     }
   };
+   return (
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <span className={styles.kicker}>Knowledge base</span>
+        <h1>Private PDF library</h1>
+        <p>
+          Upload study or reference PDFs to your own workspace. Each file is
+          indexed for semantic search and optional AI answers that cite passages
+          from that document only. File size limits apply on the server; other
+          users never see your uploads.
+        </p>
+      </section>
+
   }
 }
