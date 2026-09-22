@@ -38,5 +38,24 @@ export default function RagDocuments() {
     documents.find((doc) => doc.document_id === selectedId) || null;
   const hasProcessingDocuments = documents.some((doc) =>
     isProcessing(doc.status),
+  // Load the library on mount.
+  useEffect(() => {
+    let cancelled = false;
+    ragService
+      .listDocuments()
+      .then((result) => {
+        if (!cancelled) setDocuments(result.data || []);
+      })
+      .catch((err) => {
+        if (!cancelled) setListError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setIsListLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   );
 }
