@@ -84,3 +84,7 @@ export const queryDocumentController = async (req, res, next) => {
 
 export const getDocumentFileController = async (req, res, next) => {
     try {
+      const result = await getAssertOwnedDocumentPathService(
+            req.params.documentId,
+            req.user.id
+        );
