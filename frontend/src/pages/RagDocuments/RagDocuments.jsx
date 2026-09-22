@@ -57,7 +57,7 @@ export default function RagDocuments() {
       cancelled = true;
     };
   }, []);
- // Poll only while something is still processing (e.g. after a page reload).
+  // Poll only while something is still processing (e.g. after a page reload).
   useEffect(() => {
     if (!hasProcessingDocuments) return undefined;
 
@@ -73,12 +73,12 @@ export default function RagDocuments() {
     return () => clearInterval(timer);
   }, [hasProcessingDocuments]);
   const chooseFile = (file) => {
-    setLibraryError('');
+    setLibraryError("");
     if (!file) return;
 
     if (!isPdfFile(file)) {
       setSelectedFile(null);
-      setLibraryError('Only PDF files are supported.');
+      setLibraryError("Only PDF files are supported.");
       return;
     }
     setSelectedFile(file);
@@ -92,11 +92,11 @@ export default function RagDocuments() {
     if (isUploading) return;
     chooseFile(event.dataTransfer.files?.[0]);
   };
- const handleUpload = async () => {
+  const handleUpload = async () => {
     if (!selectedFile || isUploading) return;
 
     setIsUploading(true);
-    setLibraryError('');
+    setLibraryError("");
     try {
       const result = await ragService.uploadPdf(selectedFile);
       const created = result.data;
@@ -106,7 +106,7 @@ export default function RagDocuments() {
       ]);
       setSelectedId(created.document_id);
       setSelectedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
       setLibraryError(err.message);
     } finally {
@@ -117,23 +117,27 @@ export default function RagDocuments() {
   const handleDelete = async (doc) => {
     if (deletingId) return;
     const confirmed = window.confirm(
-      `Delete "${doc.title}"? The PDF and its search index will be removed.`
+      `Delete "${doc.title}"? The PDF and its search index will be removed.`,
     );
     if (!confirmed) return;
 
     setDeletingId(doc.document_id);
-    setLibraryError('');
+    setLibraryError("");
     try {
       await ragService.deleteDocument(doc.document_id);
-      setDocuments((prev) => prev.filter((item) => item.document_id !== doc.document_id));
-      setSelectedId((current) => (current === doc.document_id ? null : current));
+      setDocuments((prev) =>
+        prev.filter((item) => item.document_id !== doc.document_id),
+      );
+      setSelectedId((current) =>
+        current === doc.document_id ? null : current,
+      );
     } catch (err) {
       setLibraryError(err.message);
     } finally {
       setDeletingId(null);
     }
   };
-   return (
+  return (
     <div className={styles.page}>
       <section className={styles.hero}>
         <span className={styles.kicker}>Knowledge base</span>
@@ -150,15 +154,15 @@ export default function RagDocuments() {
           {listError}
         </div>
       )}
-<div className={styles.workspace}>
+      <div className={styles.workspace}>
         {/* Left column: upload + document list */}
         <aside className={styles.card}>
           <h2 className={styles.cardTitle}>Library</h2>
           <p className={styles.cardHint}>
             Add PDFs here. Processing runs once per upload.
           </p>
-          <
-            className={`${styles.dropzone} ${isDragging ? styles.dropzoneActive : ''}`}
+          <div
+            className={`${styles.dropzone} ${isDragging ? styles.dropzoneActive : ""}`}
             onDragOver={(event) => {
               event.preventDefault();
               if (!isUploading) setIsDragging(true);
@@ -166,11 +170,11 @@ export default function RagDocuments() {
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
           >
-          <p className={styles.dropText}>
+            <p className={styles.dropText}>
               Accepted format: PDF. Maximum file size is enforced by the server.
             </p>
 
-             <input
+            <input
               ref={fileInputRef}
               type="file"
               accept="application/pdf,.pdf"
@@ -180,26 +184,26 @@ export default function RagDocuments() {
               tabIndex={-1}
               aria-label="Choose a PDF file"
             />
-             <div className={styles.dropActions}>
-              <
+            <div className={styles.dropActions}>
+              <button
                 type="button"
                 className={styles.secondaryButton}
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
               >
-               <FileUp size={15} aria-hidden /> Choose file
+                <FileUp size={15} aria-hidden /> Choose file
               </button>
               <button
                 type="button"
                 className={styles.primaryButton}
                 onClick={handleUpload}
                 disabled={!selectedFile || isUploading}
-              > 
-              <Upload size={15} aria-hidden />
-                {isUploading ? 'Uploading…' : 'Upload'}
+              >
+                <Upload size={15} aria-hidden />
+                {isUploading ? "Uploading…" : "Upload"}
               </button>
             </div>
-             {selectedFile ? (
+            {selectedFile ? (
               <div className={styles.fileChip}>
                 <FileText size={15} aria-hidden />
                 <span className={styles.fileChipName}>{selectedFile.name}</span>
@@ -211,12 +215,12 @@ export default function RagDocuments() {
               <p className={styles.noFile}>No file selected.</p>
             )}
           </div>
-           {libraryError && (
+          {libraryError && (
             <p className={styles.inlineError} role="alert">
               {libraryError}
             </p>
           )}
-            <DocumentList
+          <DocumentList
             documents={documents}
             isLoading={isListLoading}
             selectedId={selectedId}
@@ -224,25 +228,41 @@ export default function RagDocuments() {
             onSelect={setSelectedId}
             onDelete={handleDelete}
           />
-          </aside>
+        </aside>
 
-           {/* Right column: the active document */}
+        {/* Right column: the active document */}
         <section className={styles.card}>
           {!activeDocument ? (
             <div className={styles.placeholder}>
-              Choose a document from the library to open the reader, run semantic
-              search over its text, and ask questions with AI-assisted answers
-              grounded in that file.
+              Choose a document from the library to open the reader, run
+              semantic search over its text, and ask questions with AI-assisted
+              answers grounded in that file.
             </div>
-          ) : activeDocument.status !== 'ready' ? (
+          ) : activeDocument.status !== "ready" ? (
             <div className={styles.placeholder} role="status">
-              This document is not ready for preview or AI tools. Current status:{' '}
-              <strong>{activeDocument.status}</strong>.
-              {activeDocument.status === 'failed' && activeDocument.error_message && (
-                <span className={styles.failureReason}>
-                  {activeDocument.error_message}
-                </span>
-              )}
+              This document is not ready for preview or AI tools. Current
+              status: <strong>{activeDocument.status}</strong>.
+              {activeDocument.status === "failed" &&
+                activeDocument.error_message && (
+                  <span className={styles.failureReason}>
+                    {activeDocument.error_message}
+                  </span>
+                )}
             </div>
-  }
+          ) : (
+            // `key` resets each panel (results, answers, PDF preview) when the
+            // user switches to another document.
+            <div key={activeDocument.document_id}>
+              <RagPreview
+                documentId={activeDocument.document_id}
+                title={activeDocument.title}
+              />
+              <RagSearch documentId={activeDocument.document_id} />
+              <RagAskAI documentId={activeDocument.document_id} />
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
 }
