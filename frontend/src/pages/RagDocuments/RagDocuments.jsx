@@ -150,6 +150,12 @@ export default function RagDocuments() {
           {listError}
         </div>
       )}
-
+<div className={styles.workspace}>
+        {/* Left column: upload + document list */}
+        <aside className={styles.card}>
+          <h2 className={styles.cardTitle}>Library</h2>
+          <p className={styles.cardHint}>
+            Add PDFs here. Processing runs once per upload.
+          </p>
   }
 }
