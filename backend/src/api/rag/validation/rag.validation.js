@@ -20,7 +20,11 @@ export const queryDocumentValidation = [
 ];
 
 export const documentIdParamValidation1 = [
-  // TODO [T-24]: Validate documentId for GET /documents/:documentId.
+ param("documentId")
+    .isInt()
+    .withMessage('documentId must be an integer'),
+    validationErrorHandler
+
 ];
 
 export const documentIdParamValidation2 = [
