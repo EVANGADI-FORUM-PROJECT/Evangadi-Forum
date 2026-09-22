@@ -23,7 +23,4 @@ function isPdfFile(file) {
   );
 }
 
-export default function RagDocuments() {
-  // TODO [FE-RAG]: Implement the Milestone 3 RAG Documents page.
-  return <div>TODO: Implement RAG Documents page</div>;
-}
+export default function RagDocuments() {}
