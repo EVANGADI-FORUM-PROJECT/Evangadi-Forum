@@ -229,6 +229,11 @@ try {
   }
   throw error;
 }
+
+ return {
+   filePath,
+   mimeType: rows[0].mime_type,
+ };
 };
 
 export const listDocumentsForUserService = async (userId) => {
