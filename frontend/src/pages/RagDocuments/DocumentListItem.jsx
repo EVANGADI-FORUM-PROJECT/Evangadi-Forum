@@ -9,9 +9,9 @@ export default function DocumentListItem({
   onSelect,
   onDelete,
 }) {
-   return (
-
-
-    
-   )
+  return (
+    <li
+      className={`${styles.docItem} ${isActive ? styles.docItemActive : ""}`}
+    ></li>
+  );
 }
