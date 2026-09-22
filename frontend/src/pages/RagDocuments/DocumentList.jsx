@@ -35,5 +35,7 @@ export default function DocumentList({
         key={doc.document_id}
         isActive={doc.document_id === selectedId}
         isDeleting={deletingId === doc.document_id}
+        onSelect={onSelect}
+          onDelete={onDelete}
  )
 }
