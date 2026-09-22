@@ -82,6 +82,27 @@ export const queryDocumentController = async (req, res, next) => {
   throw new Error("TODO: Implement T-23 query controller");
 };
 
+// Document Metadata
+export const getDocumentMetaController = async (req, res, next) => {
+  try {
+    const document = await getDocumentMetaService(
+      req.params.documentId,
+      req.user.id,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Document fetched successfully.",
+      data: document,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Stream RAG Document PDF
+
 export const getDocumentFileController = async (req, res, next) => {
   try {
     const result = await getAssertOwnedDocumentPathService(
@@ -93,6 +114,8 @@ export const getDocumentFileController = async (req, res, next) => {
     next(error);
   }
 };
+
+
 export const listDocumentsController = async (req, res, next) => {
   try {
     const result = await listDocumentsForUserService(req.user.id);
@@ -105,6 +128,7 @@ export const listDocumentsController = async (req, res, next) => {
     next(error);
   }
 };
+
 export const deleteDocumentController = async (req, res, next) => {
   try {
     const result = await deleteDocumentService(
