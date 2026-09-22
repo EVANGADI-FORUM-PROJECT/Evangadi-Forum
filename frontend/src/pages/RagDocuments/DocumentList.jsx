@@ -24,4 +24,6 @@ export default function DocumentList({
          Your library is empty. Upload a PDF to index it 
          for search and Q&amp;A.
           </p>
+           );
+}
 }
