@@ -31,5 +31,6 @@ export default function DocumentList({
  return (
    <ul className={styles.docList}>
      {documents.map((doc) => (
+       <DocumentListItem
  )
 }
