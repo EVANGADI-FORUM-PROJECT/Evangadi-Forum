@@ -96,3 +96,8 @@ export const getDocumentFileController = async (req, res, next) => {
 export const listDocumentsController = async (req, res, next) => {
     try {
         const result = await listDocumentsForUserService(req.user.id);
+        res.status(200).json({
+            success: true,
+            message: 'Documents fetched successfully.',
+            data: result
+        });
