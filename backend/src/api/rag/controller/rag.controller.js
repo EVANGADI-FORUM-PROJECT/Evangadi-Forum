@@ -82,22 +82,5 @@ export const queryDocumentController = async (req, res, next) => {
   throw new Error("TODO: Implement T-23 query controller");
 };
 
-export const getDocumentMetaController = async (req, res, next) => {
-  // TODO [T-24]: Call the metadata service and return the document metadata.
-  throw new Error("TODO: Implement T-24 metadata controller");
-};
-
 export const getDocumentFileController = async (req, res, next) => {
-  // TODO [T-24]: Verify ownership, resolve the PDF path and use res.sendFile().
-  throw new Error("TODO: Implement T-24 file controller");
-};
-
-export const listDocumentsController = async (req, res, next) => {
-  // TODO [T-24]: Call the list service and return the user's documents.
-  throw new Error("TODO: Implement T-24 list controller");
-};
-
-export const deleteDocumentController = async (req, res, next) => {
-  // TODO [T-24]: Call the delete service and return the deleted document ID.
-  throw new Error("TODO: Implement T-24 delete controller");
-};
+    try {
