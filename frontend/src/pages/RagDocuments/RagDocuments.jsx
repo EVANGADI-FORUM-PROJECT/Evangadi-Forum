@@ -224,6 +224,6 @@ export default function RagDocuments() {
             onSelect={setSelectedId}
             onDelete={handleDelete}
           />
-
+          </aside>
   }
 }
