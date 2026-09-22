@@ -106,13 +106,17 @@ export const listDocumentsController = async (req, res, next) => {
   }
 };
 export const deleteDocumentController = async (req, res, next) => {
-    try {
-      const result = await deleteDocumentService(
-            req.params.documentId,
-            req.user.id
-        );
-  res.status(200).json({
-            success: true,
-            message: 'Document deleted successfully.',
-            data: result
-        });
+  try {
+    const result = await deleteDocumentService(
+      req.params.documentId,
+      req.user.id,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Document deleted successfully.",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
