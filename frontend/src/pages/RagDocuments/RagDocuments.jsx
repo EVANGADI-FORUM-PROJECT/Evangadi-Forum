@@ -194,7 +194,11 @@ export default function RagDocuments() {
                 className={styles.primaryButton}
                 onClick={handleUpload}
                 disabled={!selectedFile || isUploading}
-              ></button>
+              > 
+              <Upload size={15} aria-hidden />
+                {isUploading ? 'Uploading…' : 'Upload'}
+              </button>
+            </div>
 
   }
 }
