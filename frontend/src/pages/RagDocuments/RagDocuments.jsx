@@ -216,7 +216,14 @@ export default function RagDocuments() {
               {libraryError}
             </p>
           )}
-
+            <DocumentList
+            documents={documents}
+            isLoading={isListLoading}
+            selectedId={selectedId}
+            deletingId={deletingId}
+            onSelect={setSelectedId}
+            onDelete={handleDelete}
+          />
 
   }
 }
