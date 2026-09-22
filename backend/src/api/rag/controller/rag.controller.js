@@ -83,8 +83,13 @@ export const queryDocumentController = async (req, res, next) => {
 };
 
 export const getDocumentFileController = async (req, res, next) => {
-    try {
-      const result = await getAssertOwnedDocumentPathService(
-            req.params.documentId,
-            req.user.id
-        );
+  try {
+    const result = await getAssertOwnedDocumentPathService(
+      req.params.documentId,
+      req.user.id,
+    );
+    return res.sendFile(result.filePath);
+  } catch (error) {
+    next(error);
+  }
+};
