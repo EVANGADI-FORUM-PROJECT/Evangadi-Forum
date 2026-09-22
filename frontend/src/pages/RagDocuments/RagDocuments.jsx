@@ -180,5 +180,12 @@ export default function RagDocuments() {
               tabIndex={-1}
               aria-label="Choose a PDF file"
             />
+             <div className={styles.dropActions}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+              ></button>
   }
 }
