@@ -34,4 +34,6 @@ export default function RagDocuments() {
   const [libraryError, setLibraryError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const fileInputRef = useRef(null);
+  const activeDocument =
+    documents.find((doc) => doc.document_id === selectedId) || null;
 }
