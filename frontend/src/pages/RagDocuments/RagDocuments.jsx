@@ -145,6 +145,11 @@ export default function RagDocuments() {
           users never see your uploads.
         </p>
       </section>
+      {listError && (
+        <div className={styles.errorBanner} role="alert">
+          {listError}
+        </div>
+      )}
 
   }
 }
