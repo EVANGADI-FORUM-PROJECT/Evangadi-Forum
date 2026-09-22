@@ -17,5 +17,7 @@ export default function DocumentList({
       </p>
     );
   }
+    
   if (documents.length === 0) {
+      return (
 }
