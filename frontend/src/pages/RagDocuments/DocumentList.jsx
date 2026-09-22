@@ -34,5 +34,6 @@ export default function DocumentList({
        <DocumentListItem
         key={doc.document_id}
         isActive={doc.document_id === selectedId}
+        isDeleting={deletingId === doc.document_id}
  )
 }
