@@ -225,5 +225,24 @@ export default function RagDocuments() {
             onDelete={handleDelete}
           />
           </aside>
+
+           {/* Right column: the active document */}
+        <section className={styles.card}>
+          {!activeDocument ? (
+            <div className={styles.placeholder}>
+              Choose a document from the library to open the reader, run semantic
+              search over its text, and ask questions with AI-assisted answers
+              grounded in that file.
+            </div>
+          ) : activeDocument.status !== 'ready' ? (
+            <div className={styles.placeholder} role="status">
+              This document is not ready for preview or AI tools. Current status:{' '}
+              <strong>{activeDocument.status}</strong>.
+              {activeDocument.status === 'failed' && activeDocument.error_message && (
+                <span className={styles.failureReason}>
+                  {activeDocument.error_message}
+                </span>
+              )}
+            </div>
   }
 }
