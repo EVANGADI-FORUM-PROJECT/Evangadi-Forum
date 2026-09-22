@@ -11,8 +11,10 @@ export default function DocumentList({
   onDelete,
 }) {
   if (isLoading) {
-    // TODO [T-24]: Implement document list.
-
-    return <div>TODO: Implement document list</div>;
+    return (
+      <p className={styles.listMessage} role="status">
+        Loading your library…
+      </p>
+    );
   }
 }
