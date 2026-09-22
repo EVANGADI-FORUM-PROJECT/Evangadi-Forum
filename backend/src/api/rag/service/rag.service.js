@@ -221,7 +221,14 @@ export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
         throw new NotFoundError("No document found for this user.");
       }
 const filePath = path.resolve(rows[0].storage_path);
-
+try {
+  await fs.access(filePath);
+} catch (error) {
+  if (error.code === "ENOENT") {
+    throw new NotFoundError("File not found.");
+  }
+  throw error;
+}
 };
 
 export const listDocumentsForUserService = async (userId) => {
