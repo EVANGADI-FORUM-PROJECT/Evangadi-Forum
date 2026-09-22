@@ -180,6 +180,8 @@ export const queryDocumentService = async (documentId, searchQuery, userId) => {
   throw new Error("TODO: Implement T-23 RAG query");
 };
 
+//  Get RAG Document Metadata
+
 export const getDocumentMetaService = async (documentId, userId) => {
   const sql = `
         SELECT
@@ -206,6 +208,9 @@ export const getDocumentMetaService = async (documentId, userId) => {
 
     return rows[0];
 };
+
+
+// Stream RAG Document PDF
 
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
   const sql = `
@@ -236,6 +241,10 @@ try {
  };
 };
 
+
+// List My RAG Documents
+
+
 export const listDocumentsForUserService = async (userId) => {
   const sql = `
         SELECT
@@ -254,6 +263,9 @@ export const listDocumentsForUserService = async (userId) => {
 
   return await safeExecute(sql, [userId]);
 }; 
+
+//  Delete RAG Document
+
 export const deleteDocumentService = async (documentId, userId) => {
   const document = await getAssertOwnedDocumentPathService(documentId, userId);
 
