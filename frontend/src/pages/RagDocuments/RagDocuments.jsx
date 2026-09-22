@@ -12,6 +12,11 @@ const POLL_INTERVAL_MS = 3000;
 function isProcessing(status) {
   return status === "processing" || status === "pending";
 }
+function formatFileSize(bytes) {
+  const size = Number(bytes) || 0;
+  if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))} KB`;
+  return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+}
 
 export default function RagDocuments() {
   // TODO [FE-RAG]: Implement the Milestone 3 RAG Documents page.
