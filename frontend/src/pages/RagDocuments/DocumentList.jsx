@@ -17,28 +17,26 @@ export default function DocumentList({
       </p>
     );
   }
-    
-  if (documents.length === 0) {
-      return (
-        <p className={styles.listMessage}>
 
-        </p>
-         Your library is empty. Upload a PDF to index it 
-         for search and Q&amp;A.
-          </p>
-           );
-}
- return (
-   <ul className={styles.docList}>
-     {documents.map((doc) => (
-       <DocumentListItem
-        key={doc.document_id}
-        isActive={doc.document_id === selectedId}
-        isDeleting={deletingId === doc.document_id}
-        onSelect={onSelect}
+  if (documents.length === 0) {
+    return (
+      <p className={styles.listMessage}>
+        Your library is empty. Upload a PDF to index it for search and Q&amp;A.
+      </p>
+    );
+  }
+
+  return (
+    <ul className={styles.docList}>
+      {documents.map((doc) => (
+        <DocumentListItem
+          key={doc.document_id}
+          isActive={doc.document_id === selectedId}
+          isDeleting={deletingId === doc.document_id}
+          onSelect={onSelect}
           onDelete={onDelete}
-           />
-   ))}
+        />
+      ))}
     </ul>
- )
+  );
 }
