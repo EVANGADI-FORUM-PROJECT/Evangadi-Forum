@@ -105,3 +105,5 @@ export const listDocumentsController = async (req, res, next) => {
     next(error);
   }
 };
+export const deleteDocumentController = async (req, res, next) => {
+    try {
