@@ -20,4 +20,5 @@ export default function DocumentList({
     
   if (documents.length === 0) {
       return (
+        <p className={styles.listMessage}></p>
 }
