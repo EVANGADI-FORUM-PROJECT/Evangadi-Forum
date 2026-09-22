@@ -1,3 +1,13 @@
+import {
+  createDocumentFromUploadService,
+  searchInDocumentService,
+  queryDocumentService,
+  getDocumentMetaService,
+  getAssertOwnedDocumentPathService,
+  listDocumentsForUserService,
+  deleteDocumentService,
+} from "../service/rag.service.js";
+
 /*
  * MILESTONE 3 — RAG BACKEND CONTROLLERS
  *
@@ -16,8 +26,27 @@
  */
 
 export const createDocumentController = async (req, res, next) => {
-  // TODO [T-22]: Validate req.file, call createDocumentFromUploadService, return 201.
-  throw new Error("TODO: Implement T-22 controller");
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "PDF file is required.",
+      });
+    }
+
+    const document = await createDocumentFromUploadService(
+      req.file,
+      req.user.id,
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Document uploaded and processed.",
+      data: document,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const searchInDocumentController = async (req, res, next) => {
