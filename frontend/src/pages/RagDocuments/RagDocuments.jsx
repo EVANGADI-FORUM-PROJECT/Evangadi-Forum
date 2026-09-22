@@ -56,6 +56,20 @@ export default function RagDocuments() {
       cancelled = true;
     };
   }, []);
+ // Poll only while something is still processing (e.g. after a page reload).
+  useEffect(() => {
+    if (!hasProcessingDocuments) return undefined;
 
+    const timer = setInterval(async () => {
+      try {
+        const result = await ragService.listDocuments();
+        setDocuments(result.data || []);
+      } catch {
+        // Keep what we have; the next tick will try again.
+      }
+    }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(timer);
+  }, [hasProcessingDocuments]);
   );
 }
