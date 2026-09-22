@@ -16,7 +16,12 @@ export default function DocumentListItem({
         className={styles.docSelect}
         onClick={() => onSelect(doc.document_id)}
         aria-pressed={isActive}
-      ></button>
+      >
+        <span className={styles.docTitle} title={doc.title}>
+          {doc.title}
+        </span>
+        <StatusBadge status={doc.status} />
+      </button>
     </li>
   );
 }
