@@ -10,7 +10,9 @@ export default function DocumentList({
   onSelect,
   onDelete,
 }) {
-  // TODO [T-24]: Implement document list.
+  if (isLoading) {
+    // TODO [T-24]: Implement document list.
 
-  return <div>TODO: Implement document list</div>;
+    return <div>TODO: Implement document list</div>;
+  }
 }
