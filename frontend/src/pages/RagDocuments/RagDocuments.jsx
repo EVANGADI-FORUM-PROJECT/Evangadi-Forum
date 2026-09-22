@@ -169,5 +169,16 @@ export default function RagDocuments() {
           <p className={styles.dropText}>
               Accepted format: PDF. Maximum file size is enforced by the server.
             </p>
+
+             <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf,.pdf"
+              className={styles.hiddenInput}
+              onChange={handleFileInputChange}
+              disabled={isUploading}
+              tabIndex={-1}
+              aria-label="Choose a PDF file"
+            />
   }
 }
