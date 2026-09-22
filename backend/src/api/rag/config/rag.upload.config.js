@@ -1,16 +1,56 @@
-/*
- * TASK: T-22 — Upload & Process RAG Document
- *
- * TODO:
- * - Configure multer disk storage for PDFs.
- * - Accept PDF files only.
- * - Enforce the configured maximum file size.
- * - Implement uploadDocument middleware.
- *
- * Reference: M-3/Backend/rag/create-document.md
+//It only stores the PDF's metadata and where the actual file is stored.
+
+/**
+ * It does not tell us:
+
+which exact chunking algorithm to use
+whether 1000 is mandatory
+whether 150 is mandatory
+whether chunking should happen by paragraph first
+how page numbers should be calculated
+whether there is already a shared utility somewhere in the project
+ */
+/**from db schema: 
+ * page_start
+    page_end
+
+Those may be intended for later search/preview functionality
  */
 
-export const uploadDocument = (req, res, next) => {
-  // TODO [T-22]: Configure multer and handle upload errors.
-  throw new Error("TODO: Implement T-22 upload middleware");
+import multer from "multer";
+import crypto from "crypto";
+import { createDocumentMulterErrorHandler } from "../../../middleware/multerError-handler.js";
+
+let storage = multer.diskStorage({
+  destination: "uploads/rag",
+  filename: (req, file, cb) => {
+    let unquesName = crypto.randomBytes(8).toString("hex") + ".pdf";
+    cb(null, unquesName);
+  },
+});
+
+let fileFilter = (req, file, cb) => {
+  if (file.mimetype === "application/pdf") {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type. Only PDF files are allowed."));
+  }
 };
+let maxSize = process.env.RAG_MAX_UPLOAD_MB;
+export let upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: maxSize * 1024 * 1024,
+  },
+});
+
+export let uploadDocument = (req, res, next) => {
+  upload.single("file")(req, res, (err) => {
+    if (err) {
+      return createDocumentMulterErrorHandler(err, req, res, next);
+    }
+
+    next();
+  });
+}; /*upload.single("file") returns a middleware function. By writing upload.single("file")(req, res, callback), we immediately call that returned middleware and provide our own callback as its next function, allowing us to receive and handle Multer's error before deciding whether to pass control to Express.*/
