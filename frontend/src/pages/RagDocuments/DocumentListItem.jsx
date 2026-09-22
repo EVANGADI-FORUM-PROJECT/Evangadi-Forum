@@ -29,7 +29,13 @@ export default function DocumentListItem({
         disabled={isDeleting}
         aria-label={`Delete ${doc.title}`}
         title="Delete document"
-      ></button>
+      >
+        {isDeleting ? (
+          <Loader2 size={14} className={styles.spin} aria-hidden />
+        ) : (
+          <Trash2 size={14} aria-hidden />
+        )}
+      </button>
     </li>
   );
 }
