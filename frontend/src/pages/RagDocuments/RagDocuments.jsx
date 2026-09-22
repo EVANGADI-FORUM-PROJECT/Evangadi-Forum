@@ -96,5 +96,41 @@ export default function RagDocuments() {
 
     setIsUploading(true);
     setLibraryError('');
+    try {
+      const result = await ragService.uploadPdf(selectedFile);
+      const created = result.data;
+      setDocuments((prev) => [
+        created,
+        ...prev.filter((doc) => doc.document_id !== created.document_id),
+      ]);
+      setSelectedId(created.document_id);
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch (err) {
+      setLibraryError(err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDelete = async (doc) => {
+    if (deletingId) return;
+    const confirmed = window.confirm(
+      `Delete "${doc.title}"? The PDF and its search index will be removed.`
+    );
+    if (!confirmed) return;
+
+    setDeletingId(doc.document_id);
+    setLibraryError('');
+    try {
+      await ragService.deleteDocument(doc.document_id);
+      setDocuments((prev) => prev.filter((item) => item.document_id !== doc.document_id));
+      setSelectedId((current) => (current === doc.document_id ? null : current));
+    } catch (err) {
+      setLibraryError(err.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
   );
 }
