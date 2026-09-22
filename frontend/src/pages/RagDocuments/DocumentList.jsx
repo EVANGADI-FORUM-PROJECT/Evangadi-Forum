@@ -1,12 +1,42 @@
-/*
- * TASK: Frontend RAG Document List
- *
- * TODO [T-24]:
- * - Render loading, empty and populated states.
- * - Render DocumentListItem for each document.
- */
+import styles from "./RagDocuments.module.css";
+import DocumentListItem from "./DocumentListItem";
+/** Decides what goes under the upload box: loading / empty / the rows. */
 
-export default function DocumentList() {
-  // TODO [T-24]: Implement document list.
-  return <div>TODO: Implement document list</div>;
+export default function DocumentList({
+  documents,
+  isLoading,
+  selectedId,
+  deletingId,
+  onSelect,
+  onDelete,
+}) {
+  if (isLoading) {
+    return (
+      <p className={styles.listMessage} role="status">
+        Loading your library…
+      </p>
+    );
+  }
+
+  if (documents.length === 0) {
+    return (
+      <p className={styles.listMessage}>
+        Your library is empty. Upload a PDF to index it for search and Q&amp;A.
+      </p>
+    );
+  }
+
+  return (
+    <ul className={styles.docList}>
+      {documents.map((doc) => (
+        <DocumentListItem
+          key={doc.document_id}
+          isActive={doc.document_id === selectedId}
+          isDeleting={deletingId === doc.document_id}
+          onSelect={onSelect}
+          onDelete={onDelete}
+        />
+      ))}
+    </ul>
+  );
 }
