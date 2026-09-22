@@ -181,11 +181,20 @@ export default function RagDocuments() {
               aria-label="Choose a PDF file"
             />
              <div className={styles.dropActions}>
-              <button
+              <
                 type="button"
                 className={styles.secondaryButton}
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
+              >
+               <FileUp size={15} aria-hidden /> Choose file
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={handleUpload}
+                disabled={!selectedFile || isUploading}
               ></button>
+
   }
 }
