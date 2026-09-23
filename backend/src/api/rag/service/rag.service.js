@@ -210,9 +210,37 @@ export const getDocumentMetaService = async (documentId, userId) => {
 };
 
 
+// # Task: Stream RAG Document PDF[T-24]
+// Endpoint: GET /api/rag/documents/:documentId/file
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
-  // TODO [T-24]: Verify ownership and return the absolute PDF path.
-  throw new Error("TODO: Implement T-24 PDF file streaming");
+    const sql = `
+        SELECT storage_path, mime_type
+        FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
+
+    const rows = await safeExecute(sql, [documentId, userId]);
+
+    if (rows.length === 0) {
+        throw new NotFoundError('No document found for this user.');
+    }
+
+    const filePath = path.resolve(rows[0].storage_path);
+
+    try {
+        await fs.access(filePath);
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            throw new NotFoundError('File not found.');
+        }
+        throw error;
+    }
+
+    return {
+        filePath,
+        mimeType: rows[0].mime_type
+    };
 };
 
 export const listDocumentsForUserService = async (userId) => {
