@@ -82,9 +82,22 @@ export const queryDocumentController = async (req, res, next) => {
   throw new Error("TODO: Implement T-23 query controller");
 };
 
+// Endpoint: GET /api/rag/documents/:documentId
 export const getDocumentMetaController = async (req, res, next) => {
-  // TODO [T-24]: Call the metadata service and return the document metadata.
-  throw new Error("TODO: Implement T-24 metadata controller");
+    try {
+        const document = await getDocumentMetaService(
+            req.params.documentId,
+            req.user.id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Document fetched successfully.',
+            data: document
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const getDocumentFileController = async (req, res, next) => {
