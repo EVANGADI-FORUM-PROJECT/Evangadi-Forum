@@ -100,9 +100,18 @@ export const getDocumentMetaController = async (req, res, next) => {
     }
 };
 
+// Endpoint: GET /api/rag/documents/:documentId/file
 export const getDocumentFileController = async (req, res, next) => {
-  // TODO [T-24]: Verify ownership, resolve the PDF path and use res.sendFile().
-  throw new Error("TODO: Implement T-24 file controller");
+    try {
+        const result = await getAssertOwnedDocumentPathService(
+            req.params.documentId,
+            req.user.id
+        );
+
+        return res.sendFile(result.filePath);
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const listDocumentsController = async (req, res, next) => {
