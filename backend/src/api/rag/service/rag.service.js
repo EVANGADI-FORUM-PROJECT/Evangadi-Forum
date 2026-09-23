@@ -180,10 +180,35 @@ export const queryDocumentService = async (documentId, searchQuery, userId) => {
   throw new Error("TODO: Implement T-23 RAG query");
 };
 
+// # Task: Get RAG Document Metadata[T-24]
+// Endpoint: GET /api/rag/documents/:documentId
 export const getDocumentMetaService = async (documentId, userId) => {
-  // TODO [T-24]: Fetch document metadata after verifying ownership.
-  throw new Error("TODO: Implement T-24 metadata");
+    const sql = `
+        SELECT
+            document_id,
+            title,
+            mime_type,
+            byte_size,
+            status,
+            error_message,
+            created_at,
+            updated_at,
+            user_id,
+            storage_path
+        FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
+
+    const rows = await safeExecute(sql, [documentId, userId]);
+
+    if (rows.length === 0) {
+        throw new NotFoundError('Document not found.');
+    }
+
+    return rows[0];
 };
+
 
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
   // TODO [T-24]: Verify ownership and return the absolute PDF path.
