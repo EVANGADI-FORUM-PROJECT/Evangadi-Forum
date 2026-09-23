@@ -128,8 +128,20 @@ export const listDocumentsController = async (req, res, next) => {
         next(error);
     }
 };
-
+// Endpoint: DELETE /api/rag/documents/:documentId
 export const deleteDocumentController = async (req, res, next) => {
-  // TODO [T-24]: Call the delete service and return the deleted document ID.
-  throw new Error("TODO: Implement T-24 delete controller");
+    try {
+        const result = await deleteDocumentService(
+            req.params.documentId,
+            req.user.id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Document deleted successfully.',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
 };
