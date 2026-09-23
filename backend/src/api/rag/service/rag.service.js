@@ -180,22 +180,112 @@ export const queryDocumentService = async (documentId, searchQuery, userId) => {
   throw new Error("TODO: Implement T-23 RAG query");
 };
 
+//  Get RAG Document Metadata
+
 export const getDocumentMetaService = async (documentId, userId) => {
-  // TODO [T-24]: Fetch document metadata after verifying ownership.
-  throw new Error("TODO: Implement T-24 metadata");
+  const sql = `
+        SELECT
+            document_id,
+            title,
+            mime_type,
+            byte_size,
+            status,
+            error_message,
+            created_at,
+            updated_at,
+            user_id,
+            storage_path
+        FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
+
+    const rows = await safeExecute(sql, [documentId, userId]);
+
+    if (rows.length === 0) {
+        throw new NotFoundError('Document not found.');
+    }
+
+    return rows[0];
 };
+
+
+// Stream RAG Document PDF
 
 export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
-  // TODO [T-24]: Verify ownership and return the absolute PDF path.
-  throw new Error("TODO: Implement T-24 PDF file streaming");
+  const sql = `
+        SELECT storage_path, mime_type
+        FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
+
+     const rows = await safeExecute(sql, [documentId, userId]);
+
+      if (rows.length === 0) {
+        throw new NotFoundError("No document found for this user.");
+      }
+const filePath = path.resolve(rows[0].storage_path);
+try {
+  await fs.access(filePath);
+} catch (error) {
+  if (error.code === "ENOENT") {
+    throw new NotFoundError("File not found.");
+  }
+  throw error;
+}
+
+ return {
+   filePath,
+   mimeType: rows[0].mime_type,
+ };
 };
+
+
+// List My RAG Documents
+
 
 export const listDocumentsForUserService = async (userId) => {
-  // TODO [T-24]: Return the authenticated user's RAG documents.
-  throw new Error("TODO: Implement T-24 document listing");
-};
+  const sql = `
+        SELECT
+            document_id,
+            title,
+            mime_type,
+            byte_size,
+            status,
+            error_message,
+            created_at,
+            updated_at
+        FROM documents
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+    `;
+
+  return await safeExecute(sql, [userId]);
+}; 
+
+//  Delete RAG Document
 
 export const deleteDocumentService = async (documentId, userId) => {
-  // TODO [T-24]: Verify ownership, delete the PDF, then delete the DB record.
-  throw new Error("TODO: Implement T-24 document deletion");
+  const document = await getAssertOwnedDocumentPathService(documentId, userId);
+
+  try {
+    await fs.unlink(document.filePath);
+  } catch (error) {
+    // A missing file should not prevent deletion of its database record.
+    if (error.code !== "ENOENT") {
+      throw error;
+    }
+  }
+
+  const deleteSql = `
+        DELETE FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
+
+  await safeExecute(deleteSql, [documentId, userId]);
+
+  return { id: Number(documentId) };
 };
+

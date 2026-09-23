@@ -20,13 +20,20 @@ export const queryDocumentValidation = [
 ];
 
 export const documentIdParamValidation1 = [
-  // TODO [T-24]: Validate documentId for GET /documents/:documentId.
+ param("documentId")
+    .isInt()
+    .withMessage('documentId must be an integer'),
+    validationErrorHandler
 ];
 
 export const documentIdParamValidation2 = [
-  // TODO [T-24]: Validate documentId for GET /documents/:documentId/file.
+ param("documentId")
+    .isInt()
+    .withMessage('documentId must be an integer'),
+    validationErrorHandler
 ];
 
 export const deleteDocumentValidation = [
-  // TODO [T-24]: Validate documentId for DELETE /documents/:documentId.
+  param("documentId").isInt().withMessage("documentId must be an integer"),
+  validationErrorHandler,
 ];

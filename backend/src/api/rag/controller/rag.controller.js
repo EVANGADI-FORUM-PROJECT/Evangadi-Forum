@@ -82,22 +82,65 @@ export const queryDocumentController = async (req, res, next) => {
   throw new Error("TODO: Implement T-23 query controller");
 };
 
+// Document Metadata
 export const getDocumentMetaController = async (req, res, next) => {
-  // TODO [T-24]: Call the metadata service and return the document metadata.
-  throw new Error("TODO: Implement T-24 metadata controller");
+  try {
+    const document = await getDocumentMetaService(
+      req.params.documentId,
+      req.user.id,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Document fetched successfully.",
+      data: document,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
+
+// Stream RAG Document PDF
 
 export const getDocumentFileController = async (req, res, next) => {
-  // TODO [T-24]: Verify ownership, resolve the PDF path and use res.sendFile().
-  throw new Error("TODO: Implement T-24 file controller");
+  try {
+    const result = await getAssertOwnedDocumentPathService(
+      req.params.documentId,
+      req.user.id,
+    );
+    return res.sendFile(result.filePath);
+  } catch (error) {
+    next(error);
+  }
 };
 
+
 export const listDocumentsController = async (req, res, next) => {
-  // TODO [T-24]: Call the list service and return the user's documents.
-  throw new Error("TODO: Implement T-24 list controller");
+  try {
+    const result = await listDocumentsForUserService(req.user.id);
+    res.status(200).json({
+      success: true,
+      message: "Documents fetched successfully.",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const deleteDocumentController = async (req, res, next) => {
-  // TODO [T-24]: Call the delete service and return the deleted document ID.
-  throw new Error("TODO: Implement T-24 delete controller");
+  try {
+    const result = await deleteDocumentService(
+      req.params.documentId,
+      req.user.id,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Document deleted successfully.",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
