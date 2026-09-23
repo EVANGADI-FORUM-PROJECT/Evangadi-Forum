@@ -41,6 +41,7 @@ router.get("/documents/:documentId",authenticateUser, documentIdParamValidation1
 //Endpoint: GET /api/rag/documents/:documentId/file
 router.get("/documents/:documentId/file", authenticateUser, documentIdParamValidation2, getDocumentFileController );
 
+
 // # Task: Delete RAG Document
 // Endpoint: DELETE /api/rag/documents/:documentId
 router.delete("/documents/:documentId", authenticateUser, deleteDocumentValidation, deleteDocumentController);
