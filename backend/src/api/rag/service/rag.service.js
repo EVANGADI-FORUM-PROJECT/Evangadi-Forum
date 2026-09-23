@@ -243,10 +243,27 @@ export const getAssertOwnedDocumentPathService = async (documentId, userId) => {
     };
 };
 
+e// # Task: List My RAG Documents[T-24]
+// Endpoint: GET /api/rag/documents
 export const listDocumentsForUserService = async (userId) => {
-  // TODO [T-24]: Return the authenticated user's RAG documents.
-  throw new Error("TODO: Implement T-24 document listing");
+    const sql = `
+        SELECT
+            document_id,
+            title,
+            mime_type,
+            byte_size,
+            status,
+            error_message,
+            created_at,
+            updated_at
+        FROM documents
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+    `;
+
+    return await safeExecute(sql, [userId]);
 };
+
 
 export const deleteDocumentService = async (documentId, userId) => {
   // TODO [T-24]: Verify ownership, delete the PDF, then delete the DB record.
