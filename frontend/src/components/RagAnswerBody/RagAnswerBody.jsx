@@ -80,5 +80,55 @@ export default function RagAnswerBody({ children }) {
     </div>
   );
 }
+function CodeBlock({ children }) {
+  const preRef = useRef(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(async () => {
+    const raw = preRef.current?.textContent ?? '';
+    try {
+      await navigator.clipboard.writeText(raw);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  }, []);
+
+  const codeChild = Array.isArray(children) ? children[0] : children;
+  const cls = codeChild?.props?.className;
+  const langMatch =
+    typeof cls === 'string' ? cls.match(/language-([\w+#.-]+)/) : null;
+  const langLabel = langMatch ? langMatch[1] : 'code';
+
+  return (
+    <div className={styles.codeWrap}>
+      <div className={styles.codeToolbar}>
+        <span className={styles.codeLang}>{langLabel}</span>
+        <button
+          type='button'
+          className={styles.copyBtn}
+          onClick={handleCopy}
+          aria-label={copied ? 'Copied to clipboard' : 'Copy code to clipboard'}
+        >
+          {copied ? (
+            <>
+              <Check size={14} aria-hidden />
+              Copied
+            </>
+          ) : (
+            <>
+              <Copy size={14} aria-hidden />
+              Copy
+            </>
+          )}
+        </button>
+      </div>
+      <pre ref={preRef} className={styles.pre}>
+        {children}
+      </pre>
+    </div>
+  );
+}
 
 }
