@@ -17,10 +17,9 @@ router.post("/documents", authenticateUser,uploadDocument, createDocumentControl
 // * /search finds the context
 router.get("/documents/:documentId/search",authenticateUser,searchDocumentValidation, searchInDocumentController )
 
-// # Task: Get RAG Document Metadata[T-24]
-//Endpoint: GET /api/rag/documents/:documentId
-router.get("/documents/:documentId",authenticateUser, documentIdParamValidation1  ,getDocumentMetaController  )
-
+// # Task: List My RAG Documents[T-24]
+// Endpoint: GET /api/rag/documents
+router.get("/documents", authenticateUser, listDocumentsController)
 
 
 
@@ -37,7 +36,6 @@ router.post("/documents/:documentId/query", authenticateUser,queryDocumentValida
 // # Task: Get RAG Document Metadata[T-24]
 //Endpoint: GET /api/rag/documents/:documentId
 router.get("/documents/:documentId",authenticateUser, documentIdParamValidation1  ,getDocumentMetaController  )
-
 
 // # Task: Stream RAG Document PDF[T-24]
 //Endpoint: GET /api/rag/documents/:documentId/file
