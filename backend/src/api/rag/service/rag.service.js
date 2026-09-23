@@ -264,8 +264,27 @@ export const listDocumentsForUserService = async (userId) => {
     return await safeExecute(sql, [userId]);
 };
 
-
+// # Task: Delete RAG Document
+// Endpoint: DELETE /api/rag/documents/:documentId
 export const deleteDocumentService = async (documentId, userId) => {
-  // TODO [T-24]: Verify ownership, delete the PDF, then delete the DB record.
-  throw new Error("TODO: Implement T-24 document deletion");
+    const document = await getAssertOwnedDocumentPathService(documentId, userId);
+
+    try {
+        await fs.unlink(document.filePath);
+    } catch (error) {
+        // A missing file should not prevent deletion of its database record.
+        if (error.code !== 'ENOENT') {
+            throw error;
+        }
+    }
+
+    const deleteSql = `
+        DELETE FROM documents
+        WHERE document_id = ?
+          AND user_id = ?
+    `;
+
+    await safeExecute(deleteSql, [documentId, userId]);
+
+    return { id: Number(documentId) };
 };
