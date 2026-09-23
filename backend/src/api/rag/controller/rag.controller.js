@@ -114,9 +114,19 @@ export const getDocumentFileController = async (req, res, next) => {
     }
 };
 
+// Endpoint: GET /api/rag/documents
 export const listDocumentsController = async (req, res, next) => {
-  // TODO [T-24]: Call the list service and return the user's documents.
-  throw new Error("TODO: Implement T-24 list controller");
+    try {
+        const result = await listDocumentsForUserService(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Documents fetched successfully.',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const deleteDocumentController = async (req, res, next) => {
