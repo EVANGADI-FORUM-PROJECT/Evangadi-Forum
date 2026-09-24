@@ -175,6 +175,26 @@ export const searchInDocumentService = async (
   throw new Error("TODO: Implement T-23 semantic search");
 };
 
+// # Task: AI Query Grounded in RAG Document[T-23]
+// Endpoint: POST /api/rag/documents/:documentId/query
+export let queryDocumentService = async (
+    documentId,
+    searchQuery,
+    userId
+) => {
+
+    // 1. Perform semantic search.
+    // * This reuses the same RAG search logic from T-23 /search.
+
+    let chunks = await searchInDocumentService(
+        documentId,
+        searchQuery,
+        5,
+        userId
+    );
+
+};
+
 export const queryDocumentService = async (documentId, searchQuery, userId) => {
   // TODO [T-23]: Implement RAG query generation using retrieved document chunks.
   throw new Error("TODO: Implement T-23 RAG query");
