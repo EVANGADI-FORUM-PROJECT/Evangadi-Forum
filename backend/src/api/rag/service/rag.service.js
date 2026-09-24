@@ -187,7 +187,7 @@ export let queryDocumentService = async (documentId, searchQuery, userId) => {
     5,
     userId,
   );
-  
+
   // 2. If no relevant chunks were found,
   // there is no document context that we can give Gemini.
 
@@ -199,6 +199,14 @@ export let queryDocumentService = async (documentId, searchQuery, userId) => {
       chunksUsed: [],
     };
   }
+    // 3. Send the retrieved chunks and the user's question
+    // to Gemini.
+
+    let answer = await answerFromRagChunks(
+        searchQuery,
+        chunks
+    );//it Passes the user's query and the extracted chunk text to a Gemini generation prompt which will return the final answer
+    
 };;
 
 export const queryDocumentService = async (documentId, searchQuery, userId) => {
