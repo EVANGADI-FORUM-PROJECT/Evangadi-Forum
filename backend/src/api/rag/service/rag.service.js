@@ -176,6 +176,7 @@ export const searchInDocumentService = async (
 };
 
 // # Task: AI Query Grounded in RAG Document[T-23]
+// TODO [T-23]: Implement RAG query generation using retrieved document chunks.
 // Endpoint: POST /api/rag/documents/:documentId/query
 export let queryDocumentService = async (documentId, searchQuery, userId) => {
   // 1. Perform semantic search.
@@ -219,17 +220,11 @@ export let queryDocumentService = async (documentId, searchQuery, userId) => {
   }
 
   // 5. Return the answer and its sources.
-
   return {
     answer: answer,
     citations: citations,
     chunksUsed: chunksUsed,
   };
-};
-
-export const queryDocumentService = async (documentId, searchQuery, userId) => {
-  // TODO [T-23]: Implement RAG query generation using retrieved document chunks.
-  throw new Error("TODO: Implement T-23 RAG query");
 };
 
 //  Get RAG Document Metadata
