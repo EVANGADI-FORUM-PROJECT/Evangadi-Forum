@@ -19,12 +19,7 @@ export const queryDocumentValidation = [
   // TODO [T-23]: Add express-validator rules for POST /documents/:documentId/query.
 ];
 
-export const documentIdParamValidation1 = [
- param("documentId")
-    .isInt()
-    .withMessage('documentId must be an integer'),
-    validationErrorHandler
-];
+
 
 export const documentIdParamValidation2 = [
  param("documentId")
