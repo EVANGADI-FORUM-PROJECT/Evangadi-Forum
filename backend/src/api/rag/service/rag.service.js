@@ -177,23 +177,29 @@ export const searchInDocumentService = async (
 
 // # Task: AI Query Grounded in RAG Document[T-23]
 // Endpoint: POST /api/rag/documents/:documentId/query
-export let queryDocumentService = async (
+export let queryDocumentService = async (documentId, searchQuery, userId) => {
+  // 1. Perform semantic search.
+  // * This reuses the same RAG search logic from T-23 /search.
+
+  let chunks = await searchInDocumentService(
     documentId,
     searchQuery,
-    userId
-) => {
+    5,
+    userId,
+  );
+  
+  // 2. If no relevant chunks were found,
+  // there is no document context that we can give Gemini.
 
-    // 1. Perform semantic search.
-    // * This reuses the same RAG search logic from T-23 /search.
-
-    let chunks = await searchInDocumentService(
-        documentId,
-        searchQuery,
-        5,
-        userId
-    );
-
-};
+  if (chunks.length === 0) {
+    return {
+      answer:
+        "I could not find relevant information in this document to answer the question.",
+      citations: [],
+      chunksUsed: [],
+    };
+  }
+};;
 
 export const queryDocumentService = async (documentId, searchQuery, userId) => {
   // TODO [T-23]: Implement RAG query generation using retrieved document chunks.
