@@ -217,8 +217,15 @@ export let queryDocumentService = async (documentId, searchQuery, userId) => {
 
     chunksUsed.push(chunks[i].chunkId);
   }
-  
-};;;
+
+  // 5. Return the answer and its sources.
+
+  return {
+    answer: answer,
+    citations: citations,
+    chunksUsed: chunksUsed,
+  };
+};
 
 export const queryDocumentService = async (documentId, searchQuery, userId) => {
   // TODO [T-23]: Implement RAG query generation using retrieved document chunks.
