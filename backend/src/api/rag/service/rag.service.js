@@ -199,15 +199,26 @@ export let queryDocumentService = async (documentId, searchQuery, userId) => {
       chunksUsed: [],
     };
   }
-    // 3. Send the retrieved chunks and the user's question
-    // to Gemini.
+  // 3. Send the retrieved chunks and the user's question
+  // to Gemini.
 
-    let answer = await answerFromRagChunks(
-        searchQuery,
-        chunks
-    );//it Passes the user's query and the extracted chunk text to a Gemini generation prompt which will return the final answer
-    
-};;
+  let answer = await answerFromRagChunks(searchQuery, chunks); //it Passes the user's query and the extracted chunk text to a Gemini generation prompt which will return the final answer
+
+  // 4. Build the source information.
+  let citations = [];
+
+  let chunksUsed = [];
+
+  for (let i = 0; i < chunks.length; i++) {
+    citations.push({
+      ref: i + 1,
+      chunkIndex: chunks[i].chunkIndex,
+    });
+
+    chunksUsed.push(chunks[i].chunkId);
+  }
+  
+};;;
 
 export const queryDocumentService = async (documentId, searchQuery, userId) => {
   // TODO [T-23]: Implement RAG query generation using retrieved document chunks.
