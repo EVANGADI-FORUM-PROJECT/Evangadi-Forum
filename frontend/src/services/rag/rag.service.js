@@ -1,122 +1,106 @@
-/*
- * MILESTONE 3 — RAG FRONTEND SERVICE
- *
- * TASKS:
- * T-22 — Upload PDF
- * T-24 — List / Delete / Fetch PDF
- * T-23 — Semantic Search / Ask AI
- *
- * TODO: Implement these API calls using the project's apiClient.
- * Reference: M-3/Front end/rag-documents/task-rag-documents.md
- */ 
-import { useState } from 'react';
-import { Loader2, Sparkles } from 'lucide-react';
-import { ragService } from '../../services/rag/rag.service.js';
-import styles from './RagDocuments.module.css';
+import { apiClient } from "../core/api.client.js";
 
-/** Semantic search: ranked excerpts with similarity scores. */
-export default function RagSearch({ documentId }) {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [error, setError] = useState('');
-
-
-const handleSubmit = async (event) => {
-    event.preventDefault();
-    const trimmed = query.trim();
-    if (!trimmed || isSearching) {
-      if (!trimmed) setError('Enter something to search for.');
-      return;
-    }
-
-    setIsSearching(true);
-    setError('');
-    try {
-      const result = await ragService.searchInDocument(documentId, trimmed);
-      setResults(result.data?.results || []);
-    } catch (err) {
-      setResults(null);
-      setError(err.message);
-    } finally {
-      setIsSearching(false);
-    }
-  };
- return (
-    <div className={`${styles.section} ${styles.sectionDivided}`}>
-      <h2 className={styles.cardTitle}>Semantic search</h2>
-      <p className={styles.cardHint}>
-        Finds passages by meaning (embeddings), not only exact keywords.
-      </p>
-
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <label htmlFor={`rag-search-${documentId}`} className={styles.label}>
-          Search query
-        </label>
-        <input
-          id={`rag-search-${documentId}`}
-          type="text"
-          className={styles.input}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Describe the topic or phrase you are looking for"
-          maxLength={500}
-          disabled={isSearching}
-        />
-        <div>
-          <button type="submit" className={styles.primaryButton} disabled={isSearching}>
-            {isSearching ? (
-              <Loader2 size={15} className={styles.spin} aria-hidden />
-            ) : (
-              <Sparkles size={15} aria-hidden />
-            )}
-            {isSearching ? 'Searching…' : 'Search'}
-          </button>
-        </div>
-      </form>
-    </div>
-
-
-
-
-
-      {error && (
-        <p className={styles.errorBox} role="alert">
-          {error}
-        </p>
-      )}
-
-      {results && results.length === 0 && (
-        <p className={styles.emptyResults}>
-          No matching passages found. Try describing the topic in different words.
-        </p>
-      )}
-
-      {results && results.length > 0 && (
-        <ol className={styles.results}>
-          {results.map((result) => (
-            <li key={result.chunkId} className={styles.result}>
-              <div className={styles.resultHeader}>
-                <span className={styles.resultChunk}>Chunk {result.chunkIndex}</span>
-                <span className={styles.resultScore}>
-                  {Math.round(result.score * 100)}% match
-                </span>
-              </div>
-              <p className={styles.excerpt}>{result.excerpt}</p>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
+// Same helper style as question.service.js: pick the best message the
+// backend sent, otherwise use our own friendly fallback.
+function getMessage(error, fallback) {
+  return (
+    error.response?.data?.msg ||
+    error.response?.data?.message ||
+    error.response?.data?.errors?.[0]?.msg ||
+    fallback
   );
 }
 
+const BASE = "/api/rag/documents";
 
+/** GET /api/rag/documents */
+export async function listDocuments() {
+  try {
+    const response = await apiClient.get(BASE);
+    return response.data;
+  } catch (error) {
+    throw new Error(getMessage(error, "Could not load documents."));
+  }
+}
 
+/**
+ * POST /api/rag/documents  (multipart/form-data)
+ * TODO: 'file' must match the backend's multer field name,
+ * e.g. upload.single('file').
+ */
+export async function uploadPdf(file) {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post(BASE, formData, {
+      // Needed if apiClient defaults to JSON, otherwise Axios would turn the
+      // FormData into JSON. The browser still adds the multipart boundary.
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(getMessage(error, "Upload failed. Please try again."));
+  }
+}
 
+/** DELETE /api/rag/documents/:documentId */
+export async function deleteDocument(documentId) {
+  try {
+    const response = await apiClient.delete(`${BASE}/${documentId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(getMessage(error, "Could not delete this document."));
+  }
+}
 
+/** GET /api/rag/documents/:documentId/search?query=... */
+export async function searchInDocument(documentId, query) {
+  try {
+    const response = await apiClient.get(`${BASE}/${documentId}/search`, {
+      params: { query },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(getMessage(error, "Search failed."));
+  }
+}
 
+/** POST /api/rag/documents/:documentId/query   body: { query } */
+export async function queryDocument(documentId, query) {
+  try {
+    const response = await apiClient.post(`${BASE}/${documentId}/query`, {
+      query,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(getMessage(error, "Could not get an answer."));
+  }
+}
 
-  };
+/**
+ * GET /api/rag/documents/:documentId/file
+ * Downloads the PDF as a Blob and returns a temporary blob: URL string for
+ * <iframe src>. The CALLER must revoke it with URL.revokeObjectURL
+ * (RagPreview.jsx does this).
+ */
+export async function fetchPdfObjectUrl(documentId) {
+  try {
+    const response = await apiClient.get(`${BASE}/${documentId}/file`, {
+      responseType: "blob",
+    });
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    return URL.createObjectURL(blob);
+  } catch (error) {
+    throw new Error(getMessage(error, "Could not load the PDF preview."));
+  }
+}
 
-  
+// Same shape as questionService, in case you prefer ragService.listDocuments().
+export const ragService = {
+  listDocuments,
+  uploadPdf,
+  deleteDocument,
+  searchInDocument,
+  queryDocument,
+  fetchPdfObjectUrl,
+};
