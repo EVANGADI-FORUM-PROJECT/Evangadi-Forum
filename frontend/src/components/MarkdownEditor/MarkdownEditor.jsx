@@ -100,3 +100,9 @@ export default function MarkdownEditor() {
           spellCheck="true"
         />
       )}
+      <small className={styles.hint}>
+        Markdown supported · Use the toolbar for headings, lists, quotes, links, inline code, and code blocks.
+      </small>
+    </div>
+  );
+}
