@@ -12,7 +12,20 @@
  */
 
 export const searchDocumentValidation = [
-  // TODO [T-23]: Add express-validator rules for GET /documents/:documentId/search.
+  param('documentId')
+        .isInt()
+        .withMessage('documentId must be an integer'),
+
+    query('query')
+        .trim()
+        .notEmpty()
+        .withMessage('query is required'),
+
+    query('k')
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage('k must be a positive integer'),
+    validationErrorHandler
 ];
 
 export const queryDocumentValidation = [
