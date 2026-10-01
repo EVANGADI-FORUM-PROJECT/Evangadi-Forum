@@ -40,3 +40,11 @@ export default function MarkdownEditor() {
     const nextValue = `${value.slice(0, start)}${replacement}${value.slice(end)}`;
 
     onChange(nextValue);
+    
+    requestAnimationFrame(() => {
+      textarea.focus();
+      const cursorStart = start + tool.prefix.length;
+      const cursorEnd = cursorStart + selected.length;
+      textarea.setSelectionRange(cursorStart, cursorEnd);
+    });
+  };
