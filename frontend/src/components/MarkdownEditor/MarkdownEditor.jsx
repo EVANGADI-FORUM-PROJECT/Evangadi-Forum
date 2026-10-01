@@ -25,4 +25,18 @@ export default function MarkdownEditor() {
   preview = true,
   className = '',
   ariaLabel = 'Markdown editor',
-}) 
+}) {
+  const textareaRef = useRef(null);
+  const [showPreview, setShowPreview] = useState(false);
+
+  const apply = tool => {
+    const textarea = textareaRef.current;
+    if (!textarea || disabled) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = value.slice(start, end) || tool.placeholder;
+    const replacement = `${tool.prefix}${selected}${tool.suffix}`;
+    const nextValue = `${value.slice(0, start)}${replacement}${value.slice(end)}`;
+
+    onChange(nextValue);
