@@ -17,5 +17,12 @@ const tools = [
 
 export default function MarkdownEditor() {
   // TODO: Implement markdown editing/formatting and preview as required by the task specification.
-  return null;
-}
+ value,
+  onChange,
+  placeholder,
+  rows = 13,
+  disabled = false,
+  preview = true,
+  className = '',
+  ariaLabel = 'Markdown editor',
+}) 
