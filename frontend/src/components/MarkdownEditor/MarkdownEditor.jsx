@@ -48,3 +48,24 @@ export default function MarkdownEditor() {
       textarea.setSelectionRange(cursorStart, cursorEnd);
     });
   };
+    return (
+    <div className={`${styles.editor} ${className}`}>
+      <div className={styles.toolbar} role="toolbar" aria-label="Markdown formatting tools">
+        <div className={styles.toolGroup}>
+          {tools.map(tool => {
+            const Icon = tool.icon;
+            return (
+              <button
+                key={tool.id}
+                type="button"
+                className={styles.toolButton}
+                onClick={() => apply(tool)}
+                disabled={disabled}
+                title={tool.label}
+                aria-label={tool.label}
+              >
+                <Icon size={15} />
+              </button>
+            );
+          })}
+        </div>
