@@ -80,3 +80,23 @@ export default function MarkdownEditor() {
           </button>
         )}
       </div>
+      {showPreview ? (
+        <div className={styles.preview} aria-label="Markdown preview">
+          {value.trim() ? (
+            <ReactMarkdown>{value}</ReactMarkdown>
+          ) : (
+            <p className={styles.emptyPreview}>Nothing to preview yet.</p>
+          )}
+        </div>
+      ) : (
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder={placeholder}
+          rows={rows}
+          disabled={disabled}
+          aria-label={ariaLabel}
+          spellCheck="true"
+        />
+      )}
