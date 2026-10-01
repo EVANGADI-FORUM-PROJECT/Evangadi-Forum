@@ -69,3 +69,14 @@ export default function MarkdownEditor() {
             );
           })}
         </div>
+        {preview && (
+          <button
+            type="button"
+            className={`${styles.previewButton} ${showPreview ? styles.active : ''}`}
+            onClick={() => setShowPreview(prev => !prev)}
+            disabled={disabled}
+          >
+            {showPreview ? 'Edit' : 'Preview'}
+          </button>
+        )}
+      </div>
