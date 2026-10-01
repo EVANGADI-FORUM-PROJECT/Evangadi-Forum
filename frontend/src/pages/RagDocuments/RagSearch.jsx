@@ -6,7 +6,7 @@
  * - Call ragService.searchInDocument().
  * - Display ranked excerpts and similarity scores.
  */
- */
+
 import { useState } from 'react';
 import { Loader2, Sparkles } from 'lucide-react';
 import { ragService } from '../../services/rag/rag.service.js';
