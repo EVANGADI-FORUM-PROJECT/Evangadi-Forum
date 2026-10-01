@@ -93,8 +93,6 @@ export const getSingleQuestionController = async (req, res, next)=>{
         next(error);
     }
 }
-
-// ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]
 //POST /api/questions/:questionHash/answer-fit
 export const assessAnswerAgainstQuestionController = async (req, res, next)=>{
@@ -123,26 +121,6 @@ console.log('assessAnswerAgainstQuestionsService', result);
 		next(error);
 	}
 }
-
-// ! ===========================================
-// # Task: AI Question Draft Coach[T-17]
-//POST /api/questions/draft-coach
-export const generateQuestionDraftCoachController = async (req, res, next)=>{
-    try {
-       const {title, content}= req.body;
-    const data = await generateQuestionDraftCoachService({title, content});
-    
-
-    res.status(StatusCodes.OK).json({
-        success: true,
-        message:"Draft suggestions Generated.",
-        data,
-    }) 
-    } catch (error) {
-        next(error);
-    }
-    
-};
 
 // ! =========================================
 
