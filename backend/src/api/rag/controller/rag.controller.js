@@ -101,18 +101,23 @@ export const getDocumentMetaController = async (req, res, next) => {
 };
 
 
-// Stream RAG Document PDF
+// Task: Get RAG Document Metadata [T-24]
+// Endpoint: GET /api/rag/documents/:documentId
+export const getDocumentMetaController = async (req, res, next) => {
+    try {
+        const document = await getDocumentMetaService(
+            req.params.documentId,
+            req.user.id
+        );
 
-export const getDocumentFileController = async (req, res, next) => {
-  try {
-    const result = await getAssertOwnedDocumentPathService(
-      req.params.documentId,
-      req.user.id,
-    );
-    return res.sendFile(result.filePath);
-  } catch (error) {
-    next(error);
-  }
+        res.status(200).json({
+            success: true,
+            message: 'Document fetched successfully.',
+            data: document
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 
