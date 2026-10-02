@@ -101,46 +101,68 @@ export const getDocumentMetaController = async (req, res, next) => {
 };
 
 
-// Stream RAG Document PDF
+// Task: Get RAG Document Metadata [T-24]
+// Endpoint: GET /api/rag/documents/:documentId
+export const getDocumentMetaController = async (req, res, next) => {
+    try {
+        const document = await getDocumentMetaService(
+            req.params.documentId,
+            req.user.id
+        );
 
+        res.status(200).json({
+            success: true,
+            message: 'Document fetched successfully.',
+            data: document
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+// Task: Stream RAG Document PDF [T-24]
+// Endpoint: GET /api/rag/documents/:documentId/file
 export const getDocumentFileController = async (req, res, next) => {
-  try {
-    const result = await getAssertOwnedDocumentPathService(
-      req.params.documentId,
-      req.user.id,
-    );
-    return res.sendFile(result.filePath);
-  } catch (error) {
-    next(error);
-  }
+    try {
+        const result = await getAssertOwnedDocumentPathService(
+            req.params.documentId,
+            req.user.id
+        );
+
+        return res.sendFile(result.filePath);
+    } catch (error) {
+        next(error);
+    }
 };
 
-
+// Task: List My RAG Documents [T-24]
+// Endpoint: GET /api/rag/documents
 export const listDocumentsController = async (req, res, next) => {
-  try {
-    const result = await listDocumentsForUserService(req.user.id);
-    res.status(200).json({
-      success: true,
-      message: "Documents fetched successfully.",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+    try {
+        const result = await listDocumentsForUserService(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Documents fetched successfully.',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
-export const deleteDocumentController = async (req, res, next) => {
-  try {
-    const result = await deleteDocumentService(
-      req.params.documentId,
-      req.user.id,
-    );
-    res.status(200).json({
-      success: true,
-      message: "Document deleted successfully.",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+
+// Task: List My RAG Documents [T-24]
+// Endpoint: GET /api/rag/documents
+export const listDocumentsController = async (req, res, next) => {
+    try {
+        const result = await listDocumentsForUserService(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Documents fetched successfully.',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
 };
