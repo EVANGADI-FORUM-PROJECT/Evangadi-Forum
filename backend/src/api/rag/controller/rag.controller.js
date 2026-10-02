@@ -119,7 +119,20 @@ export const getDocumentMetaController = async (req, res, next) => {
         next(error);
     }
 };
+// Task: Stream RAG Document PDF [T-24]
+// Endpoint: GET /api/rag/documents/:documentId/file
+export const getDocumentFileController = async (req, res, next) => {
+    try {
+        const result = await getAssertOwnedDocumentPathService(
+            req.params.documentId,
+            req.user.id
+        );
 
+        return res.sendFile(result.filePath);
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const listDocumentsController = async (req, res, next) => {
   try {
