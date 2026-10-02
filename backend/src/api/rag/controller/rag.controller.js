@@ -134,18 +134,22 @@ export const getDocumentFileController = async (req, res, next) => {
     }
 };
 
+// Task: List My RAG Documents [T-24]
+// Endpoint: GET /api/rag/documents
 export const listDocumentsController = async (req, res, next) => {
-  try {
-    const result = await listDocumentsForUserService(req.user.id);
-    res.status(200).json({
-      success: true,
-      message: "Documents fetched successfully.",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+    try {
+        const result = await listDocumentsForUserService(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Documents fetched successfully.',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
 };
+
 
 export const deleteDocumentController = async (req, res, next) => {
   try {
