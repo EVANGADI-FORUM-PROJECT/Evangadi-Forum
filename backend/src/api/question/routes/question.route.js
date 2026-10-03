@@ -30,8 +30,8 @@ router.post(
   createQuestionController,
 );
 
+// # Task: List Questions [T-10]
 // GET /api/questions : used for fetching all questions and again for filtering the current user questions
-// Middleware: authenticateUser -> getQuestionsValidation -> getQuestionsController
 router.get("/", authenticateUser, getQuestionsValidation, getQuestionsController);
 
 //==================================

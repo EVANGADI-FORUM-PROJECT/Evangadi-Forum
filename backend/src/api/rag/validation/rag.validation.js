@@ -1,3 +1,5 @@
+import {body, query, param} from "express-validator";
+import {validationErrorHandler} from "../../../middleware/validation-handler.js";
 /*
  * MILESTONE 3 — RAG VALIDATION
  *
@@ -12,20 +14,15 @@
  */
 
 export const searchDocumentValidation = [
-  param('documentId')
-        .isInt()
-        .withMessage('documentId must be an integer'),
+  param("documentId").isInt().withMessage("documentId must be an integer"),
 
-    query('query')
-        .trim()
-        .notEmpty()
-        .withMessage('query is required'),
+  query("query").trim().notEmpty().withMessage("query is required"),
 
-    query('k')
-        .optional()
-        .isInt({ min: 1 })
-        .withMessage('k must be a positive integer'),
-    validationErrorHandler
+  query("k")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("k must be a positive integer"),
+  validationErrorHandler,
 ];
 
 export const queryDocumentValidation = [
@@ -33,17 +30,13 @@ export const queryDocumentValidation = [
 ];
 
 export const documentIdParamValidation1 = [
- param("documentId")
-    .isInt()
-    .withMessage('documentId must be an integer'),
-    validationErrorHandler
+  param("documentId").isInt().withMessage("documentId must be an integer"),
+  validationErrorHandler,
 ];
 
 export const documentIdParamValidation2 = [
- param("documentId")
-    .isInt()
-    .withMessage('documentId must be an integer'),
-    validationErrorHandler
+  param("documentId").isInt().withMessage("documentId must be an integer"),
+  validationErrorHandler,
 ];
 
 export const deleteDocumentValidation = [
