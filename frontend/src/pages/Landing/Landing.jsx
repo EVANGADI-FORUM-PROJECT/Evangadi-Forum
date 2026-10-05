@@ -4,6 +4,8 @@
  *   shell tokens (cards, borders, slate + orange). No data fetching.
  */
 
+// ─── External Libraries ────────
+
 /**
  * framer-motion: used for entrance animations on hero text and CTA buttons.
  */
