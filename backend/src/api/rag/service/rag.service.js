@@ -41,7 +41,7 @@ export let createDocumentFromUploadService = async (file, userId) => {
 
   console.log("countRows:", countRows);
 
-  let maxPerUser = Number(process.env.RAG_MAX_PDFS_PER_USER);
+  let maxPerUser = Number(process.env.RAG_MAX_PDFS_PER_USER || 20);
 
   if (countRows[0].documentCount >= maxPerUser) {
     throw new Error("You have reached the maximum number of PDFs.");
@@ -99,7 +99,7 @@ export let createDocumentFromUploadService = async (file, userId) => {
     let chunks = chunkText(text, chunkSize, overlap);
     //console.log("chunks", chunks);
 
-    let chunkPerDoc = Number(process.env.RAG_MAX_CHUNKS_PER_DOC);
+    let chunkPerDoc = Number(process.env.RAG_MAX_CHUNKS_PER_DOC || 1000);
     if (chunks.length > chunkPerDoc) {
       throw new Error("Document contains too many chunks.");
     }
