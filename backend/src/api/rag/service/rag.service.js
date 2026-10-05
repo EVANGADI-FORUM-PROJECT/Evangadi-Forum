@@ -314,10 +314,10 @@ export const listDocumentsForUserService = async (userId) => {
 //  Delete RAG Document
 
 export const deleteDocumentService = async (documentId, userId) => {
-  const document = await getAssertOwnedDocumentPathService(documentId, userId);
+  const document = await getDocumentMetaService(documentId, userId);
 
   try {
-    await fs.unlink(document.filePath);
+    await fs.unlink(path.resolve(document.storage_path));
   } catch (error) {
     // A missing file should not prevent deletion of its database record.
     if (error.code !== "ENOENT") {
