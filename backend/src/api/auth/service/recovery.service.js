@@ -30,3 +30,28 @@ export async function forgotPasswordService(email, dependencies = {}) {
     await query('UPDATE users SET reset_token_hash = NULL, reset_token_expires = NULL, reset_requested_at = NULL WHERE user_id = ? AND reset_token_hash = ?', [rows[0].user_id, hash]);
   }
 }
+
+export async function resetPasswordService({ token, password }, dependencies = {}) {
+  const invalid = () => new BadRequestError('Invalid or expired reset link. Request a new one.');
+  if (!isResetToken(token)) throw invalid();
+  if (typeof password !== 'string' || password.length < 6 || Buffer.byteLength(password, 'utf8') > 72) {
+    throw new BadRequestError('Choose a password with at least 6 characters that is not too long.');
+  }
+  const connection = await (dependencies.getConnection || (() => db.getConnection()))();
+  try {
+    await connection.beginTransaction();
+    const [rows] = await connection.execute(`SELECT user_id FROM users
+      WHERE reset_token_hash = ? AND reset_token_expires > UTC_TIMESTAMP() FOR UPDATE`, [hashResetToken(token)]);
+    if (!rows.length) throw invalid();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await connection.execute(`UPDATE users SET password_hash = ?, reset_token_hash = NULL,
+      reset_token_expires = NULL, reset_requested_at = NULL, auth_version = auth_version + 1 WHERE user_id = ?`,
+      [hashedPassword, rows[0].user_id]);
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+}
