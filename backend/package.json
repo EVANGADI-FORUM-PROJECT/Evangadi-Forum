@@ -25,6 +25,7 @@
     "mysql2": "^3.18.2",
     "pdf-parse": "^2.4.5",
     "nodemailer": "^7.0.6",
-    "google-auth-library": "^11.1.0"
+    "google-auth-library": "^11.1.0",
+    "validator": "^13.15.35"
   }
 }

@@ -1,3 +1,4 @@
+import { normalizeAuthEmail } from './normalize-email.js';
 import bcrypt from "bcryptjs";
 import { issueSession } from './session.js';
 import { safeExecute } from "../../../../db/config.js";
@@ -13,7 +14,7 @@ if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required");
 }
 
-const normalizeEmail = (email) => email.trim().toLowerCase();
+const normalizeEmail = normalizeAuthEmail;
 
 /**
  * Checks if a user exists by email.

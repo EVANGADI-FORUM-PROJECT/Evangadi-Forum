@@ -1,3 +1,4 @@
+import { normalizeAuthEmail } from './normalize-email.js';
 import { OAuth2Client } from 'google-auth-library';
 import { googleClientId } from './auth.config.js';
 import { UnauthenticatedError } from '../../../utils/errors/index.js';
@@ -7,7 +8,7 @@ export function verifiedGoogleClaims(payload) {
       typeof payload.email !== 'string' || !payload.email.includes('@') || payload.email.length > 320 || payload.email_verified !== true) {
     throw new UnauthenticatedError('Unable to verify your Google account.');
   }
-  const email = payload.email.trim().toLowerCase();
+  const email = normalizeAuthEmail(payload.email);
   return {
     googleId: payload.sub, email,
     firstName: String(payload.given_name || payload.name || 'Google user').slice(0, 50),

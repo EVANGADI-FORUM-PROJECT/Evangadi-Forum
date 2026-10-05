@@ -1,3 +1,4 @@
+import { normalizeAuthEmail } from './normalize-email.js';
 import bcrypt from 'bcryptjs';
 import { safeExecute, db } from '../../../../db/config.js';
 import { BadRequestError } from '../../../utils/errors/index.js';
@@ -11,7 +12,7 @@ export async function forgotPasswordService(email, dependencies = {}) {
   const query = dependencies.query || safeExecute;
   const config = recoveryConfig();
   const send = dependencies.send || createResetMailer();
-  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmail = normalizeAuthEmail(email);
   const rows = await query('SELECT user_id, email FROM users WHERE email = ? LIMIT 1', [normalizedEmail]);
   if (!rows.length) return;
   const { token, hash } = createResetToken();

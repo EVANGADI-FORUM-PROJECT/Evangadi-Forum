@@ -2,7 +2,7 @@ import { body } from 'express-validator';
 import { validationErrorHandler } from '../../../middleware/validation-handler.js';
 
 export const forgotPasswordValidation = [
-  body('email').isString().bail().trim().isEmail().withMessage('Enter a valid email address.').isLength({ max: 320 }).toLowerCase(),
+  body('email').isString().bail().trim().isEmail().withMessage('Enter a valid email address.').isLength({ max: 320 }).normalizeEmail(),
   validationErrorHandler,
 ];
 export const resetPasswordValidation = [
