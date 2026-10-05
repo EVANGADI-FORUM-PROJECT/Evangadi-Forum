@@ -1,3 +1,4 @@
+import GoogleSignIn from '../../components/GoogleSignIn/GoogleSignIn.jsx';
 /**
  * Auth: combined login + register form; switches mode without changing routes.
  */
@@ -20,7 +21,7 @@ export default function Auth() {
   // Get navigation and authentication functions
   const navigate = useNavigate();
   const location = useLocation();
-  const { register, login } = useAuth();
+  const { register, login, googleLogin } = useAuth();
 
   // Controls whether we show Login or Register form
 
@@ -114,7 +115,6 @@ export default function Auth() {
         // Redirect to original URL if present, otherwise dashboard
         const from = location.state?.from?.pathname || "/dashboard";
         navigate(from, { replace: true });
-        navigate(from, { replace: true });
       } else {
         // Registration flow
         await register({
@@ -140,6 +140,16 @@ export default function Auth() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleCredential = async credential => {
+    if (loading) return;
+    setLoading(true); setError(null); setSuccessMessage(null);
+    try {
+      await googleLogin(credential);
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    } finally { setLoading(false); }
   };
 
   return (
@@ -307,6 +317,7 @@ export default function Auth() {
                       Password
                     </label>
                   </div>
+                  {isLogin && <button type="button" className={styles.auth__formFooterLink} onClick={() => navigate('/forgot-password')} disabled={loading}>Forgot password?</button>}
                   <div className={styles.auth__passwordWrap}>
                     <input
                       id="password"
@@ -338,7 +349,7 @@ export default function Auth() {
                   <div className={styles.auth__success}>{successMessage}</div>
                 )}
 
-                {error && <div className={styles.auth__error}>{error}</div>}
+                {error && <div role="alert" className={styles.auth__error}>{error}</div>}
 
                 <div className={styles.auth__buttonContainer}>
                   <button
@@ -370,6 +381,7 @@ export default function Auth() {
                 </div>
               </form>
 
+              <GoogleSignIn onCredential={handleGoogleCredential} onError={setError} disabled={loading} />
               <footer className={styles.auth__formFooter}>
                 <p className={styles.auth__formFooterText}>
                   {isLogin
