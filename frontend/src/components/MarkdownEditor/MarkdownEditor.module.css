@@ -2,3 +2,5 @@
 .toolbar{min-height:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.35rem .45rem;border-bottom:1px solid var(--border);background:var(--surface-container-low)}
 .toolButton,.previewButton{border:1px solid transparent;background:transparent;color:var(--text-secondary);border-radius:.35rem;min-width:2rem;height:1.9rem;display:grid;place-items:center;cursor:pointer}
 .toolButton,.previewButton{border:1px solid transparent;background:transparent;color:var(--text-secondary);border-radius:.35rem;min-width:2rem;height:1.9rem;display:grid;place-items:center;cursor:pointer}
+.toolButton:hover,.previewButton:hover{background:var(--surface);border-color:var(--border);color:var(--primary-dark)}
+.toolButton:focus-visible,.previewButton:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
