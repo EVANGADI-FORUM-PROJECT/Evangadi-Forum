@@ -1,1 +1,1 @@
-/* Task-specific styles for the corresponding frontend task.\n   TODO: Implement styles together with the task. */\n
+.editor{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
