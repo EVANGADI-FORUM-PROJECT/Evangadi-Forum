@@ -19,6 +19,7 @@ export default function MyQuestions() {
       .finally(() => { if (!cancelled) setIsLoading(false); });
     return () => { cancelled = true; };
   }, []);
+
   return (
     <div className={styles.page}>
       <section className={styles.header}>

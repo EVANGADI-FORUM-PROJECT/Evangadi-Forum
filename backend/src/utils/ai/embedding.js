@@ -7,7 +7,7 @@ import { getGeminiClient, getGeminiEmbeddingModel } from './gemini.js';
  */
 export const generateQuestionEmbedding = async (
   text,
-  { taskType = 'RETRIEVAL_DOCUMENT', title } = {},
+  { taskType = 'RETRIEVAL_DOCUMENT', title, outputDimensionality } = {},
 ) => {
   const normalizedText = String(text ?? '').trim();
   if (!normalizedText) {
@@ -16,6 +16,7 @@ export const generateQuestionEmbedding = async (
 
   const config = { taskType };
   if (title) config.title = title;
+  if (outputDimensionality) config.outputDimensionality = outputDimensionality;
 
   const response = await getGeminiClient().models.embedContent({
     model: getGeminiEmbeddingModel(),

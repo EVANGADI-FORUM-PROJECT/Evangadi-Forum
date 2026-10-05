@@ -241,8 +241,6 @@
     align-items: center;
     gap: 0.75rem;
     /* 3 * 0.25rem = 0.75rem */
-    margin-bottom: 1rem;
-    /* 4 * 0.25rem = 1rem */
 }
 
 /* Element: sidebar__avatar */
@@ -267,6 +265,7 @@
 
 /* Element: sidebar__info */
 .sidebar__info {
+    min-width: 0;
     overflow: hidden;
 }
 
@@ -317,26 +316,19 @@
 
 /* Element: sidebar__logout */
 .sidebar__logout {
-    width: 100%;
-    padding-left: 0.5rem;
-    /* 2 * 0.25rem = 0.5rem */
-    padding-right: 0.5rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    display: flex;
+    flex-shrink: 0;
+    width: auto;
+    padding: 0.4rem;
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    /* 3 * 0.25rem = 0.75rem */
+    justify-content: center;
+    margin-left: auto;
     color: rgba(239, 68, 68, 0.8);
-    /* text-red-500/80 */
     transition: all var(--transition-base, 200ms ease-in-out);
-    font-size: 0.75rem;
-    /* text-xs */
-    font-weight: var(--font-medium, 500);
     background: none;
     border: none;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    text-align: left;
 }
 
 /* Pseudo-class: hover state for logout button */

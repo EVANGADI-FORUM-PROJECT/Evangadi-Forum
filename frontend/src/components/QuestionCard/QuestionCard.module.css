@@ -1,1 +1,42 @@
-/* Task-specific styles for the corresponding frontend task.\n   TODO: Implement styles together with the task. */\n
+.card {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.card:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.card:last-child { border-bottom: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+.card:hover { background: var(--surface-hover); }
+.card:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.card--compact { padding: var(--spacing-md); border: 1px solid var(--border); border-radius: var(--radius-lg) !important; }
+.avatar {
+  flex: 0 0 2.5rem; width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  display: grid; place-items: center; background: var(--primary-light); color: var(--primary-dark);
+  font-size: var(--text-xs); font-weight: var(--font-semibold);
+}
+.body { min-width: 0; flex: 1; }
+.headingRow { display: flex; align-items: flex-start; gap: .5rem; }
+.title { margin: 0; font-size: .95rem; line-height: 1.35; font-weight: var(--font-semibold); }
+.openIcon { margin-left: auto; flex: 0 0 auto; color: var(--text-placeholder); }
+.excerpt {
+  margin: .25rem 0 .55rem; color: var(--text-secondary); font-size: var(--text-xs);
+  line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.excerpt p { margin: 0 0 .35rem; }
+.excerpt p:last-child { margin-bottom: 0; }
+.excerpt h4 { margin: 0 0 .35rem; font-size: .75rem; color: var(--text-primary); }
+.excerpt ul, .excerpt ol { margin: 0 0 .35rem; padding-left: 1.1rem; }
+.excerpt blockquote { margin: .2rem 0 .35rem; padding-left: .65rem; border-left: 2px solid var(--primary); color: var(--text-tertiary); }
+.excerpt code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface-container-low); color: var(--primary-dark); padding: .08rem .25rem; border-radius: .2rem; font-size: .9em; }
+.excerpt pre { margin: .25rem 0 .35rem; padding: .55rem .65rem; background: var(--tertiary); color: #e2e8f0; border-radius: var(--radius-md); overflow: auto; }
+.excerpt pre code { background: transparent; color: inherit; padding: 0; }
+.excerpt a { color: inherit; text-decoration: none; }
+.meta { display: flex; flex-wrap: wrap; gap: .75rem; color: var(--text-tertiary); font-size: .68rem; }
+.meta span { display: inline-flex; align-items: center; gap: .25rem; }
+@media (max-width: 600px) {
+  .card { padding: var(--spacing-md); }
+  .excerpt { -webkit-line-clamp: 3; }
+}

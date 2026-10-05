@@ -1,4 +1,4 @@
-import { apiClient } from "../core/api.client.js";
+import { apiClient } from '../core/api.client.js';
 
 // Same helper style as question.service.js: pick the best message the
 // backend sent, otherwise use our own friendly fallback.
@@ -11,7 +11,7 @@ function getMessage(error, fallback) {
   );
 }
 
-const BASE = "/api/rag/documents";
+const BASE = '/api/rag/documents';
 
 /** GET /api/rag/documents */
 export async function listDocuments() {
@@ -19,7 +19,7 @@ export async function listDocuments() {
     const response = await apiClient.get(BASE);
     return response.data;
   } catch (error) {
-    throw new Error(getMessage(error, "Could not load documents."));
+    throw new Error(getMessage(error, 'Could not load documents.'));
   }
 }
 
@@ -31,15 +31,15 @@ export async function listDocuments() {
 export async function uploadPdf(file) {
   try {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
     const response = await apiClient.post(BASE, formData, {
       // Needed if apiClient defaults to JSON, otherwise Axios would turn the
       // FormData into JSON. The browser still adds the multipart boundary.
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   } catch (error) {
-    throw new Error(getMessage(error, "Upload failed. Please try again."));
+    throw new Error(getMessage(error, 'Upload failed. Please try again.'));
   }
 }
 
@@ -49,7 +49,7 @@ export async function deleteDocument(documentId) {
     const response = await apiClient.delete(`${BASE}/${documentId}`);
     return response.data;
   } catch (error) {
-    throw new Error(getMessage(error, "Could not delete this document."));
+    throw new Error(getMessage(error, 'Could not delete this document.'));
   }
 }
 
@@ -61,7 +61,7 @@ export async function searchInDocument(documentId, query) {
     });
     return response.data;
   } catch (error) {
-    throw new Error(getMessage(error, "Search failed."));
+    throw new Error(getMessage(error, 'Search failed.'));
   }
 }
 
@@ -73,7 +73,7 @@ export async function queryDocument(documentId, query) {
     });
     return response.data;
   } catch (error) {
-    throw new Error(getMessage(error, "Could not get an answer."));
+    throw new Error(getMessage(error, 'Could not get an answer.'));
   }
 }
 
@@ -86,12 +86,12 @@ export async function queryDocument(documentId, query) {
 export async function fetchPdfObjectUrl(documentId) {
   try {
     const response = await apiClient.get(`${BASE}/${documentId}/file`, {
-      responseType: "blob",
+      responseType: 'blob',
     });
-    const blob = new Blob([response.data], { type: "application/pdf" });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
     return URL.createObjectURL(blob);
   } catch (error) {
-    throw new Error(getMessage(error, "Could not load the PDF preview."));
+    throw new Error(getMessage(error, 'Could not load the PDF preview.'));
   }
 }
 

@@ -1,13 +1,12 @@
-// T-13 — Layout Shell
-// Task: Protect authenticated forum routes.
-// TODO: Teammate implementing T-13 should implement the protected-route behavior.
-
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth.js';
 import styles from './ProtectedRoute.module.css';
 
+/**
+ * Wraps protected pages and redirects unauthenticated users to the login page,
+ * preserving the original URL for post-login redirection.
+ */
 export default function ProtectedRoute({ children }) {
-  // TODO: Implement authentication check and redirect behavior.
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 

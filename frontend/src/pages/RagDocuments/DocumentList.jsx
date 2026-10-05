@@ -1,15 +1,8 @@
-import styles from "./RagDocuments.module.css";
-import DocumentListItem from "./DocumentListItem";
-/** Decides what goes under the upload box: loading / empty / the rows. */
+import styles from './RagDocuments.module.css';
+import DocumentListItem from './DocumentListItem';
 
-export default function DocumentList({
-  documents,
-  isLoading,
-  selectedId,
-  deletingId,
-  onSelect,
-  onDelete,
-}) {
+/** Decides what goes under the upload box: loading / empty / the rows. */
+export default function DocumentList({ documents, isLoading, selectedId, deletingId, onSelect, onDelete }) {
   if (isLoading) {
     return (
       <p className={styles.listMessage} role="status">
@@ -31,6 +24,7 @@ export default function DocumentList({
       {documents.map((doc) => (
         <DocumentListItem
           key={doc.document_id}
+          doc={doc}
           isActive={doc.document_id === selectedId}
           isDeleting={deletingId === doc.document_id}
           onSelect={onSelect}

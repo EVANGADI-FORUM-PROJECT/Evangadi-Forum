@@ -3,7 +3,10 @@ import { LayoutDashboard, LogOut, MessageSquare, FileText, X } from 'lucide-reac
 import { useAuth } from '../../contexts/useAuth';
 import styles from './Sidebar.module.css';
 
-
+/**
+ * Primary navigation: paths must match `App.jsx` routes.
+ * Add rows here when you ship new sections (e.g. Admin, Bookmarks).
+ */
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Home', path: '/dashboard' },
   { icon: MessageSquare, label: 'Your Topics', path: '/my-questions' },
@@ -13,7 +16,7 @@ const NAV_ITEMS = [
 export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  
+
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles['sidebar--open'] : styles['sidebar--closed']}`} aria-hidden={!isOpen}>
       <div className={styles.sidebar__header}>
@@ -106,16 +109,16 @@ export default function Sidebar({ isOpen, onClose }) {
               </p>
               <p className={styles.sidebar__role}>Learner</p>
             </div>
+            <button
+              type='button'
+              onClick={logout}
+              className={styles.sidebar__logout}
+              aria-label='Logout'
+              title='Logout'
+            >
+              <LogOut size={16} />
+            </button>
           </div>
-
-          <button
-            type='button'
-            onClick={logout}
-            className={styles.sidebar__logout}
-          >
-            <LogOut size={16} />
-            <span>Logout</span>
-          </button>
         </div>
       </div>
     </aside>

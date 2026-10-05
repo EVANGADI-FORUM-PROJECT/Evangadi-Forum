@@ -3,10 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, LogOut, Sparkles } from 'lucide-react';
 import styles from './Navbar.module.css';
 
+/**
+ * Top bar: page title, debounced text search → `/dashboard?q=…`, optional AI semantic search.
+ * Search state is driven by the URL on the dashboard so bookmarks and refresh keep context.
+ */
 export default function Navbar({ title, subtitle, user, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Initialize searchTerm from URL if we are already on the dashboard
   const searchKey = `${location.pathname}${location.search}`;
   const params = new URLSearchParams(location.search);
   const urlTerm = location.pathname === '/dashboard'

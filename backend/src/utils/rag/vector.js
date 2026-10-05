@@ -1,13 +1,5 @@
-/*
- * TASK: T-23 — Semantic Search in RAG Document
- *
- * TODO:
- * - Read RAG search configuration.
- * - Normalize query/document text where needed.
- * - Implement cosine similarity / vector comparison.
- *
- * Reference: M-3/Backend/rag/search-document.md
- */
+// RAG-specific vector settings and helper functions.
+
 
 export const getVectorConfig = () => {
   const thresholdText = process.env.RAG_SEARCH_THRESHOLD;
@@ -24,12 +16,36 @@ export const getVectorConfig = () => {
   return { ragThreshold: threshold, ragK: k };
 };
 
-export const normalizeQueryText = ({ title, content, text } = {}) => {
-  // TODO [T-23]: Normalize the text used for retrieval.
-  throw new Error("TODO: Implement T-23 text normalization");
+const normalizeWhiteSpace = value => {
+    return value.replace(/\s+/g, ' ').trim();
 };
 
-export const calculateCosineSimilarity = (a, b) => {
-  // TODO [T-23]: Calculate similarity between two embedding vectors.
-  throw new Error("TODO: Implement T-23 cosine similarity");
+export const normalizeQueryText = ({ title }) => {
+    return normalizeWhiteSpace(
+        `${title || ''}`.normalize('NFKC').toLowerCase()
+    );
+};
+
+export const calculateCosineSimilarity = (vecA, vecB) => {
+    if (vecA.length !== vecB.length) {
+        throw new Error('embedded vectors are not equal');
+    }
+
+    let dotProduct = 0;
+    let magnitudeA = 0;
+    let magnitudeB = 0;
+
+    for (let i = 0; i < vecA.length; i++) {
+        dotProduct += vecA[i] * vecB[i];
+        magnitudeA += vecA[i] * vecA[i];
+        magnitudeB += vecB[i] * vecB[i];
+    }
+
+    const denominator = Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB);
+
+    if (denominator === 0) {
+        return 0;
+    }
+
+    return dotProduct / denominator;
 };
