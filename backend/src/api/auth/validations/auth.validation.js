@@ -32,10 +32,12 @@ export const registerValidation = [
     .normalizeEmail(),
   //password-middleware
   body("password")
+    .isString().bail()
     .notEmpty()
     .withMessage("Password is required")
     .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters long"),
+    .withMessage("Password must be at least 6 characters long")
+    .isByteLength({ max: 72 }).withMessage("Password is too long"),
 
   // Checks the validation results collected above.
   validationErrorHandler,
@@ -48,7 +50,7 @@ export const loginValidation = [
     .isEmail()
     .withMessage("A valid email address is required")
     .normalizeEmail(), // Normalize the email to lowercase and trim whitespace
-  body("password").notEmpty().withMessage("Password is required"),
+  body("password").isString().bail().notEmpty().withMessage("Password is required"),
 
   validationErrorHandler,
 ];

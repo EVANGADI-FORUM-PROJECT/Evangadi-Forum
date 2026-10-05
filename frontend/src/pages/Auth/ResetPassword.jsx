@@ -28,6 +28,10 @@ export default function ResetPassword() {
       setError("Password must be at least 6 characters long.");
       return;
     }
+    if (new TextEncoder().encode(password).length > 72) {
+      setError('Password is too long. Choose a shorter password.');
+      return;
+    }
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
