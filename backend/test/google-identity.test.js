@@ -27,3 +27,9 @@ test('the verifier receives the configured audience and maps invalid tokens to 4
     if (old === undefined) delete process.env.GOOGLE_CLIENT_ID; else process.env.GOOGLE_CLIENT_ID = old;
   }
 });
+
+test('malformed email claims cannot create forum accounts', () => {
+  for (const email of ['invalid', 'member@', 'a@b@gmail.com']) {
+    assert.throws(() => verifiedGoogleClaims({ sub: 'subject', email, email_verified: true }), { statusCode: 401 });
+  }
+});

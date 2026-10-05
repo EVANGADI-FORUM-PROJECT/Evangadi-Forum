@@ -1,3 +1,6 @@
+import validator from 'validator';
+let cachedClient;
+let cachedAudience;
 import { normalizeAuthEmail } from './normalize-email.js';
 import { OAuth2Client } from 'google-auth-library';
 import { googleClientId } from './auth.config.js';
@@ -5,7 +8,7 @@ import { UnauthenticatedError } from '../../../utils/errors/index.js';
 
 export function verifiedGoogleClaims(payload) {
   if (!payload || typeof payload.sub !== 'string' || !payload.sub || payload.sub.length > 255 ||
-      typeof payload.email !== 'string' || !payload.email.includes('@') || payload.email.length > 320 || payload.email_verified !== true) {
+      typeof payload.email !== 'string' || !validator.isEmail(payload.email.trim()) || payload.email.length > 320 || payload.email_verified !== true) {
     throw new UnauthenticatedError('Unable to verify your Google account.');
   }
   const email = normalizeAuthEmail(payload.email);
@@ -21,7 +24,11 @@ export async function verifyGoogleCredential(credential, verifier) {
   const audience = googleClientId();
   if (typeof credential !== 'string' || !credential) throw new UnauthenticatedError('Google credential is required.');
   try {
-    const client = verifier || new OAuth2Client(audience);
+    if (!verifier && cachedAudience !== audience) {
+      cachedClient = new OAuth2Client(audience);
+      cachedAudience = audience;
+    }
+    const client = verifier || cachedClient;
     const ticket = await client.verifyIdToken({ idToken: credential, audience });
     return verifiedGoogleClaims(ticket.getPayload());
   } catch { throw new UnauthenticatedError('Invalid or expired Google credential. Please try again.'); }
