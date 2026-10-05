@@ -7,7 +7,7 @@ import {
   Users,
   RefreshCw,
 } from "lucide-react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import { questionService } from "../../services/question/question.service.js";
 import QuestionCard from "../../components/QuestionCard/QuestionCard.jsx";
 import ui from "../../styles/pageStates.module.css";

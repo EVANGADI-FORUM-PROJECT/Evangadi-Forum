@@ -13,7 +13,7 @@ import {
   EyeOff,
   MessageSquare,
 } from "lucide-react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import styles from "./Auth.module.css";
 
 export default function Auth() {

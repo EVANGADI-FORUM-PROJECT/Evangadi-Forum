@@ -41,7 +41,7 @@ export let createDocumentFromUploadService = async (file, userId) => {
 
   console.log("countRows:", countRows);
 
-  let maxPerUser = Number(process.env.RAG_MAX_PDFS_PER_USER);
+  let maxPerUser = Number(process.env.RAG_MAX_PDFS_PER_USER || 20);
 
   if (countRows[0].documentCount >= maxPerUser) {
     throw new Error("You have reached the maximum number of PDFs.");
@@ -99,7 +99,7 @@ export let createDocumentFromUploadService = async (file, userId) => {
     let chunks = chunkText(text, chunkSize, overlap);
     //console.log("chunks", chunks);
 
-    let chunkPerDoc = Number(process.env.RAG_MAX_CHUNKS_PER_DOC);
+    let chunkPerDoc = Number(process.env.RAG_MAX_CHUNKS_PER_DOC || 1000);
     if (chunks.length > chunkPerDoc) {
       throw new Error("Document contains too many chunks.");
     }
@@ -314,10 +314,10 @@ export const listDocumentsForUserService = async (userId) => {
 //  Delete RAG Document
 
 export const deleteDocumentService = async (documentId, userId) => {
-  const document = await getAssertOwnedDocumentPathService(documentId, userId);
+  const document = await getDocumentMetaService(documentId, userId);
 
   try {
-    await fs.unlink(document.filePath);
+    await fs.unlink(path.resolve(document.storage_path));
   } catch (error) {
     // A missing file should not prevent deletion of its database record.
     if (error.code !== "ENOENT") {

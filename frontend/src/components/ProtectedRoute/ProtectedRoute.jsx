@@ -3,7 +3,7 @@
 // TODO: Teammate implementing T-13 should implement the protected-route behavior.
 
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useAuth } from '../../contexts/useAuth.js';
 import styles from './ProtectedRoute.module.css';
 
 export default function ProtectedRoute({ children }) {

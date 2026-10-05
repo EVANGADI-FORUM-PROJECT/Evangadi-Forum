@@ -1,3 +1,5 @@
+import { getRagUploadSettings } from '../../../utils/rag/uploadSettings.js';
+const uploadSettings = getRagUploadSettings();
 //It only stores the PDF's metadata and where the actual file is stored.
 
 /**
@@ -22,7 +24,7 @@ import crypto from "crypto";
 import { createDocumentMulterErrorHandler } from "../../../middleware/multerError-handler.js";
 
 let storage = multer.diskStorage({
-  destination: "uploads/rag",
+  destination: uploadSettings.directory,
   filename: (req, file, cb) => {
     let unquesName = crypto.randomBytes(8).toString("hex") + ".pdf";
     cb(null, unquesName);
@@ -36,12 +38,12 @@ let fileFilter = (req, file, cb) => {
     cb(new Error("Invalid file type. Only PDF files are allowed."));
   }
 };
-let maxSize = process.env.RAG_MAX_UPLOAD_MB;
+
 export let upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: maxSize * 1024 * 1024,
+    fileSize: uploadSettings.maxBytes,
   },
 });
 

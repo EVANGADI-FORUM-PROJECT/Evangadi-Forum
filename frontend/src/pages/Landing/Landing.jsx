@@ -17,7 +17,7 @@ import {
   FileText,
   Database,
 } from "lucide-react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import styles from "./Landing.module.css";
 
 export default function Landing() {
