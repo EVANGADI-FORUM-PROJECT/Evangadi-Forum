@@ -22,13 +22,13 @@ import ReactMarkdown from "react-markdown";
 // Custom editor for writing answers in Markdown
 import MarkdownEditor from "../../components/MarkdownEditor/MarkdownEditor.jsx";
 // Get the logged-in user
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 // Functions for working with questions
 import { questionService } from "../../services/question/question.service.js";
 // Functions for working with answers
 import { answerService } from "../../services/answer/answer.service.js";
 // Format dates for related questions
-import { formatRelativeDate } from "../../components/QuestionCard/QuestionCard.jsx";
+import { formatRelativeDate } from "../../lib/formatRelativeDate.js";
 // Import page loading/error styles
 import ui from "../../styles/pageStates.module.css";
 // Import QuestionDetail page styles
@@ -37,8 +37,12 @@ import styles from "./QuestionDetail.module.css";
 // TODO: Implement question details, answers, answer form, and AI Answer Fit.
 // Question detail page
 export default function QuestionDetail() {
-  // Route and auth data
   const { questionHash } = useParams();
+  return <QuestionThread key={questionHash} questionHash={questionHash} />;
+}
+
+function QuestionThread({ questionHash }) {
+  // Route and auth data
   const navigate = useNavigate();
   const { user } = useAuth();
   // Local state
@@ -57,8 +61,6 @@ export default function QuestionDetail() {
   // Fetch the main question and its answers
   useEffect(() => {
     let cancelled = false;
-    setIsLoading(true);
-    setError("");
     questionService
       .getSingleQuestion(questionHash)
       .then((result) => {
@@ -79,7 +81,6 @@ export default function QuestionDetail() {
   // Load related questions for the sidebar
   useEffect(() => {
     let cancelled = false;
-    setRelatedLoading(true);
     questionService
       .getSimilarQuestions(questionHash, { k: 5 })
       .then((result) => {

@@ -25,50 +25,50 @@ export default function RagAnswerBody({ children }) {
     <div className={styles.root}>
       <ReactMarkdown
         components={{
-          p: ({ node: _n, ...props }) => <p className={styles.p} {...props} />,
-          ul: ({ node: _n, ...props }) => (
-            <ul className={styles.ul} {...props} />
+          p: ({ ...props }) => <p className={styles.p} {...withoutNode(props)} />,
+          ul: ({ ...props }) => (
+            <ul className={styles.ul} {...withoutNode(props)} />
           ),
-          ol: ({ node: _n, ...props }) => (
-            <ol className={styles.ol} {...props} />
+          ol: ({ ...props }) => (
+            <ol className={styles.ol} {...withoutNode(props)} />
           ),
-          li: ({ node: _n, ...props }) => (
-            <li className={styles.li} {...props} />
+          li: ({ ...props }) => (
+            <li className={styles.li} {...withoutNode(props)} />
           ),
-          h2: ({ node: _n, ...props }) => (
-            <h2 className={styles.h2} {...props} />
+          h2: ({ ...props }) => (
+            <h2 className={styles.h2} {...withoutNode(props)} />
           ),
-          h3: ({ node: _n, ...props }) => (
-            <h3 className={styles.h3} {...props} />
+          h3: ({ ...props }) => (
+            <h3 className={styles.h3} {...withoutNode(props)} />
           ),
-          blockquote: ({ node: _n, ...props }) => (
-            <blockquote className={styles.blockquote} {...props} />
+          blockquote: ({ ...props }) => (
+            <blockquote className={styles.blockquote} {...withoutNode(props)} />
           ),
-          a: ({ node: _n, ...props }) => (
+          a: ({ ...props }) => (
             <a
               className={styles.a}
               target='_blank'
               rel='noreferrer noopener'
-              {...props}
+              {...withoutNode(props)}
             />
           ),
-          hr: ({ node: _n, ...props }) => (
-            <hr className={styles.hr} {...props} />
+          hr: ({ ...props }) => (
+            <hr className={styles.hr} {...withoutNode(props)} />
           ),
-          pre: ({ node: _n, children: preChildren }) => (
+          pre: ({ children: preChildren }) => (
             <CodeBlock>{preChildren}</CodeBlock>
           ),
-          code: ({ node: _n, className, children, ...props }) => {
+          code: ({ className, children, ...props }) => {
             const isFence = Boolean(className?.trim());
             if (isFence) {
               return (
-                <code className={className} {...props}>
+                <code className={className} {...withoutNode(props)}>
                   {children}
                 </code>
               );
             }
             return (
-              <code className={styles.inlineCode} {...props}>
+              <code className={styles.inlineCode} {...withoutNode(props)}>
                 {children}
               </code>
             );
@@ -131,4 +131,9 @@ function CodeBlock({ children }) {
   );
 }
 
+}
+
+function withoutNode({ node, ...props }) {
+  void node;
+  return props;
 }

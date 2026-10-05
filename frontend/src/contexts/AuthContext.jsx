@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth/auth.service.js';
 
 /**
  * Authentication Context providing user state and auth methods.
  */
-const AuthContext = createContext(undefined);
+import { AuthContext } from './useAuth.js';
 
 /**
  * AuthProvider is a component that wraps the parts of your application that need authentication information.
@@ -14,8 +14,8 @@ const AuthContext = createContext(undefined);
  */
 export function AuthProvider({ children }) {
   // Authentication state
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => authService.getStoredToken() ? authService.getStoredUser() : null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   //   user = null
@@ -23,16 +23,6 @@ export function AuthProvider({ children }) {
 
   // application needs to check whether the user already has a valid/stored session.
   // Initialize user state from localStorage on mount
-  useEffect(() => {
-    const token = authService.getStoredToken();
-    const storedUser = authService.getStoredUser();
-
-    if (token && storedUser) {
-      setUser(storedUser);
-    }
-
-    setLoading(false);
-  }, []);
 
   /**
    * Registers a new user. Does not automatically log them in.
@@ -43,8 +33,6 @@ export function AuthProvider({ children }) {
     try {
       const { user } = await authService.register(userData);
       return { success: true, user };
-    } catch (error) {
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -60,8 +48,6 @@ export function AuthProvider({ children }) {
       const { user } = await authService.login(credentials);
       setUser(user);
       return { success: true };
-    } catch (error) {
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -99,16 +85,3 @@ export function AuthProvider({ children }) {
 // }
 }
 
-/**
- * Custom hook to access the authentication context.
- * @throws {Error} If used outside of AuthProvider
- */
-export function useAuth() {
-  const context = useContext(AuthContext);
-
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-
-  return context;
-}

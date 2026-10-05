@@ -7,35 +7,26 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [searchTerm, setSearchTerm] = useState(() => {
-    const params = new URLSearchParams(location.search);
-    return params.get('q') || params.get('semantic') || '';
-  });
+  const searchKey = `${location.pathname}${location.search}`;
+  const params = new URLSearchParams(location.search);
+  const urlTerm = location.pathname === '/dashboard'
+    ? params.get('q') || params.get('semantic') || ''
+    : '';
+  const [draft, setDraft] = useState(null);
+  const searchTerm = draft?.key === searchKey ? draft.value : urlTerm;
+  const draftKey = draft?.key;
 
+  // Only typed edits trigger keyword search; URL-driven semantic searches stay intact.
   useEffect(() => {
-    if (location.pathname === '/dashboard') {
-      const params = new URLSearchParams(location.search);
-      setSearchTerm(params.get('q') || params.get('semantic') || '');
-    } else {
-      setSearchTerm('');
-    }
-  }, [location.search, location.pathname]);
-
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm.trim() !== '') {
-        navigate(`/dashboard?q=${encodeURIComponent(searchTerm)}`);
-      } else if (
-        location.pathname === '/dashboard' &&
-        !new URLSearchParams(location.search).get('semantic')
-      ) {
-        navigate('/dashboard');
-      }
+    if (draftKey !== searchKey || searchTerm === urlTerm) return;
+    const timer = setTimeout(() => {
+      const query = searchTerm.trim();
+      navigate(query ? `/dashboard?q=${encodeURIComponent(query)}` : '/dashboard', {
+        replace: true,
+      });
     }, 500);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, navigate, location.pathname]);
+    return () => clearTimeout(timer);
+  }, [draftKey, searchKey, searchTerm, urlTerm, navigate]);
 
   const handleSemanticSearch = e => {
     e.preventDefault();
@@ -68,7 +59,7 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
           id='search'
           type='text'
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={e => setDraft({ key: searchKey, value: e.target.value })}
           placeholder='Search questions by keyword…'
           className={styles['navbar__search-input']}
           aria-label='Search questions by keyword'

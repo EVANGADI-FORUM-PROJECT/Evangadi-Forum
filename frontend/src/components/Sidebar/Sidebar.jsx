@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, LogOut, MessageSquare, FileText, X } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/useAuth';
 import styles from './Sidebar.module.css';
 
 
