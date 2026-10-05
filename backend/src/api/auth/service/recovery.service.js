@@ -22,13 +22,16 @@ export async function forgotPasswordService(email, dependencies = {}) {
   if (!updated.affectedRows) return;
   const url = new URL('/reset-password', config.origin);
   url.searchParams.set('token', token);
+  const schedule = dependencies.schedule || setImmediate;
+  schedule(async () => {
   try {
     await send({ email: rows[0].email, link: url.toString() });
   } catch {
     // Keep the public response identical for existing and nonexistent accounts.
     console.error('Password recovery email delivery failed. Check mail configuration.');
-    await query('UPDATE users SET reset_token_hash = NULL, reset_token_expires = NULL, reset_requested_at = NULL WHERE user_id = ? AND reset_token_hash = ?', [rows[0].user_id, hash]);
+    await query('UPDATE users SET reset_token_hash = NULL, reset_token_expires = NULL, reset_requested_at = NULL WHERE user_id = ? AND reset_token_hash = ?', [rows[0].user_id, hash]).catch(() => console.error('Password recovery cleanup failed.'));
   }
+  });
 }
 
 export async function resetPasswordService({ token, password }, dependencies = {}) {

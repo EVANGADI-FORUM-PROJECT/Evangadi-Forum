@@ -15,7 +15,7 @@ test('recovery stores only a hash and respects the cooldown', async () => {
     queries.push({ sql, params });
     return sql.startsWith('SELECT') ? [{ user_id: 1, email: 'member@example.com' }] : { affectedRows: 1 };
   };
-  await forgotPasswordService(' MEMBER@EXAMPLE.COM ', { query, send: async value => { link = value.link; } });
+  await forgotPasswordService(' MEMBER@EXAMPLE.COM ', { query, schedule: job => job(), send: async value => { link = value.link; } });
   const raw = new URL(link).searchParams.get('token');
   assert.notEqual(queries[1].params[0], raw);
   assert.match(queries[1].sql, /60 SECOND/);
@@ -47,4 +47,25 @@ test('malformed links and oversized passwords are rejected before connecting', a
   const getConnection = () => { throw new Error('Should not connect'); };
   await assert.rejects(resetPasswordService({ token: 'bad', password: 'password' }, { getConnection }), /Invalid or expired/);
   await assert.rejects(resetPasswordService({ token: createResetToken().token, password: 'a'.repeat(73) }, { getConnection }), /not too long/);
+});
+
+test('requests within the cooldown do not send another email', async () => {
+  let sent = false;
+  await forgotPasswordService('member@example.com', {
+    query: async sql => sql.startsWith('SELECT') ? [{ user_id: 1, email: 'member@example.com' }] : { affectedRows: 0 },
+    send: async () => { sent = true; }, schedule: job => job(),
+  });
+  assert.equal(sent, false);
+});
+test('mail delivery runs outside the public response and cleans up failed tokens', async t => {
+  let job; const queries = [];
+  t.mock.method(console, 'error', () => {});
+  await forgotPasswordService('member@example.com', {
+    query: async (sql, params) => { queries.push({ sql, params }); return sql.startsWith('SELECT') ? [{ user_id: 1, email: 'member@example.com' }] : { affectedRows: 1 }; },
+    send: async () => { throw new Error('SMTP unavailable'); }, schedule: callback => { job = callback; },
+  });
+  assert.equal(queries.length, 2);
+  await job();
+  assert.equal(queries.length, 3);
+  assert.match(queries[2].sql, /reset_token_hash = NULL/);
 });
