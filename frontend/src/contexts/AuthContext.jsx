@@ -84,15 +84,4 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-  // put information into AuthContext.Provider so that it can be accessed by any component that consumes this context.
-//   {
-//     user,
-//     loading,
-//     register,
-//     login,
-    googleLogin,
-//     logout,
-//     isAuthenticated: !!user
-// }
 }
-
