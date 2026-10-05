@@ -31,6 +31,24 @@ async function login(credentials) {
   }
 }
 
+async function forgotPassword(email) {
+  try { return (await apiClient.post('/api/auth/forgot-password', { email })).data; }
+  catch (error) { throw handleAuthError(error); }
+}
+async function resetPassword(token, password) {
+  try { return (await apiClient.post('/api/auth/reset-password', { token, password })).data; }
+  catch (error) { throw handleAuthError(error); }
+}
+async function googleLogin(credential) {
+  try {
+    const { data } = await apiClient.post('/api/auth/google', { credential });
+    if (!data.token || !data.user) throw new Error('Google sign-in returned an invalid session.');
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    return { user: data.user, token: data.token };
+  } catch (error) { throw error.response || error.code ? handleAuthError(error) : error; }
+}
+
 /**
  * Logs out the current user by clearing localStorage.
  */
@@ -104,6 +122,9 @@ function handleAuthError(error) {
  * Service for handling auth-related requests.
  */
 export const authService = {
+  forgotPassword,
+  resetPassword,
+  googleLogin,
   // Register a new user.
   register,
   // Log in an existing user.

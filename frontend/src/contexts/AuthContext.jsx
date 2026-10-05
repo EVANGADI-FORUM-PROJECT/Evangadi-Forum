@@ -53,6 +53,15 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const googleLogin = async credential => {
+    setLoading(true);
+    try {
+      const { user } = await authService.googleLogin(credential);
+      setUser(user);
+      return { success: true };
+    } finally { setLoading(false); }
+  };
+
   /**
    * Clears the user session and redirects to the login page.
    * handles removing/clearing the stored authentication session
@@ -69,19 +78,10 @@ export function AuthProvider({ children }) {
     loading,
     register,
     login,
+    googleLogin,
     logout,
     isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-  // put information into AuthContext.Provider so that it can be accessed by any component that consumes this context.
-//   {
-//     user,
-//     loading,
-//     register,
-//     login,
-//     logout,
-//     isAuthenticated: !!user
-// }
 }
-

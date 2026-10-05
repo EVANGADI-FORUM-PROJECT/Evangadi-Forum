@@ -1,3 +1,5 @@
+import ForgotPassword from './pages/Auth/ForgotPassword.jsx';
+import ResetPassword from './pages/Auth/ResetPassword.jsx';
 /**
  * Route map: public pages live outside `Layout`; forum tools use `Layout` + `ProtectedRoute`.
  * Add new `<Route>` entries here, then wire navigation in `Sidebar.jsx` and
@@ -24,6 +26,8 @@ function App() {
           {/* Public routes */}
           <Route path='/' element={<Landing />} />
           <Route path='/auth' element={<Auth />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
 
           {/* Protected routes with Layout */}
           <Route element={<Layout />}>
