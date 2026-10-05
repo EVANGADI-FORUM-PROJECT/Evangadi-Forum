@@ -11,7 +11,7 @@ Run their SQL in your MySQL client against the database configured in backend `.
 
 ## Email
 
-Install dependencies in both frontend and backend with `npm install`. Copy each `.env.example` to `.env` and retain your existing database, JWT, and Gemini settings.
+Install dependencies in both frontend and backend with `npm ci`. Copy each `.env.example` to `.env` and retain your existing database, JWT, and Gemini settings.
 
 Set `FRONTEND_URL` to the browser application's origin, `EMAIL_USER` and `EMAIL_PASSWORD` to your mail credentials, and `EMAIL_SERVICE` to your provider (default Gmail). Gmail uses an app password. For another SMTP host, configure `SMTP_HOST`, `SMTP_PORT`, and `SMTP_SECURE`; `EMAIL_FROM` optionally sets a verified sender. Never commit `.env` or passwords.
 
