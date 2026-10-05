@@ -24,7 +24,16 @@ import {
   FileText,
   Database,
 } from "lucide-react";
-import { useAuth } from "../../contexts/AuthContext";
+
+// ─── Internal Modules ───────
+
+/**
+ * AuthContext: provides `isAuthenticated` boolean.
+ * Used to conditionally render public-only vs. authenticated-only sections
+ * and to decide CTA destinations ("/auth" vs. "/dashboard").
+ */
+
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Landing.module.css";
 
 export default function Landing() {
@@ -50,6 +59,8 @@ export default function Landing() {
       .getElementById("course-rag")
       ?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // ── Render ─────────────────
 
   return (
     <div className={styles.landing}>
@@ -166,7 +177,12 @@ export default function Landing() {
         </div>
       </header>
 
-      {/* ================= MAIN CONTENT AREA ================= */}
+      {/* =======================
+       * MAIN CONTENT AREA
+       * Sequential sections rendered as <main> for landmark semantics.
+       * Section order: Hero → Course RAG → (public) Capabilities + Steps + CTA
+       *     → (auth) Welcome-Back
+       ======================== */}
 
       <main className={styles.landing__main}>
         {/* Hero Section */}
@@ -200,6 +216,9 @@ export default function Landing() {
                   technical Q&A
                 </span>
               </Motion.h1>
+
+              {/* Lead paragraph: value proposition summary */}
+
               <Motion.p
                 className={styles.landing__lead}
                 initial={{ opacity: 0, y: 12 }}
