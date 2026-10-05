@@ -6,20 +6,22 @@ import { createResetToken } from '../src/api/auth/service/reset-token.js';
 
 test('unknown emails receive no message and no token is persisted', async () => {
   let sent = false;
-  await forgotPasswordService('unknown@example.com', { query: async () => [], send: async () => { sent = true; } });
+  await forgotPasswordService('unknown@example.com', { query: async () => ({ affectedRows: 0 }), send: async () => { sent = true; } });
   assert.equal(sent, false);
 });
 test('recovery stores only a hash and respects the cooldown', async () => {
-  const queries = []; let link;
+  const queries = []; let link; let job;
   const query = async (sql, params) => {
     queries.push({ sql, params });
     return sql.startsWith('SELECT') ? [{ user_id: 1, email: 'member@example.com' }] : { affectedRows: 1 };
   };
-  await forgotPasswordService(' MEMBER@EXAMPLE.COM ', { query, schedule: job => job(), send: async value => { link = value.link; } });
+  await forgotPasswordService(' MEMBER@EXAMPLE.COM ', { query, schedule: callback => { job = callback; }, send: async value => { link = value.link; } });
+  assert.equal(queries.length, 1);
+  await job();
   const raw = new URL(link).searchParams.get('token');
-  assert.notEqual(queries[1].params[0], raw);
-  assert.match(queries[1].sql, /60 SECOND/);
-  assert.equal(queries[0].params[0], 'member@example.com');
+  assert.notEqual(queries[0].params[0], raw);
+  assert.match(queries[0].sql, /60 SECOND/);
+  assert.equal(queries[0].params[1], 'member@example.com');
 });
 test('reset hashes the new password, clears the token, and increments the session version', async () => {
   const { token } = createResetToken(); let consumed = false; let released = 0; let rolledBack = 0;
@@ -64,8 +66,19 @@ test('mail delivery runs outside the public response and cleans up failed tokens
     query: async (sql, params) => { queries.push({ sql, params }); return sql.startsWith('SELECT') ? [{ user_id: 1, email: 'member@example.com' }] : { affectedRows: 1 }; },
     send: async () => { throw new Error('SMTP unavailable'); }, schedule: callback => { job = callback; },
   });
-  assert.equal(queries.length, 2);
+  assert.equal(queries.length, 1);
   await job();
   assert.equal(queries.length, 3);
   assert.match(queries[2].sql, /reset_token_hash = NULL/);
+});
+
+test('known and unknown recovery requests use the same public query count', async () => {
+  for (const affectedRows of [0, 1]) {
+    let calls = 0;
+    await forgotPasswordService('member@example.com', {
+      query: async () => { calls++; return { affectedRows }; },
+      send: async () => {}, schedule: () => {},
+    });
+    assert.equal(calls, 1);
+  }
 });

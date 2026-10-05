@@ -13,25 +13,26 @@ export async function forgotPasswordService(email, dependencies = {}) {
   const config = recoveryConfig();
   const send = dependencies.send || createResetMailer();
   const normalizedEmail = normalizeAuthEmail(email);
-  const rows = await query('SELECT user_id, email FROM users WHERE email = ? LIMIT 1', [normalizedEmail]);
-  if (!rows.length) return;
   const { token, hash } = createResetToken();
+  // Both existing and nonexistent emails use one public database round trip.
   const updated = await query(`UPDATE users SET reset_token_hash = ?,
     reset_token_expires = DATE_ADD(UTC_TIMESTAMP(), INTERVAL 15 MINUTE), reset_requested_at = UTC_TIMESTAMP()
-    WHERE user_id = ? AND (reset_requested_at IS NULL OR reset_requested_at <= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 60 SECOND))`,
-    [hash, rows[0].user_id]);
+    WHERE email = ? AND (reset_requested_at IS NULL OR reset_requested_at <= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 60 SECOND))`,
+    [hash, normalizedEmail]);
   if (!updated.affectedRows) return;
   const url = new URL('/reset-password', config.origin);
   url.searchParams.set('token', token);
   const schedule = dependencies.schedule || setImmediate;
   schedule(async () => {
-  try {
-    await send({ email: rows[0].email, link: url.toString() });
-  } catch {
-    // Keep the public response identical for existing and nonexistent accounts.
-    console.error('Password recovery email delivery failed. Check mail configuration.');
-    await query('UPDATE users SET reset_token_hash = NULL, reset_token_expires = NULL, reset_requested_at = NULL WHERE user_id = ? AND reset_token_hash = ?', [rows[0].user_id, hash]).catch(() => console.error('Password recovery cleanup failed.'));
-  }
+    try {
+      const rows = await query('SELECT user_id, email FROM users WHERE email = ? AND reset_token_hash = ? LIMIT 1', [normalizedEmail, hash]);
+      if (!rows.length) return;
+      await send({ email: rows[0].email, link: url.toString() });
+    } catch {
+      console.error('Password recovery email delivery failed. Check mail configuration.');
+      await query('UPDATE users SET reset_token_hash = NULL, reset_token_expires = NULL, reset_requested_at = NULL WHERE email = ? AND reset_token_hash = ?', [normalizedEmail, hash])
+        .catch(() => console.error('Password recovery cleanup failed.'));
+    }
   });
 }
 
