@@ -53,6 +53,15 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const googleLogin = async credential => {
+    setLoading(true);
+    try {
+      const { user } = await authService.googleLogin(credential);
+      setUser(user);
+      return { success: true };
+    } finally { setLoading(false); }
+  };
+
   /**
    * Clears the user session and redirects to the login page.
    * handles removing/clearing the stored authentication session
@@ -69,6 +78,7 @@ export function AuthProvider({ children }) {
     loading,
     register,
     login,
+    googleLogin,
     logout,
     isAuthenticated: !!user,
   };
@@ -80,6 +90,7 @@ export function AuthProvider({ children }) {
 //     loading,
 //     register,
 //     login,
+    googleLogin,
 //     logout,
 //     isAuthenticated: !!user
 // }
