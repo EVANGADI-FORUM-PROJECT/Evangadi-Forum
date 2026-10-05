@@ -4,3 +4,7 @@
 .toolButton,.previewButton{border:1px solid transparent;background:transparent;color:var(--text-secondary);border-radius:.35rem;min-width:2rem;height:1.9rem;display:grid;place-items:center;cursor:pointer}
 .toolButton:hover,.previewButton:hover{background:var(--surface);border-color:var(--border);color:var(--primary-dark)}
 .toolButton:focus-visible,.previewButton:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+.previewButton{display:inline-flex;padding:0 .6rem;font-size:.65rem;font-weight:var(--font-semibold);white-space:nowrap}
+.previewButton.active{background:var(--primary-light);color:var(--primary-dark);border-color:var(--border)}
+.editor textarea{display:block;width:100%;min-height:14rem;border:0;border-radius:0;padding:.75rem;background:var(--surface);color:var(--text-primary);font-size:.75rem;line-height:1.55;resize:vertical;outline:none}
+.editor textarea:focus{box-shadow:inset 0 0 0 2px var(--primary-light)}
