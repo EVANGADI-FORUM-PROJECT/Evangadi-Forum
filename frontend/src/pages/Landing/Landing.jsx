@@ -1,17 +1,24 @@
 /**
  * @file Landing.jsx
- * @description Public marketing route (`/`). Layout and copy align with in-app
- *   shell tokens (cards, borders, slate + orange). No data fetching.
+ * @description Public marketing route (`/`) for Evangadi Forum.
+ *
+ * Architecture & Design Alignment:
+ * - Layout, spacing, typography, and card tokens align with the in-app shell
+ *   (Evangadi Slate + Vibrant Orange design system).
+ * - Implements full marketing narrative: Header, Hero, Course RAG pipeline,
+ *   Capabilities grid, 4-step workflow process, Call to Action, and Footer.
+ * - Optimized for accessibility with semantic landmarks (<header>, <main>,
+ *   <section>, <aside>, <nav>, <footer>, <ol>, <ul>, <article>) and ARIA attributes.
+ * - Incorporates Framer Motion for subtle entry transitions on hero elements.
+ *
+ * @module components/landing/Landing
  */
 
-// ─── External Libraries ────────
-
-/**
- * framer-motion: used for entrance animations on hero text and CTA buttons.
- */
+// ─── External Libraries & Hooks ───────────────────────────────────────────────
 import { motion as Motion } from "framer-motion";
-
 import { useNavigate } from "react-router-dom";
+
+// ─── Icon System (Lucide React) ───────────────────────────────────────────────
 import {
   Sparkles,
   MessageSquare,
@@ -25,25 +32,24 @@ import {
   Database,
 } from "lucide-react";
 
-// ─── Internal Modules ───────
-
-/**
- * AuthContext: provides `isAuthenticated` boolean.
- * Used to conditionally render public-only vs. authenticated-only sections
- * and to decide CTA destinations ("/auth" vs. "/dashboard").
- */
-
-import { useAuth } from "../../context/AuthContext";
+// ─── Modular Stylesheet ───────────────────────────────────────────────────────
 import styles from "./Landing.module.css";
 
+/**
+ * Landing Component
+ *
+ * Primary marketing entry point for visitors and prospective learners.
+ * Features an interactive layout with anchor scrolling to key sections
+ * ("Course RAG", "How it works") and direct navigation to authentication routes.
+ *
+ * @returns {JSX.Element} The rendered marketing landing page.
+ */
 export default function Landing() {
-  // Navigation hook for programmatically redirecting users between routes
+  // Navigation hook for programmatic client-side routing between pages
   const navigate = useNavigate();
-  // Retrieve current authentication status from AuthContext
-  const { isAuthenticated } = useAuth();
 
   /**
-   * Smoothly scrolls the viewport to the 'How it works' section.
+   * Smoothly scrolls the viewport to the 'How it works' workflow section.
    */
   const scrollToHowItWorks = () => {
     document
@@ -52,7 +58,7 @@ export default function Landing() {
   };
 
   /**
-   * Smoothly scrolls the viewport to the 'Course RAG' section.
+   * Smoothly scrolls the viewport to the 'Course RAG' pipeline section.
    */
   const scrollToCourseRag = () => {
     document
@@ -60,28 +66,33 @@ export default function Landing() {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ── Render ─────────────────
-
   return (
     <div className={styles.landing}>
+      {/* =========================================================================
+          HEADER & NAVIGATION BAR
+          Sticky top navigation with brand lockup, section jump links, and auth CTAs
+         ========================================================================= */}
       <header className={styles.landing__header}>
         <div
           className={styles.landing__headerInner}>
+          {/* Brand Lockup: Logo mark and title/tagline text */}
           <button
             type="button"
             className={styles.landing__brand}
             onClick={() => navigate("/")}
             aria-label="Evangadi Forum home">
+            {/* Orange gradient icon badge with message bubble symbol */}
             <span
               className={
                 styles.landing__brandMark
               }
-              aria-hidden>
+              aria-hidden="true">
               <MessageSquare
                 size={20}
                 strokeWidth={2}
               />
             </span>
+            {/* Text lockup: Brand name and descriptive cohort tagline */}
             <span
               className={
                 styles.landing__brandText
@@ -101,9 +112,10 @@ export default function Landing() {
             </span>
           </button>
 
+          {/* Marketing Navigation Links: Smooth scroll triggers */}
           <nav
             className={styles.landing__nav}
-            aria-label="Marketing">
+            aria-label="Marketing Navigation">
             <button
               type="button"
               className={styles.landing__navLink}
@@ -121,7 +133,6 @@ export default function Landing() {
               onClick={scrollToCourseRag}>
               Course RAG
             </button>
-
             <button
               type="button"
               className={styles.landing__navLink}
@@ -130,79 +141,64 @@ export default function Landing() {
             </button>
           </nav>
 
+          {/* Header Action Buttons: Sign In link & Create Account CTA */}
           <div
             className={
               styles.landing__headerActions
             }>
-            {isAuthenticated ? (
-              <button
-                type="button"
-                className={
-                  styles.landing__btnPrimary
-                }
-                onClick={() =>
-                  navigate("/dashboard")
-                }>
-                Open forum
-                <ArrowRight
-                  size={16}
-                  aria-hidden
-                />
-              </button>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className={
-                    styles.landing__btnGhost
-                  }
-                  onClick={() =>
-                    navigate("/auth")
-                  }>
-                  Sign in
-                </button>
-                <button
-                  type="button"
-                  className={
-                    styles.landing__btnPrimary
-                  }
-                  onClick={() =>
-                    navigate("/auth")
-                  }>
-                  Create account
-                </button>
-              </>
-            )}
+            <button
+              type="button"
+              className={styles.landing__btnGhost}
+              onClick={() => navigate("/auth")}>
+              Sign in
+            </button>
+            <button
+              type="button"
+              className={
+                styles.landing__btnPrimary
+              }
+              onClick={() => navigate("/auth")}>
+              Create account
+            </button>
           </div>
         </div>
       </header>
 
-      {/* =======================
-       * MAIN CONTENT AREA
-       * Sequential sections rendered as <main> for landmark semantics.
-       * Section order: Hero → Course RAG → (public) Capabilities + Steps + CTA
-       *     → (auth) Welcome-Back
-       ======================== */}
-
+      {/* =========================================================================
+          MAIN CONTENT AREA
+          Sequential presentation: Hero -> Course RAG -> Capabilities -> Process -> CTA
+         ========================================================================= */}
       <main className={styles.landing__main}>
-        {/* Hero Section */}
-        <section className={styles.landing__hero}>
+        {/* -----------------------------------------------------------------------
+            1. HERO SECTION
+            Dominant value proposition with dual action buttons and feature panel
+           ----------------------------------------------------------------------- */}
+        <section
+          className={styles.landing__hero}
+          aria-label="Hero Introduction">
           <div
             className={styles.landing__heroInner}>
+            {/* Left Column: Hero copy, eyebrow badge, heading, and action CTAs */}
             <div
               className={
                 styles.landing__heroCopy
               }>
+              {/* Eyebrow Pill: Highlight technical search capabilities */}
               <Motion.p
                 className={
                   styles.landing__eyebrow
                 }
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}>
-                <Sparkles size={14} aria-hidden />
-                Keyword search + embedding
-                similarity
+                <Sparkles
+                  size={14}
+                  aria-hidden="true"
+                />
+                KEYWORD SEARCH + EMBEDDING
+                SIMILARITY
               </Motion.p>
+
+              {/* Main Headline: Two-tone typography with accent color */}
               <Motion.h1
                 className={styles.landing__title}
                 initial={{ opacity: 0, y: 12 }}
@@ -217,8 +213,7 @@ export default function Landing() {
                 </span>
               </Motion.h1>
 
-              {/* Lead paragraph: value proposition summary */}
-
+              {/* Value Proposition Description */}
               <Motion.p
                 className={styles.landing__lead}
                 initial={{ opacity: 0, y: 12 }}
@@ -240,6 +235,8 @@ export default function Landing() {
                 the right syllabus, readings, and
                 handouts.
               </Motion.p>
+
+              {/* Call-to-Action Group: Primary registration and secondary workflow jump */}
               <Motion.div
                 className={
                   styles.landing__heroCtas
@@ -253,77 +250,81 @@ export default function Landing() {
                     styles.landing__btnPrimary
                   }
                   onClick={() =>
-                    navigate(
-                      isAuthenticated
-                        ? "/dashboard"
-                        : "/auth",
-                    )
+                    navigate("/auth")
                   }>
-                  {isAuthenticated
-                    ? "Go to home"
-                    : "Get started"}
+                  Get started
                   <ArrowRight
                     size={16}
-                    aria-hidden
+                    aria-hidden="true"
                   />
                 </button>
-                {!isAuthenticated && (
-                  <button
-                    type="button"
-                    className={
-                      styles.landing__btnOutline
-                    }
-                    onClick={scrollToHowItWorks}>
-                    See how it works
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className={
+                    styles.landing__btnOutline
+                  }
+                  onClick={scrollToHowItWorks}>
+                  See how it works
+                </button>
               </Motion.div>
             </div>
 
-            {/* Quick feature list */}
-
+            {/* Right Column: 'At a Glance' Inset Summary Card */}
             <aside
               className={
                 styles.landing__heroPanel
               }
-              aria-label="What you get">
+              aria-label="Key platform features at a glance">
               <p
                 className={
                   styles.landing__heroPanelLabel
                 }>
-                At a glance
+                AT A GLANCE
               </p>
               <ul
                 className={
                   styles.landing__heroPanelList
                 }>
+                {/* Feature 1: Structured markdown support */}
                 <li>
                   <CheckCircle2
                     size={16}
-                    aria-hidden
+                    aria-hidden="true"
                   />
-                  Markdown threads and replies
+                  <span>
+                    Markdown threads and replies
+                  </span>
                 </li>
+
+                {/* Feature 2: Vector embedding search */}
                 <li>
                   <CheckCircle2
                     size={16}
-                    aria-hidden
+                    aria-hidden="true"
                   />
-                  Semantic search on question
-                  embeddings
+                  <span>
+                    Semantic search on question
+                    embeddings
+                  </span>
                 </li>
+
+                {/* Feature 3: Non-intrusive AI assistance */}
                 <li>
                   <CheckCircle2
                     size={16}
-                    aria-hidden
+                    aria-hidden="true"
                   />
-                  Optional AI draft tips when you
-                  ask or answer
+                  <span>
+                    Optional AI draft tips when
+                    you ask or answer
+                  </span>
                 </li>
+
+                {/* Feature 4: Course RAG with citation-backed responses */}
                 <li>
                   <CheckCircle2
                     size={16}
-                    aria-hidden
+                    aria-hidden="true"
                   />
                   <span>
                     <strong
@@ -344,8 +345,10 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Course RAG Section */}
-
+        {/* -----------------------------------------------------------------------
+            2. COURSE RAG SECTION
+            Detailed technical breakdown of the retrieval-augmented generation pipeline
+           ----------------------------------------------------------------------- */}
         <section
           className={styles.landing__rag}
           id="course-rag"
@@ -354,12 +357,15 @@ export default function Landing() {
             className={
               styles.landing__sectionInner
             }>
+            {/* Section Eyebrow */}
             <p
               className={
                 styles.landing__ragEyebrow
               }>
-              Retrieval-augmented generation
+              RETRIEVAL-AUGMENTED GENERATION
             </p>
+
+            {/* Section Heading */}
             <h2
               className={
                 styles.landing__sectionTitle
@@ -367,6 +373,8 @@ export default function Landing() {
               id="rag-heading">
               How course RAG works with the forum
             </h2>
+
+            {/* Explanatory Lead Prose */}
             <p
               className={
                 styles.landing__sectionLead
@@ -385,11 +393,14 @@ export default function Landing() {
               “confident but wrong” generic
               answers.
             </p>
+
+            {/* Pipeline Steps Grid: Ingest -> Retrieve -> Ground */}
             <div
               className={
                 styles.landing__ragPipeline
               }>
-              <div
+              {/* Step 1: Document Ingestion and Chunking */}
+              <article
                 className={
                   styles.landing__ragStep
                 }>
@@ -397,7 +408,7 @@ export default function Landing() {
                   className={
                     styles.landing__ragStepIcon
                   }
-                  aria-hidden>
+                  aria-hidden="true">
                   <FileText size={20} />
                 </span>
                 <h3
@@ -417,8 +428,10 @@ export default function Landing() {
                   questions, so retrieval stays
                   fast and auditable.
                 </p>
-              </div>
-              <div
+              </article>
+
+              {/* Step 2: Context Retrieval at Query Time */}
+              <article
                 className={
                   styles.landing__ragStep
                 }>
@@ -426,7 +439,7 @@ export default function Landing() {
                   className={
                     styles.landing__ragStepIcon
                   }
-                  aria-hidden>
+                  aria-hidden="true">
                   <Database size={20} />
                 </span>
                 <h3
@@ -448,8 +461,10 @@ export default function Landing() {
                   syllabus say about…” style
                   questions.
                 </p>
-              </div>
-              <div
+              </article>
+
+              {/* Step 3: Source-Grounded AI & Peer Responses */}
+              <article
                 className={
                   styles.landing__ragStep
                 }>
@@ -457,7 +472,7 @@ export default function Landing() {
                   className={
                     styles.landing__ragStepIcon
                   }
-                  aria-hidden>
+                  aria-hidden="true">
                   <Sparkles size={20} />
                 </span>
                 <h3
@@ -478,8 +493,10 @@ export default function Landing() {
                   on RAG versus peer replies
                   alone.
                 </p>
-              </div>
+              </article>
             </div>
+
+            {/* Architecture Integration Footnote Banner */}
             <p
               className={
                 styles.landing__ragFootnote
@@ -496,424 +513,362 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Public view only */}
-
-        {!isAuthenticated && (
-          <>
-            {/* Feature cards */}
-            <section
-              className={
-                styles.landing__capabilities
-              }>
-              <div
-                className={
-                  styles.landing__sectionInner
-                }>
-                <h2
-                  className={
-                    styles.landing__sectionTitle
-                  }>
-                  Built for cohort coursework
-                </h2>
-                <p
-                  className={
-                    styles.landing__sectionLead
-                  }>
-                  Same patterns you use after
-                  sign-in, without a separate
-                  “marketing product.”
-                </p>
-                <div
-                  className={
-                    styles.landing__cardGrid
-                  }>
-                  <article
-                    className={
-                      styles.landing__card
-                    }>
-                    <div
-                      className={
-                        styles.landing__cardIcon
-                      }
-                      aria-hidden>
-                      <Search
-                        size={22}
-                        strokeWidth={1.75}
-                      />
-                    </div>
-                    <h3
-                      className={
-                        styles.landing__cardTitle
-                      }>
-                      Find related work
-                    </h3>
-                    <p
-                      className={
-                        styles.landing__cardBody
-                      }>
-                      Keyword filters for exact
-                      matches, plus similarity
-                      search when you are still
-                      shaping the right
-                      vocabulary.
-                    </p>
-                  </article>
-                  <article
-                    className={
-                      styles.landing__card
-                    }>
-                    <div
-                      className={
-                        styles.landing__cardIcon
-                      }
-                      aria-hidden>
-                      <MessageSquare
-                        size={22}
-                        strokeWidth={1.75}
-                      />
-                    </div>
-                    <h3
-                      className={
-                        styles.landing__cardTitle
-                      }>
-                      Readable threads
-                    </h3>
-                    <p
-                      className={
-                        styles.landing__cardBody
-                      }>
-                      Questions and answers stay
-                      structured so the group can
-                      reuse explanations before
-                      exams and interviews.
-                    </p>
-                  </article>
-                  <article
-                    className={
-                      styles.landing__card
-                    }>
-                    <div
-                      className={
-                        styles.landing__cardIcon
-                      }
-                      aria-hidden>
-                      <Sparkles
-                        size={22}
-                        strokeWidth={1.75}
-                      />
-                    </div>
-                    <h3
-                      className={
-                        styles.landing__cardTitle
-                      }>
-                      Lightweight AI help
-                    </h3>
-                    <p
-                      className={
-                        styles.landing__cardBody
-                      }>
-                      Suggestions on your question
-                      draft and a quick relevance
-                      check on answer drafts.
-                      Always your choice to apply
-                      or post.
-                    </p>
-                  </article>
-                  <article
-                    className={`${styles.landing__card} `}>
-                    <div
-                      className={
-                        styles.landing__cardIcon
-                      }
-                      aria-hidden>
-                      <Layers
-                        size={22}
-                        strokeWidth={1.75}
-                      />
-                    </div>
-                    <h3
-                      className={
-                        styles.landing__cardTitle
-                      }>
-                      RAG over your course library
-                    </h3>
-                    <p
-                      className={
-                        styles.landing__cardBody
-                      }>
-                      Instructors and cohorts add
-                      PDFs, syllabi, and notes
-                      into a controlled corpus.
-                      When you ask, the system
-                      retrieves the most relevant
-                      passages and attaches them
-                      to the prompt, so
-                      explanations stay tied to
-                      your class materials, not
-                      the open web.
-                    </p>
-                  </article>
-                </div>
-              </div>
-            </section>
-
-            {/* Workflow steps */}
-
-            <section
-              className={styles.landing__process}
-              id="how-it-works"
-              aria-labelledby="how-heading">
-              <div
-                className={
-                  styles.landing__sectionInner
-                }>
-                <h2
-                  className={
-                    styles.landing__sectionTitle
-                  }
-                  id="how-heading">
-                  How it works
-                </h2>
-                <p
-                  className={
-                    styles.landing__sectionLead
-                  }>
-                  Four steps from question to
-                  searchable knowledge for the
-                  next person.
-                </p>
-                <ol
-                  className={
-                    styles.landing__steps
-                  }>
-                  <li
-                    className={
-                      styles.landing__step
-                    }>
-                    <span
-                      className={
-                        styles.landing__stepIcon
-                      }
-                      aria-hidden>
-                      <PenSquare size={18} />
-                    </span>
-                    <div>
-                      <h3
-                        className={
-                          styles.landing__stepTitle
-                        }>
-                        Ask with context
-                      </h3>
-                      <p
-                        className={
-                          styles.landing__stepText
-                        }>
-                        Title, environment,
-                        errors, and what you
-                        tried, so peers reproduce
-                        before they teach.
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    className={
-                      styles.landing__step
-                    }>
-                    <span
-                      className={
-                        styles.landing__stepIcon
-                      }
-                      aria-hidden>
-                      <MessageSquare size={18} />
-                    </span>
-                    <div>
-                      <h3
-                        className={
-                          styles.landing__stepTitle
-                        }>
-                        Get answers
-                      </h3>
-                      <p
-                        className={
-                          styles.landing__stepText
-                        }>
-                        Replies live in one thread
-                        with markdown and code
-                        blocks, visible to
-                        everyone in the cohort.
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    className={
-                      styles.landing__step
-                    }>
-                    <span
-                      className={
-                        styles.landing__stepIcon
-                      }
-                      aria-hidden>
-                      <Search size={18} />
-                    </span>
-                    <div>
-                      <h3
-                        className={
-                          styles.landing__stepTitle
-                        }>
-                        Search two ways
-                      </h3>
-                      <p
-                        className={
-                          styles.landing__stepText
-                        }>
-                        Classic text search on the
-                        feed, or semantic search
-                        when you want “questions
-                        like this one.”
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    className={
-                      styles.landing__step
-                    }>
-                    <span
-                      className={
-                        styles.landing__stepIcon
-                      }
-                      aria-hidden>
-                      <Library size={18} />
-                    </span>
-                    <div>
-                      <h3
-                        className={
-                          styles.landing__stepTitle
-                        }>
-                        Own your trail
-                      </h3>
-                      <p
-                        className={
-                          styles.landing__stepText
-                        }>
-                        Your topics list keeps
-                        authorship clear. The
-                        Knowledge base hosts
-                        uploads and RAG retrieval
-                        so answers can cite your
-                        materials. See{" "}
-                        <strong>
-                          Course RAG
-                        </strong>{" "}
-                        above for the full
-                        pipeline.
-                      </p>
-                    </div>
-                  </li>
-                </ol>
-              </div>
-            </section>
-
-            {/* Bottom CTA */}
-
-            <section
-              className={styles.landing__cta}>
-              <div
-                className={
-                  styles.landing__ctaInner
-                }>
-                <h2
-                  className={
-                    styles.landing__ctaTitle
-                  }>
-                  Ready when you are
-                </h2>
-                <p
-                  className={
-                    styles.landing__ctaText
-                  }>
-                  Create a free learner account to
-                  post, reply, and search the
-                  forum index.
-                </p>
-                <button
-                  type="button"
-                  className={
-                    styles.landing__btnPrimary
-                  }
-                  onClick={() =>
-                    navigate("/auth")
-                  }>
-                  Create free account
-                  <ArrowRight
-                    size={16}
-                    aria-hidden
-                  />
-                </button>
-              </div>
-            </section>
-          </>
-        )}
-
-        {/* Authenticated view only */}
-
-        {isAuthenticated && (
-          <section
+        {/* -----------------------------------------------------------------------
+            3. CAPABILITIES GRID
+            4-Card showcase of features designed specifically for cohort learning
+           ----------------------------------------------------------------------- */}
+        <section
+          className={styles.landing__capabilities}
+          aria-labelledby="capabilities-heading">
+          <div
             className={
-              styles.landing__welcomeBack
+              styles.landing__sectionInner
             }>
+            <h2
+              className={
+                styles.landing__sectionTitle
+              }
+              id="capabilities-heading">
+              Built for cohort coursework
+            </h2>
+            <p
+              className={
+                styles.landing__sectionLead
+              }>
+              Same patterns you use after sign-in,
+              without a separate “marketing
+              product.”
+            </p>
+
+            {/* 4-Card Responsive Grid */}
             <div
               className={
-                styles.landing__sectionInner
+                styles.landing__cardGrid
               }>
-              <p
-                className={
-                  styles.landing__eyebrow
-                }>
-                Signed in
-              </p>
-              <h2
-                className={
-                  styles.landing__sectionTitle
-                }>
-                Back to your workspace
-              </h2>
-              <p
-                className={
-                  styles.landing__sectionLead
-                }>
-                Home has the live feed, shortcuts,
-                and search. Your topics lists only
-                threads you started.
-                Course-document RAG (ingest,
-                retrieve, cite) ties the Knowledge
-                base to threads. Scroll to{" "}
-                <strong>Course RAG</strong> on
-                this page for the full picture.
-              </p>
-              <button
-                type="button"
-                className={
-                  styles.landing__btnPrimary
-                }
-                onClick={() =>
-                  navigate("/dashboard")
-                }>
-                Open forum home
-                <ArrowRight
-                  size={16}
-                  aria-hidden
-                />
-              </button>
+              {/* Capability 1: Keyword and Similarity Search */}
+              <article
+                className={styles.landing__card}>
+                <div
+                  className={
+                    styles.landing__cardIcon
+                  }
+                  aria-hidden="true">
+                  <Search
+                    size={22}
+                    strokeWidth={1.75}
+                  />
+                </div>
+                <h3
+                  className={
+                    styles.landing__cardTitle
+                  }>
+                  Find related work
+                </h3>
+                <p
+                  className={
+                    styles.landing__cardBody
+                  }>
+                  Keyword filters for exact
+                  matches, plus similarity search
+                  when you are still shaping the
+                  right vocabulary.
+                </p>
+              </article>
+
+              {/* Capability 2: Structured Discussion Threads */}
+              <article
+                className={styles.landing__card}>
+                <div
+                  className={
+                    styles.landing__cardIcon
+                  }
+                  aria-hidden="true">
+                  <MessageSquare
+                    size={22}
+                    strokeWidth={1.75}
+                  />
+                </div>
+                <h3
+                  className={
+                    styles.landing__cardTitle
+                  }>
+                  Readable threads
+                </h3>
+                <p
+                  className={
+                    styles.landing__cardBody
+                  }>
+                  Questions and answers stay
+                  structured so the group can
+                  reuse explanations before exams
+                  and interviews.
+                </p>
+              </article>
+
+              {/* Capability 3: Lightweight AI Feedback */}
+              <article
+                className={styles.landing__card}>
+                <div
+                  className={
+                    styles.landing__cardIcon
+                  }
+                  aria-hidden="true">
+                  <Sparkles
+                    size={22}
+                    strokeWidth={1.75}
+                  />
+                </div>
+                <h3
+                  className={
+                    styles.landing__cardTitle
+                  }>
+                  Lightweight AI help
+                </h3>
+                <p
+                  className={
+                    styles.landing__cardBody
+                  }>
+                  Suggestions on your question
+                  draft and a quick relevance
+                  check on answer drafts. Always
+                  your choice to apply or post.
+                </p>
+              </article>
+
+              {/* Capability 4: Dedicated Cohort Document Corpus */}
+              <article
+                className={styles.landing__card}>
+                <div
+                  className={
+                    styles.landing__cardIcon
+                  }
+                  aria-hidden="true">
+                  <Layers
+                    size={22}
+                    strokeWidth={1.75}
+                  />
+                </div>
+                <h3
+                  className={
+                    styles.landing__cardTitle
+                  }>
+                  RAG over your course library
+                </h3>
+                <p
+                  className={
+                    styles.landing__cardBody
+                  }>
+                  Instructors and cohorts add
+                  PDFs, syllabi, and notes into a
+                  controlled corpus. When you ask,
+                  the system retrieves the most
+                  relevant passages and attaches
+                  them to the prompt, so
+                  explanations stay tied to your
+                  class materials, not the open
+                  web.
+                </p>
+              </article>
             </div>
-          </section>
-        )}
+          </div>
+        </section>
+
+        {/* -----------------------------------------------------------------------
+            4. WORKFLOW PROCESS (HOW IT WORKS)
+            2x2 grid representing the 4 sequential steps in the peer Q&A lifecycle
+           ----------------------------------------------------------------------- */}
+        <section
+          className={styles.landing__process}
+          id="how-it-works"
+          aria-labelledby="how-heading">
+          <div
+            className={
+              styles.landing__sectionInner
+            }>
+            <h2
+              className={
+                styles.landing__sectionTitle
+              }
+              id="how-heading">
+              How it works
+            </h2>
+            <p
+              className={
+                styles.landing__sectionLead
+              }>
+              Four steps from question to
+              searchable knowledge for the next
+              person.
+            </p>
+
+            {/* Ordered List of Steps (2x2 Grid) */}
+            <ol className={styles.landing__steps}>
+              {/* Step 1: Formulating Questions with Environment Context */}
+              <li
+                className={styles.landing__step}>
+                <span
+                  className={
+                    styles.landing__stepIcon
+                  }
+                  aria-hidden="true">
+                  <PenSquare size={18} />
+                </span>
+                <div>
+                  <h3
+                    className={
+                      styles.landing__stepTitle
+                    }>
+                    Ask with context
+                  </h3>
+                  <p
+                    className={
+                      styles.landing__stepText
+                    }>
+                    Title, environment, errors,
+                    and what you tried, so peers
+                    reproduce before they teach.
+                  </p>
+                </div>
+              </li>
+
+              {/* Step 2: Collaborative Answers with Markdown & Code */}
+              <li
+                className={styles.landing__step}>
+                <span
+                  className={
+                    styles.landing__stepIcon
+                  }
+                  aria-hidden="true">
+                  <MessageSquare size={18} />
+                </span>
+                <div>
+                  <h3
+                    className={
+                      styles.landing__stepTitle
+                    }>
+                    Get answers
+                  </h3>
+                  <p
+                    className={
+                      styles.landing__stepText
+                    }>
+                    Replies live in one thread
+                    with markdown and code blocks,
+                    visible to everyone in the
+                    cohort.
+                  </p>
+                </div>
+              </li>
+
+              {/* Step 3: Dual-Mode Search (Literal + Semantic Vector) */}
+              <li
+                className={styles.landing__step}>
+                <span
+                  className={
+                    styles.landing__stepIcon
+                  }
+                  aria-hidden="true">
+                  <Search size={18} />
+                </span>
+                <div>
+                  <h3
+                    className={
+                      styles.landing__stepTitle
+                    }>
+                    Search two ways
+                  </h3>
+                  <p
+                    className={
+                      styles.landing__stepText
+                    }>
+                    Classic text search on the
+                    feed, or semantic search when
+                    you want “questions like this
+                    one.”
+                  </p>
+                </div>
+              </li>
+
+              {/* Step 4: Knowledge Retention & Grounded Trails */}
+              <li
+                className={styles.landing__step}>
+                <span
+                  className={
+                    styles.landing__stepIcon
+                  }
+                  aria-hidden="true">
+                  <Library size={18} />
+                </span>
+                <div>
+                  <h3
+                    className={
+                      styles.landing__stepTitle
+                    }>
+                    Own your trail
+                  </h3>
+                  <p
+                    className={
+                      styles.landing__stepText
+                    }>
+                    Your topics list keeps
+                    authorship clear. The
+                    Knowledge base hosts uploads
+                    and RAG retrieval so answers
+                    can cite your materials. See{" "}
+                    <strong>Course RAG</strong>{" "}
+                    above for the full pipeline.
+                  </p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        {/* -----------------------------------------------------------------------
+            5. FINAL CALL TO ACTION (READY WHEN YOU ARE)
+            Prominent registration invitation in an elevated container
+           ----------------------------------------------------------------------- */}
+        <section
+          className={styles.landing__cta}
+          aria-labelledby="cta-heading">
+          {/* Centered elevated white card surrounded by soft slate background */}
+          <div
+            className={styles.landing__ctaInner}>
+            <h2
+              className={styles.landing__ctaTitle}
+              id="cta-heading">
+              Ready when you are
+            </h2>
+            <p
+              className={styles.landing__ctaText}>
+              Create a free learner account to
+              post, reply, and search the forum
+              index.
+            </p>
+            <button
+              type="button"
+              className={
+                styles.landing__btnPrimary
+              }
+              onClick={() => navigate("/auth")}>
+              Create free account
+              <ArrowRight
+                size={16}
+                aria-hidden="true"
+              />
+            </button>
+          </div>
+        </section>
       </main>
 
-      {/* Footer */}
-
+      {/* =========================================================================
+          SITE FOOTER
+          Persistent copyright, platform metadata, and legal links
+         ========================================================================= */}
       <footer className={styles.landing__footer}>
         <div
           className={styles.landing__footerInner}>
+          {/* Left: Brand name and dynamic copyright notice */}
           <div>
             <p
               className={
@@ -929,6 +884,8 @@ export default function Landing() {
               Learner-led Q&A
             </p>
           </div>
+
+          {/* Right: Unadorned navigational and policy anchors */}
           <div
             className={
               styles.landing__footerLinks
@@ -941,29 +898,15 @@ export default function Landing() {
               onClick={() => navigate("/auth")}>
               Sign in
             </button>
-            <span
-              className={
-                styles.landing__footerDot
-              }
-              aria-hidden>
-              ·
-            </span>
             <a
-              href="#"
+              href="#privacy"
               className={
                 styles.landing__footerLinkAnchor
               }>
               Privacy
             </a>
-            <span
-              className={
-                styles.landing__footerDot
-              }
-              aria-hidden>
-              ·
-            </span>
             <a
-              href="#"
+              href="#terms"
               className={
                 styles.landing__footerLinkAnchor
               }>

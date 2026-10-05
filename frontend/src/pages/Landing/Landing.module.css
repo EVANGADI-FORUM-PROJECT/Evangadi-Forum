@@ -1,31 +1,49 @@
 /**
- * Landing: public marketing. Uses same tokens as Layout/Dashboard/Auth:
- * --surface, --background, --border, --radius-*, --text-*, --primary.
- * Width: --app-content-max for horizontal rhythm with `.layout__mainInner`.
+ * Landing.module.css
+ * ==============================================================================
+ * Public marketing route styling for Evangadi Forum.
+ *
+ * Design System Tokens Utilized:
+ * - Surfaces & Canvas: --surface (pure white #ffffff), --background (slate-50 #f8fafc),
+ *   --surface-container-low (soft slate #f8fafc), --surface-hover (#f1f5f9)
+ * - Borders & Dividers: --border (#e2e8f0), --border-hover (#cbd5e1)
+ * - Brand Palette: --primary (vibrant orange #f26522), --primary-hover (#d9531e),
+ *   --primary-light (warm peach #ffedd5), --primary-dark (#ea580c), --tertiary (slate-900 #0f172a)
+ * - Typography: --text-primary (#0f172a), --text-secondary (#475569), --text-tertiary (#64748b)
+ * - Layout Rhythm: --app-content-max (78rem) for consistent horizontal grid alignment
+ * ==============================================================================
  */
 
+/* =============================================================================
+   1. ROOT PAGE CONTAINER
+   Full-height flex column ensuring the footer pins to the bottom.
+   ============================================================================= */
 .landing {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--background);
+  background-color: #ffffff;
   color: var(--text-primary);
 }
 
-/* Header */
+/* =============================================================================
+   2. HEADER & NAVIGATION BAR
+   Sticky header bar anchored to the viewport top with subtle elevation.
+   ============================================================================= */
 .landing__header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background-color: var(--surface);
+  background-color: #ffffff;
   border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 2px 0 rgb(15 23 42 / 0.03);
 }
 
+/* Inner header flex wrapper constrained to the standard max-width container */
 .landing__headerInner {
-  max-width: var(--app-content-max, 80rem);
+  max-width: var(--app-content-max, 78rem);
   margin: 0 auto;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 0.875rem var(--spacing-lg);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -33,10 +51,13 @@
   gap: var(--spacing-md);
 }
 
+/* -----------------------------------------------------------------------------
+   Brand Lockup: Clickable interactive element containing icon badge & text
+   ----------------------------------------------------------------------------- */
 .landing__brand {
   display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
+  align-items: center;
+  gap: 0.75rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -44,7 +65,8 @@
   padding: var(--spacing-xs);
   margin: calc(-1 * var(--spacing-xs));
   border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
+  transition: background-color
+    var(--transition-fast);
 }
 
 .landing__brand:hover {
@@ -56,10 +78,11 @@
   outline-offset: 2px;
 }
 
+/* Brand icon container with vibrant orange gradient background */
 .landing__brandMark {
   flex-shrink: 0;
-  width: 2.375rem;
-  height: 2.375rem;
+  width: 2.25rem;
+  height: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,31 +96,36 @@
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
+/* Vertical stack for title and descriptive tagline */
 .landing__brandText {
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
   min-width: 0;
-  padding-top: 0.125rem;
 }
 
+/* Primary brand wordmark */
 .landing__brandName {
-  font-size: var(--text-base);
-  font-weight: var(--font-semibold);
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--tertiary);
   letter-spacing: -0.02em;
 }
 
+/* Secondary brand tagline */
 .landing__brandLine {
   font-size: 0.6875rem;
   color: var(--text-tertiary);
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
+/* -----------------------------------------------------------------------------
+   Center Navigation Links
+   ----------------------------------------------------------------------------- */
 .landing__nav {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   flex: 1 1 auto;
   justify-content: center;
 }
@@ -109,8 +137,9 @@
   }
 }
 
+/* Individual navigation text link button */
 .landing__navLink {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 0.375rem 0.75rem;
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--text-secondary);
@@ -118,7 +147,8 @@
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: color var(--transition-fast),
+  transition:
+    color var(--transition-fast),
     background-color var(--transition-fast);
 }
 
@@ -127,6 +157,9 @@
   background-color: var(--surface-container-low);
 }
 
+/* -----------------------------------------------------------------------------
+   Header Action Buttons Container
+   ----------------------------------------------------------------------------- */
 .landing__headerActions {
   display: flex;
   align-items: center;
@@ -134,22 +167,28 @@
   flex-shrink: 0;
 }
 
-/* Buttons */
+/* =============================================================================
+   3. REUSABLE BUTTON SYSTEM
+   Shared button styles used across header, hero, and call-to-action sections.
+   ============================================================================= */
+
+/* Solid primary action button (Orange background, white text) */
 .landing__btnPrimary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-lg);
+  gap: 0.5rem;
+  padding: 0.5rem 1.125rem;
   font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
+  font-weight: 600;
   color: var(--text-inverse);
   background-color: var(--primary);
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: background-color var(--transition-fast),
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  transition:
+    background-color var(--transition-fast),
     box-shadow var(--transition-fast);
 }
 
@@ -157,8 +196,9 @@
   background-color: var(--primary-hover);
 }
 
+/* Borderless ghost action button for secondary links */
 .landing__btnGhost {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 0.5rem 0.875rem;
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--text-secondary);
@@ -173,19 +213,22 @@
   color: var(--text-primary);
 }
 
+/* Subtle bordered button with white background */
 .landing__btnOutline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-sm) var(--spacing-lg);
+  padding: 0.5rem 1.125rem;
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--text-primary);
-  background-color: var(--surface);
+  background-color: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: border-color var(--transition-fast),
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    border-color var(--transition-fast),
     background-color var(--transition-fast);
 }
 
@@ -194,26 +237,33 @@
   background-color: var(--surface-container-low);
 }
 
-/* Main */
+/* =============================================================================
+   4. MAIN CONTENT & SECTION CONTAINERS
+   Standard layout constraints providing horizontal breathing room across viewports.
+   ============================================================================= */
 .landing__main {
   flex: 1;
 }
 
+/* Inner content boundary for full-width sections */
 .landing__sectionInner {
-  max-width: var(--app-content-max, 80rem);
+  max-width: var(--app-content-max, 78rem);
   margin: 0 auto;
   padding-left: var(--spacing-lg);
   padding-right: var(--spacing-lg);
 }
 
-/* Hero */
+/* =============================================================================
+   5. HERO SECTION
+   Two-column responsive hero: left value proposition, right 'At a Glance' card.
+   ============================================================================= */
 .landing__hero {
-  padding: var(--spacing-2xl) 0 var(--spacing-3xl);
-  background-color: var(--surface);
+  padding: 3rem 0 4rem;
+  background-color: #ffffff;
 }
 
 .landing__heroInner {
-  max-width: var(--app-content-max, 80rem);
+  max-width: var(--app-content-max, 78rem);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
   display: grid;
@@ -223,8 +273,11 @@
 
 @media (min-width: 960px) {
   .landing__heroInner {
-    grid-template-columns: 1fr minmax(16rem, 22rem);
-    gap: var(--spacing-3xl);
+    grid-template-columns: 1fr minmax(
+        18rem,
+        21.5rem
+      );
+    gap: 3.5rem;
     align-items: center;
   }
 }
@@ -233,124 +286,153 @@
   min-width: 0;
 }
 
+/* Eyebrow badge pill highlighting semantic search */
 .landing__eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin: 0 0 var(--spacing-md);
-  padding: 0.25rem 0.75rem;
-  font-size: 0.625rem;
-  font-weight: var(--font-semibold);
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.65rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-placeholder);
-  background-color: var(--surface-container-low);
+  color: #64748b;
+  background-color: #f1f5f9;
   border-radius: var(--radius-full);
   border: 1px solid var(--border);
   width: fit-content;
 }
 
+/* Main display headline */
 .landing__title {
-  margin: 0 0 var(--spacing-md);
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: var(--font-bold);
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 700;
   line-height: 1.15;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   color: var(--tertiary);
 }
 
+/* Vibrant orange accent span in headline */
 .landing__titleAccent {
   color: var(--primary);
 }
 
+/* Main lead descriptive paragraph */
 .landing__lead {
-  margin: 0 0 var(--spacing-xl);
+  margin: 0 0 1.75rem;
   max-width: 36rem;
-  font-size: var(--text-base);
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--text-secondary);
 }
 
 .landing__leadStrong {
-  font-weight: var(--font-semibold);
+  font-weight: 600;
   color: var(--text-primary);
 }
 
+/* Hero CTA action button cluster */
 .landing__heroCtas {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--spacing-md);
 }
 
+/* -----------------------------------------------------------------------------
+   Hero Right Panel: "At a Glance" Card
+   Soft slate inset container with checkmarked bullet items.
+   ----------------------------------------------------------------------------- */
 .landing__heroPanel {
-  padding: var(--spacing-lg);
+  padding: 1.5rem;
   background-color: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
+/* Panel uppercase kicker label */
 .landing__heroPanelLabel {
-  margin: 0 0 var(--spacing-md);
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-tertiary);
+  color: #475569;
 }
 
+/* Unordered list of feature summary items */
 .landing__heroPanelList {
   margin: 0;
   padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 0.875rem;
 }
 
+/* Individual list item with top-aligned icon and text */
 .landing__heroPanelList li {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-sm);
-  font-size: var(--text-sm);
+  gap: 0.625rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
-  color: var(--text-secondary);
+  color: #475569;
 }
 
+/* Text wrapper ensuring consistent multi-line wrapping */
+.landing__heroPanelList li span {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Checkmark circle icon styled with primary orange brand color */
 .landing__heroPanelList svg {
   flex-shrink: 0;
   margin-top: 0.125rem;
   color: var(--primary);
 }
 
-.landing__heroPanelStrong {
-  font-weight: var(--font-semibold);
+/* Bold label within list items (specifically "Course RAG:") */
+.landing__heroPanelStrong,
+.landing__heroPanelList strong {
+  font-weight: 700;
   color: var(--text-primary);
 }
 
-/* Course RAG (all visitors) */
+/* =============================================================================
+   6. COURSE RAG SECTION
+   Full-width soft-slate band detailing the 3-step retrieval architecture.
+   ============================================================================= */
 .landing__rag {
-  padding: var(--spacing-3xl) 0;
+  padding: 4rem 0;
   background-color: var(--surface-container-low);
   border-top: 1px solid var(--border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 0
+    rgba(255, 255, 255, 0.6);
 }
 
+/* Uppercase orange section eyebrow */
 .landing__ragEyebrow {
-  margin: 0 0 var(--spacing-sm);
-  font-size: 0.625rem;
-  font-weight: var(--font-semibold);
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--primary-dark);
 }
 
+/* Lead text emphasis for on-policy documentation */
 .landing__rag .landing__sectionLead em {
   font-style: normal;
-  font-weight: var(--font-medium);
+  font-weight: 600;
   color: var(--text-primary);
 }
 
+/* 3-Column pipeline grid */
 .landing__ragPipeline {
   display: grid;
   gap: var(--spacing-lg);
@@ -364,80 +446,92 @@
   }
 }
 
+/* Individual RAG pipeline card (Elevated pure white) */
 .landing__ragStep {
-  padding: var(--spacing-lg);
-  background-color: var(--surface);
+  padding: 1.5rem;
+  background-color: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
+/* Rounded light-peach container for the step icon */
 .landing__ragStepIcon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 1rem;
   border-radius: var(--radius-md);
   background-color: var(--primary-light);
   color: var(--primary-dark);
 }
 
+/* Step card title */
 .landing__ragStepTitle {
-  margin: 0 0 var(--spacing-xs);
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
+/* Step card explanatory text */
 .landing__ragStepText {
   margin: 0;
-  font-size: var(--text-sm);
+  font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--text-secondary);
 }
 
+/* Footnote banner with prominent orange left border indicator */
 .landing__ragFootnote {
   margin: 0;
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-size: var(--text-sm);
+  padding: 1.125rem 1.5rem;
+  font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--text-secondary);
-  background-color: var(--surface);
+  background-color: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--primary);
+  border-left: 4px solid var(--primary);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .landing__ragFootnote strong {
   color: var(--text-primary);
-  font-weight: var(--font-semibold);
+  font-weight: 600;
 }
 
-/* Capabilities */
+/* =============================================================================
+   7. CAPABILITIES SECTION ("Built for Cohort Coursework")
+   Pure white section displaying the 4-card feature overview.
+   ============================================================================= */
 .landing__capabilities {
-  padding: var(--spacing-3xl) 0;
-  background-color: var(--background);
+  padding: 4rem 0;
+  background-color: #ffffff;
   border-top: 1px solid var(--border);
 }
 
+/* Shared section heading */
 .landing__sectionTitle {
-  margin: 0 0 var(--spacing-sm);
-  font-size: var(--text-xl);
-  font-weight: var(--font-semibold);
+  margin: 0 0 0.5rem;
+  font-size: 1.625rem;
+  font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
+/* Shared section introductory description */
 .landing__sectionLead {
-  margin: 0 0 var(--spacing-xl);
+  margin: 0 0 2rem;
   max-width: 40rem;
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   line-height: 1.55;
   color: var(--text-secondary);
 }
 
+/* Responsive 4-column card grid */
 .landing__cardGrid {
   display: grid;
   gap: var(--spacing-lg);
@@ -456,60 +550,68 @@
   }
 }
 
+/* Individual capability card */
 .landing__card {
-  padding: var(--spacing-lg);
-  background-color: var(--surface);
+  padding: 1.5rem;
+  background-color: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  transition: border-color var(--transition-fast),
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    border-color var(--transition-fast),
     box-shadow var(--transition-fast);
 }
 
 .landing__card:hover {
   border-color: var(--border-hover);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 6px -1px
+    rgba(15, 23, 42, 0.06);
 }
 
+/* Light-peach rounded square icon badge */
 .landing__cardIcon {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 1rem;
   border-radius: var(--radius-md);
-  background-color: var(--surface-container-low);
+  background-color: var(--primary-light);
   color: var(--primary);
 }
 
 .landing__cardTitle {
-  margin: 0 0 var(--spacing-xs);
-  font-size: var(--text-base);
-  font-weight: var(--font-semibold);
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .landing__cardBody {
   margin: 0;
-  font-size: var(--text-sm);
+  font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--text-secondary);
 }
 
-/* Process */
+/* =============================================================================
+   8. WORKFLOW PROCESS SECTION ("How It Works")
+   Pure white section holding a 2x2 grid of soft-slate step cards.
+   ============================================================================= */
 .landing__process {
-  padding: var(--spacing-3xl) 0;
-  background-color: var(--surface);
+  padding: 4rem 0;
+  background-color: #ffffff;
   border-top: 1px solid var(--border);
 }
 
+/* Ordered list 2x2 grid */
 .landing__steps {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: var(--spacing-lg);
+  gap: 1.25rem;
 }
 
 @media (min-width: 768px) {
@@ -518,15 +620,19 @@
   }
 }
 
+/* Individual workflow step card (Soft slate background) */
 .landing__step {
   display: flex;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
   background-color: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
+/* Light-peach step icon badge */
 .landing__stepIcon {
   flex-shrink: 0;
   width: 2.5rem;
@@ -535,35 +641,39 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  background-color: var(--surface-container-low);
+  background-color: var(--primary-light);
   color: var(--primary);
 }
 
 .landing__stepTitle {
-  margin: 0 0 var(--spacing-xs);
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
+  margin: 0 0 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .landing__stepText {
   margin: 0;
-  font-size: var(--text-sm);
-  line-height: 1.55;
+  font-size: 0.8125rem;
+  line-height: 1.5;
   color: var(--text-secondary);
 }
 
-/* CTA */
+/* =============================================================================
+   9. CALL TO ACTION SECTION ("Ready When You Are")
+   Soft slate outer background framing an elevated white centered invitation box.
+   ============================================================================= */
 .landing__cta {
-  padding: var(--spacing-3xl) 0;
+  padding: var(--spacing-3xl) var(--spacing-lg);
   background-color: var(--background);
   border-top: 1px solid var(--border);
 }
 
+/* Centered elevated white card */
 .landing__ctaInner {
-  max-width: var(--app-content-max, 80rem);
+  max-width: var(--app-content-max, 78rem);
   margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-lg);
+  padding: 3.5rem 1.5rem;
   text-align: center;
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -572,80 +682,58 @@
 }
 
 .landing__ctaTitle {
-  margin: 0 0 var(--spacing-sm);
-  font-size: var(--text-xl);
-  font-weight: var(--font-semibold);
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .landing__ctaText {
-  margin: 0 auto var(--spacing-lg);
+  margin: 0 auto 1.5rem;
   max-width: 28rem;
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   color: var(--text-secondary);
   line-height: 1.55;
 }
 
-/* Signed-in strip */
-.landing__welcomeBack {
-  padding: var(--spacing-3xl) 0;
-  background-color: var(--surface);
-}
-
-.landing__welcomeBack .landing__sectionInner {
-  padding: var(--spacing-2xl) var(--spacing-lg);
-  background-color: var(--background);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  max-width: 40rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Footer */
+/* =============================================================================
+   10. SITE FOOTER
+   Clean horizontal footer with copyright metadata and policy anchors.
+   ============================================================================= */
 .landing__footer {
   margin-top: auto;
-  padding: var(--spacing-xl) var(--spacing-lg);
-  background-color: var(--surface);
+  padding: 2rem 1.5rem;
+  background-color: #ffffff;
   border-top: 1px solid var(--border);
 }
 
 .landing__footerInner {
-  max-width: var(--app-content-max, 80rem);
+  max-width: var(--app-content-max, 78rem);
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  align-items: flex-start;
-}
-
-@media (min-width: 640px) {
-  .landing__footerInner {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .landing__footerBrand {
   margin: 0;
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
+  font-size: 0.875rem;
+  font-weight: 700;
   color: var(--tertiary);
 }
 
 .landing__footerMeta {
   margin: 0.25rem 0 0;
-  font-size: var(--text-xs);
-  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  color: #64748b;
 }
 
 .landing__footerLinks {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
-  font-size: var(--text-xs);
+  gap: 1.25rem;
+  font-size: 0.75rem;
 }
 
 .landing__footerLink {
@@ -653,10 +741,10 @@
   border: none;
   background: none;
   font-size: inherit;
-  color: var(--text-secondary);
+  color: #64748b;
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .landing__footerLink:hover {
@@ -664,38 +752,90 @@
 }
 
 .landing__footerLinkAnchor {
-  color: var(--text-secondary);
+  color: #64748b;
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .landing__footerLinkAnchor:hover {
   color: var(--primary);
-  text-decoration: underline;
 }
 
-.landing__footerDot {
-  color: var(--text-placeholder);
-  user-select: none;
+/* =============================================================================
+   11. RESPONSIVE MEDIA QUERIES (TABLET & MOBILE)
+   ============================================================================= */
+
+/* Tablet & Intermediate Viewports (<= 900px) */
+@media (max-width: 900px) {
+  .landing__headerInner {
+    padding: 0.75rem 1rem;
+  }
+  .landing__nav {
+    order: 3;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .landing__nav::-webkit-scrollbar {
+    display: none;
+  }
+  .landing__navLink {
+    white-space: nowrap;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.78rem;
+  }
+  .landing__hero {
+    padding: var(--spacing-xl) 0
+      var(--spacing-2xl);
+  }
+  .landing__heroInner {
+    padding: 0 1rem;
+    gap: var(--spacing-xl);
+  }
 }
 
-@media(max-width:900px){
-  .landing__headerInner{padding:.75rem 1rem;}
-  .landing__nav{order:3;flex:1 1 100%;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;}
-  .landing__nav::-webkit-scrollbar{display:none;}
-  .landing__navLink{white-space:nowrap;padding:.45rem .6rem;font-size:.78rem;}
-  .landing__hero{padding:var(--spacing-xl) 0 var(--spacing-2xl);}
-  .landing__heroInner{padding:0 1rem;gap:var(--spacing-xl);}
-}
-@media(max-width:560px){
-  .landing__headerInner{padding:.65rem .75rem;gap:.5rem;}
-  .landing__brand{gap:.6rem;max-width:calc(100% - 7rem);}
-  .landing__brandMark{width:2.1rem;height:2.1rem;}
-  .landing__brandLine{display:none;}
-  .landing__brandName{font-size:.9rem;}
-  .landing__headerActions{margin-left:auto;}
-  .landing__btnPrimary,.landing__btnGhost{padding:.45rem .6rem;font-size:.72rem;}
-  .landing__btnPrimary svg{display:none;}
-  .landing__sectionInner{padding-left:.75rem;padding-right:.75rem;}
-  .landing__heroInner{padding:0 .75rem;}
-  .landing__hero{padding:1.5rem 0 2rem;}
+/* Compact Mobile Viewports (<= 560px) */
+@media (max-width: 560px) {
+  .landing__headerInner {
+    padding: 0.65rem 0.75rem;
+    gap: 0.5rem;
+  }
+  .landing__brand {
+    gap: 0.6rem;
+    max-width: calc(100% - 7rem);
+  }
+  .landing__brandMark {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+  .landing__brandLine {
+    display: none;
+  }
+  .landing__brandName {
+    font-size: 0.9rem;
+  }
+  .landing__headerActions {
+    margin-left: auto;
+  }
+  .landing__btnPrimary,
+  .landing__btnGhost {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.72rem;
+  }
+  .landing__sectionInner {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .landing__heroInner {
+    padding: 0 0.75rem;
+  }
+  .landing__hero {
+    padding: 1.5rem 0 2rem;
+  }
+  .landing__footerInner {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
 }
