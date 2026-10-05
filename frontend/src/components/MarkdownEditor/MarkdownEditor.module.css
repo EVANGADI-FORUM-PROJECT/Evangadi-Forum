@@ -1,1 +1,3 @@
 .editor{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+
+.toolbar{min-height:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.35rem .45rem;border-bottom:1px solid var(--border);background:var(--surface-container-low)}
