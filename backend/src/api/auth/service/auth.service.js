@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { issueSession } from './session.js';
 import { safeExecute } from "../../../../db/config.js";
 import {
   BadRequestError,
@@ -7,7 +7,7 @@ import {
 } from "../../../utils/errors/index.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
+
 
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required");
@@ -112,7 +112,7 @@ export const registerService = async ({
 export const loginService = async ({ email, password }) => {
   const normalizedEmail = normalizeEmail(email);
   const sql =
-    "SELECT user_id, first_name, last_name, email, password_hash FROM users WHERE email = ? LIMIT 1";
+    "SELECT user_id, first_name, last_name, email, password_hash, auth_version FROM users WHERE email = ? LIMIT 1";
   const rows = await safeExecute(sql, [normalizedEmail]); //protecting against SQL injection by using parameterized queries
 
   if (rows.length === 0) {
@@ -120,28 +120,12 @@ export const loginService = async ({ email, password }) => {
   }
 
   const user = rows[0];
-  const isMatch = await bcrypt.compare(password, user.password_hash);
+  const isMatch = user.password_hash ? await bcrypt.compare(password, user.password_hash) : false;
 
   if (!isMatch) {
     throw new UnauthenticatedError("Invalid email or password");
     //we should not specify which one is incorrect for security reasons, so we use a generic message
   }
 
-  const payload = {
-    id: user.user_id,
-    firstName: user.first_name,
-    lastName: user.last_name,
-  };
-
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN }); // Generate a JWT token with the user's ID and name, signed with the secret key, and set to expire in the given time
-
-  return {
-    user: {
-      id: user.user_id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-    },
-    token,
-  };
+  return issueSession(user);
 };
