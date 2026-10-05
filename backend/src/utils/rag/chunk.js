@@ -10,16 +10,16 @@ export const chunkText = (text, chunkSize, overlap) => {
     throw new RangeError('Overlap must be an integer between zero and chunk size minus one');
   }
 
-  const chunks = [];
-  let start = 0;
+    const chunks = [];
+    let start = 0;
 
-  while (start < text.length) {
-    const end = start + chunkSize;
-    const chunk = text.slice(start, end);
+    while (start < text.length) {
+        const end = start + chunkSize;
+        const chunk = text.slice(start, end);
 
-    chunks.push(chunk);
-    start = end - overlap;
-  }
+        chunks.push(chunk);
+        start = end - overlap;
+    }
 
-  return chunks;
+    return chunks;
 };

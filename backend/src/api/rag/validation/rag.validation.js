@@ -1,18 +1,8 @@
-/*
- * MILESTONE 3 — RAG VALIDATION
- *
- * T-23:
- * - Validate documentId, query and optional k for semantic search.
- * - Validate documentId and query for AI-grounded query.
- *
- * T-24:
- * - Validate documentId for metadata, file and delete endpoints.
- *
- * Reference: M-3/Backend/rag/*.md
- */
+import {body, query, param} from "express-validator";
+import {validationErrorHandler} from "../../../middleware/validation-handler.js";
 
-export const searchDocumentValidation = [
-  param('documentId')
+export let searchDocumentValidation = [
+    param('documentId')
         .isInt()
         .withMessage('documentId must be an integer'),
 
@@ -28,25 +18,37 @@ export const searchDocumentValidation = [
     validationErrorHandler
 ];
 
-export const queryDocumentValidation = [
-  // TODO [T-23]: Add express-validator rules for POST /documents/:documentId/query.
-];
+export const queryDocumentValidation=[
+    body("query")
+    .trim()
+    .notEmpty()
+    .withMessage("query is required")
+    .isString()
+    .withMessage("query must be string"),
 
-export const documentIdParamValidation1 = [
- param("documentId")
+    param("documentId")
     .isInt()
     .withMessage('documentId must be an integer'),
     validationErrorHandler
-];
+]
 
-export const documentIdParamValidation2 = [
- param("documentId")
+export const documentIdParamValidation1 =[
+    param("documentId")
     .isInt()
     .withMessage('documentId must be an integer'),
     validationErrorHandler
-];
+]
 
-export const deleteDocumentValidation = [
-  param("documentId").isInt().withMessage("documentId must be an integer"),
-  validationErrorHandler,
-];
+export const documentIdParamValidation2 =[
+    param("documentId")
+    .isInt()
+    .withMessage('documentId must be an integer'),
+    validationErrorHandler
+]
+
+export const deleteDocumentValidation =[
+    param("documentId")
+    .isInt()
+    .withMessage('documentId must be an integer'),
+    validationErrorHandler
+]

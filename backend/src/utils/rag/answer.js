@@ -1,21 +1,9 @@
-/*
- * TASK: T-23 — AI Query Grounded in RAG Document
- *
- * TODO:
- * - Build a prompt from retrieved chunks.
- * - Ask Gemini to answer using only the supplied context.
- * - Return the answer and source/citation information.
- *
- * Reference: M-3/Backend/rag/query-document.md
- */
-import { getGeminiClient, getGeminiTextModel } from "../ai/gemini.js";
-// TODO [T-23]: Generate an answer grounded only in the retrieved chunks.
+import { getGeminiClient, getGeminiTextModel } from '../ai/gemini.js';
+
 // Generate an answer using only the chunks retrieved from the user's PDF.
 export const answerFromRagChunks = async (searchQuery, chunks) => {
     let context = '';
 
-    // Build a readable evidence context from the retrieved chunks so the model
-    // can answer strictly from the document excerpts supplied by RAG.
     for (let i = 0; i < chunks.length; i++) {
         context += `
             Source ${i + 1}
@@ -59,4 +47,3 @@ export const answerFromRagChunks = async (searchQuery, chunks) => {
     const text = response?.text;
     return typeof text === 'string' ? text : '';
 };
-

@@ -1,293 +1,109 @@
-// Import React's useState hook for managing component state 
-
 import { useState } from 'react';
-
-// Import useNavigate for programmatic navigation between pages \
 import { useNavigate } from 'react-router-dom';
-// Import icons used throughout the page 
-import { 
-    ArrowLeft, 
-    CheckCircle2, 
-    Lightbulb, 
-    Loader2, 
-    Sparkles, 
-    } from 'lucide-react';
-// Import ReactMarkdown to render Markdown content as HTML 
+import { ArrowLeft, CheckCircle2, Lightbulb, Loader2, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-// Import the custom Markdown editor component 
 import MarkdownEditor from '../../components/MarkdownEditor/MarkdownEditor.jsx';
-
-// Import the question service used to communicate with the backend API 
 import { questionService } from '../../services/question/question.service.js';
-
-// Import CSS module styles for this component 
 import styles from './PostQuestion.module.css';
 
-// Initial/default values for the question form 
-const initialForm = { 
-    title: '', 
-    content: '', 
-};
-/** 
- * PostQuestion Component 
- * This component allows a user to: 
- * 1. Enter a question title. 
- * 2. Write the question body using Markdown. 
- * 3. Get AI-powered feedback on the question. 
- * 4. Submit/publish the question. 
- * 5. Navigate back or return to the dashboard after publishing. 
- */ 
-export default function PostQuestion() { 
-    // React Router navigation function 
-    const navigate = useNavigate();
-    
-    // Store the question title and content 
-    const [formData, setFormData] = useState(initialForm); 
-    
-    // Track whether the question is currently being submitted 
-    const [isSubmitting, setIsSubmitting] = useState(false); 
-    
-    // Track whether the AI Draft Coach is generating feedback 
-    const [isCoaching, setIsCoaching] = useState(false); 
-    
-    // Store the feedback returned by the AI Draft Coach 
-    const [coachFeedback, setCoachFeedback] = useState(null);
+const initialForm = { title: '', content: '' };
 
-    // Store any validation or API error message 
-    const [error, setError] = useState(''); 
-    
-    // Track whether the question was successfully published 
-    const [success, setSuccess] = useState(false);
+export default function PostQuestion() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(initialForm);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCoaching, setIsCoaching] = useState(false);
+  const [coachFeedback, setCoachFeedback] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
-    /** 
-     * Update a specific form field. 
-     *  @param {string} field - The field to update, such as title or content 
-     ** @param {string} value - The new value 
-     */ 
-    const update = (field, value) => { 
-        // Update only the selected field while keeping the other fields unchanged 
-        setFormData(prev => ({ 
-            ...prev, 
-            [field]: value, 
-        }));
-    // Clear any previous error when the user starts editing 
-    setError(''); 
-    
-    // Clear old AI feedback because the question has changed 
-    if (coachFeedback) { 
-        setCoachFeedback(null); 
-    } 
-};
-/** 
- *  Validate the question before submitting or requesting AI feedback. 
- *  @returns {string} An error message, or an empty string if valid 
- */ 
-const validate = () => { 
-    // Remove unnecessary spaces from the beginning and end 
-    const title = formData.title.trim(); const content = formData.content.trim(); 
-    // Check whether the title has been provided if (!title) { 
-    return 'Question title is required.'; 
-}
-// Ensure the title is at least 5 characters long if (title.length < 5) { 
-return 'Title must be at least 5 characters.'; 
-} 
-// Ensure the title does not exceed the database/API limit 
-if (title.length > 255) { 
-    return 'Title must be 255 characters or fewer.'; 
-}
-// Check whether the question body has been provided 
-if (!content) { 
-    return 'Question content is required.'; } 
-    // Ensure the question body contains enough information 
-    if (content.length < 10) { 
-        return 'Question content must be at least 10 characters.'; } 
-    // Empty string means validation passed
-    return ''; 
-};
+  const update = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setError('');
+    if (coachFeedback) setCoachFeedback(null);
+  };
 
-/** 
- * Request AI feedback for the question draft. 
- * The AI Draft Coach provides suggestions to improve 
- * the question before it is published. 
- */ 
-const handleCoach = async () => { 
-    // Validate the form before sending it to the AI service 
-const validationError = validate(); 
-// Stop if validation fails 
-if (validationError) { 
-    setError(validationError); 
-    return; 
-}
-// Show the loading state for the AI feedback button se
-setIsCoaching(true); 
+  const validate = () => {
+    const title = formData.title.trim();
+    const content = formData.content.trim();
+    if (!title) return 'Question title is required.';
+    if (title.length < 5) return 'Title must be at least 5 characters.';
+    if (title.length > 255) return 'Title must be 255 characters or fewer.';
+    if (!content) return 'Question content is required.';
+    if (content.length < 10) return 'Question content must be at least 10 characters.';
+    return '';
+  };
 
-// Clear any previous error 
-setError(''); 
+  const handleCoach = async () => {
+    const validationError = validate();
+    if (validationError) { setError(validationError); return; }
+    setIsCoaching(true); setError('');
+    try {
+      const result = await questionService.generateQuestionDraftCoach({
+        title: formData.title.trim(),
+        content: formData.content.trim(),
+      });
+      setCoachFeedback(result.data || { tips: [] });
+    } catch (err) {
+      setError(err.message);
+    } finally { setIsCoaching(false); }
+  };
 
-try {   
-// Send the question title and content to the AI coaching service 
-const result = await questionService.generateQuestionDraftCoach({ 
-    title: formData.title.trim(), 
-    content: formData.content.trim(), 
-});
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const validationError = validate();
+    if (validationError) { setError(validationError); return; }
 
-// Save the returned AI feedback 
-// // If no data is returned, use an empty tips array 
-setCoachFeedback(result.data || { tips: [] }); 
-} catch (err) { 
-// Display the error returned by the API/service 
-setError(err.message); 
-} finally { 
-// Always stop the loading state, whether the request succeeds or fails 
-setIsCoaching(false); 
-} 
-};
-/** 
- * Submit/publish the question. 
- */ 
-const handleSubmit = async e => { 
-// Prevent the browser from performing a normal form submission 
-e.preventDefault(); 
-// Validate the question before sending it to the backend 
-const validationError = validate(); 
-// Stop submission if validation fails 
-if (validationError) { 
-    setError(validationError); 
-    return; 
-}
-// Show the publishing/loading state 
-setIsSubmitting(true); 
+    setIsSubmitting(true); setError('');
+    try {
+      await questionService.createQuestion({
+        title: formData.title.trim(),
+        content: formData.content.trim(),
+      });
+      setSuccess(true);
+      setTimeout(() => navigate('/dashboard'), 1200);
+    } catch (err) {
+      setError(err.message);
+    } finally { setIsSubmitting(false); }
+  };
 
-// Clear previous errors 
-setError(''); 
+  if (success) {
+    return (
+      <div className={styles.successPage}>
+        <div className={styles.successCard}>
+          <CheckCircle2 size={42} className={styles.successIcon} />
+          <h1>Thread published</h1>
+          <p>Your question is now part of the community feed.</p>
+          <div className={styles.successActions}>
+            <button onClick={() => navigate('/dashboard')} className={styles.primary}>Go to home</button>
+            <button onClick={() => { setSuccess(false); setFormData(initialForm); }} className={styles.secondary}>Ask another</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-try { 
-// Send the question to the backend API 
-await questionService.createQuestion({ 
-    title: formData.title.trim(), 
-    content: formData.content.trim(), 
-}); 
+  return (
+    <div className={styles.page}>
+      <button className={styles.back} onClick={() => navigate(-1)} type="button">
+        <ArrowLeft size={15} /> Back
+      </button>
 
-// Mark the question as successfully published 
-setSuccess(true); 
-// Redirect the user to the dashboard after 1.2 seconds 
-setTimeout(() => navigate('/dashboard'), 1200); 
-} catch (err) { 
+      <section className={styles.card}>
+        <div className={styles.intro}>
+          <span className={styles.kicker}>Start a discussion</span>
+          <h1>Ask a question</h1>
+          <p>Give other learners enough context to reproduce the problem and help you quickly.</p>
+        </div>
 
-// Display the error if publishing fails 
-setError(err.message); 
-} finally { 
-// Stop the publishing/loading state setIsSubmitting(false); 
-} 
-};
+        <div className={styles.coachInfo}>
+          <div className={styles.coachIcon}><Sparkles size={17} /></div>
+          <div><strong>AI Draft Coach</strong><p>Get constructive checklist-style suggestions before you publish.</p></div>
+        </div>
 
-/**
- * Display the success screen after the question is published. 
- *
- * This prevents the question form from being displayed 
- * after a successful submission. 
- */ 
-if (success) { 
-    return ( 
-    <div className={styles.successPage}> 
-        <div className={styles.successCard}> 
-            {/* Success/check icon */}
-             <CheckCircle2 
-             size={42} 
-             className={styles.successIcon} 
-             /> 
-             {/* Success message */} 
-             <h1>Thread published</h1> 
-             <p> Your question is now part of the community feed. </p> 
-             
-             {/* Actions available after publishing */} 
-             <div className={styles.successActions}> 
-                
-            {/* Return to the dashboard/home page */} 
-            <button 
-                onClick={() => navigate('/dashboard')} 
-                className={styles.primary} 
-            > 
-            Go to home 
-            </button> 
+        {error && <div className={styles.error} role="alert">{error}</div>}
 
-            {/* Reset the form so the user can ask another question */} <button 
-            onClick={() => { 
-                setSuccess(false); 
-                setFormData(initialForm); 
-            }} 
-            className={styles.secondary} 
-            > 
-            Ask another 
-            </button> 
-            </div> 
-            </div> 
-            </div> 
-            ); 
-        }
-        
-        /** 
-         * Main question posting form. 
-         */ 
-        return ( 
-        <div className={styles.page}> 
-        {/* Back button - returns to the previous page */} 
-        <button 
-            className={styles.back} 
-            onClick={() => navigate(-1)} 
-            type="button" 
-            > 
-            
-            <ArrowLeft size={15} /> 
-            Back 
-            </button> 
-            
-            {/* Main question form card */} 
-            <section className={styles.card}>
-
-            {/* Introduction section */} 
-            <div className={styles.intro}> 
-                
-            {/* Small label above the main heading */} 
-            <span className={styles.kicker}> 
-            Start a discussion 
-            </span> 
-            
-            <h1>Ask a question</h1> 
-            
-            <p> 
-                Give other learners enough context to reproduce the problem and help you quickly. 
-            </p> 
-            </div> 
-            
-            {/* Information box explaining the AI Draft Coach */} 
-            <div className={styles.coachInfo}> 
-                
-            {/* AI icon */} 
-            <div className={styles.coachIcon}> 
-                <Sparkles size={17} /> 
-            </div> 
-            
-            {/* AI Draft Coach description */} 
-            <div> 
-                <strong>AI Draft Coach</strong> 
-            <p> Get constructive checklist-style suggestions before you publish. 
-            </p> 
-            </div> 
-            </div> 
-            
-            {/* Display validation/API errors when available */} 
-            {error && ( 
-                <div 
-                className={styles.error} 
-                role="alert" 
-                >
-            {error} 
-            </div> 
-            )} 
-            
-            {/* Question form */} 
-            <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <label>
             <span>Question title</span>
             <input
@@ -335,4 +151,4 @@ if (success) {
       )}
     </div>
   );
-
+}

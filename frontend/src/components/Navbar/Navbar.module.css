@@ -1,3 +1,7 @@
+/**
+ * Navbar.module.css: sticky header, search field, user menu.
+ */
+
 .navbar {
   position: sticky;
   top: 0;
@@ -75,7 +79,6 @@
   transition: var(--transition-base);
   color: var(--text-primary);
 }
-
 
 .navbar__semantic-button {
   position: absolute;

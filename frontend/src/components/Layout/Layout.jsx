@@ -37,7 +37,7 @@ export default function Layout() {
     return '';
   };
 
-  return(
+  return (
     <div className={`${styles.layout} ${sidebarOpen ? styles['layout--sidebarOpen'] : styles['layout--sidebarClosed']}`}>
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebarOnMobile} />
       {!sidebarOpen && (
@@ -66,7 +66,6 @@ export default function Layout() {
           </div>
         </main>
 
-
         <footer className={styles.layout__footer}>
           <div className={styles['layout__footer-content']}>
             <div className={styles['layout__footer-branding']}>
@@ -86,5 +85,5 @@ export default function Layout() {
         </footer>
       </div>
     </div>
-  )
+  );
 }

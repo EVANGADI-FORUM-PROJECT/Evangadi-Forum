@@ -1,11 +1,3 @@
-/*
- * TASK: T-24 — Frontend PDF Preview
- *
- * TODO:
- * - Fetch the authenticated PDF through ragService.fetchPdfObjectUrl().
- * - Render it in an iframe.
- * - Revoke the Blob URL during cleanup.
- */
 import { useEffect, useState } from 'react';
 import { ragService } from '../../services/rag/rag.service.js';
 import styles from './RagDocuments.module.css';
@@ -66,4 +58,3 @@ export default function RagPreview({ documentId, title }) {
     </div>
   );
 }
-

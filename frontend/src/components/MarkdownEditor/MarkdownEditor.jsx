@@ -15,9 +15,8 @@ const tools = [
   { id: 'link', label: 'Link', icon: Link2, prefix: '[', suffix: '](https://)', placeholder: 'link text' },
 ];
 
-export default function MarkdownEditor() {
-  // TODO: Implement markdown editing/formatting and preview as required by the task specification.
- value,
+export default function MarkdownEditor({
+  value,
   onChange,
   placeholder,
   rows = 13,
@@ -40,7 +39,7 @@ export default function MarkdownEditor() {
     const nextValue = `${value.slice(0, start)}${replacement}${value.slice(end)}`;
 
     onChange(nextValue);
-    
+
     requestAnimationFrame(() => {
       textarea.focus();
       const cursorStart = start + tool.prefix.length;
@@ -48,7 +47,8 @@ export default function MarkdownEditor() {
       textarea.setSelectionRange(cursorStart, cursorEnd);
     });
   };
-    return (
+
+  return (
     <div className={`${styles.editor} ${className}`}>
       <div className={styles.toolbar} role="toolbar" aria-label="Markdown formatting tools">
         <div className={styles.toolGroup}>
@@ -69,6 +69,7 @@ export default function MarkdownEditor() {
             );
           })}
         </div>
+
         {preview && (
           <button
             type="button"
@@ -80,6 +81,7 @@ export default function MarkdownEditor() {
           </button>
         )}
       </div>
+
       {showPreview ? (
         <div className={styles.preview} aria-label="Markdown preview">
           {value.trim() ? (
@@ -100,6 +102,7 @@ export default function MarkdownEditor() {
           spellCheck="true"
         />
       )}
+
       <small className={styles.hint}>
         Markdown supported · Use the toolbar for headings, lists, quotes, links, inline code, and code blocks.
       </small>

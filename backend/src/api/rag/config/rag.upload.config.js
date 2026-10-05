@@ -24,35 +24,36 @@ import crypto from "crypto";
 import { createDocumentMulterErrorHandler } from "../../../middleware/multerError-handler.js";
 
 let storage = multer.diskStorage({
-  destination: uploadSettings.directory,
-  filename: (req, file, cb) => {
-    let unquesName = crypto.randomBytes(8).toString("hex") + ".pdf";
-    cb(null, unquesName);
-  },
+    destination: uploadSettings.directory,
+    filename: (req, file, cb)=>{
+        let unquesName = crypto.randomBytes(8).toString('hex') + '.pdf';
+        cb(null, unquesName);
+    }
 });
 
 let fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
-    cb(null, true);
-  } else {
-    cb(new Error("Invalid file type. Only PDF files are allowed."));
-  }
-};
+    if (file.mimetype === 'application/pdf'){
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only PDF files are allowed.'));
+    }
+}
 
 export let upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: uploadSettings.maxBytes,
-  },
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: uploadSettings.maxBytes
+    }
 });
 
 export let uploadDocument = (req, res, next) => {
-  upload.single("file")(req, res, (err) => {
-    if (err) {
-      return createDocumentMulterErrorHandler(err, req, res, next);
-    }
+    upload.single('file')(req, res, (err) => {
+        if (err) {
+            return  createDocumentMulterErrorHandler(err, req, res, next);
+        }
 
-    next();
-  });
-}; /*upload.single("file") returns a middleware function. By writing upload.single("file")(req, res, callback), we immediately call that returned middleware and provide our own callback as its next function, allowing us to receive and handle Multer's error before deciding whether to pass control to Express.*/
+        next();
+    });
+};/*upload.single("file") returns a middleware function. By writing upload.single("file")(req, res, callback), we immediately call that returned middleware and provide our own callback as its next function, allowing us to receive and handle Multer's error before deciding whether to pass control to Express.*/
+

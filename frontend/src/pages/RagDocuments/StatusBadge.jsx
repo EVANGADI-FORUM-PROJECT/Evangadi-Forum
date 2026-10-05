@@ -1,9 +1,3 @@
-/*
- * TASK: Frontend RAG Document Status
- *
- * TODO [T-24]: Render a status badge for processing/ready/failed states.
- */
-
 import styles from './RagDocuments.module.css';
 
 /**

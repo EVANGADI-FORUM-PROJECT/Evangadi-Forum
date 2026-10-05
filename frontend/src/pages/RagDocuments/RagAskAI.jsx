@@ -1,11 +1,3 @@
-/*
- * TASK: T-23 — Frontend Ask AI
- *
- * TODO:
- * - Accept a question.
- * - Call ragService.queryDocument().
- * - Display the grounded answer and citations.
- */
 import { useState } from 'react';
 import { Loader2, Sparkles } from 'lucide-react';
 import RagAnswerBody from '../../components/RagAnswerBody/RagAnswerBody.jsx';

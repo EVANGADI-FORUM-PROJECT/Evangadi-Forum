@@ -1,15 +1,7 @@
-/*
- * TASK: T-23 — Frontend RAG Answer Rendering
- *
- * TODO: Render the AI-generated answer as readable Markdown, including
- * code blocks and any citation/source presentation required by the design.
- */
 /**
  * Renders RAG "answer" text as Markdown (incl. fenced code) with readable styling.
  */
-
-export default function RagAnswerBody() {
-  import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Copy, Check } from 'lucide-react';
 import styles from './RagAnswerBody.module.css';
@@ -80,6 +72,7 @@ export default function RagAnswerBody({ children }) {
     </div>
   );
 }
+
 function CodeBlock({ children }) {
   const preRef = useRef(null);
   const [copied, setCopied] = useState(false);
@@ -129,8 +122,6 @@ function CodeBlock({ children }) {
       </pre>
     </div>
   );
-}
-
 }
 
 function withoutNode({ node, ...props }) {
