@@ -3,7 +3,12 @@
  * @description Public marketing route (`/`). Layout and copy align with in-app
  *   shell tokens (cards, borders, slate + orange). No data fetching.
  */
+
+/**
+ * framer-motion: used for entrance animations on hero text and CTA buttons.
+ */
 import { motion as Motion } from "framer-motion";
+
 import { useNavigate } from "react-router-dom";
 import {
   Sparkles,
