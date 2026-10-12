@@ -1,6 +1,9 @@
+import { avatarUrl } from '../../services/core/avatar.url.js';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, LogOut, Sparkles } from 'lucide-react';
+import NotificationBell from '../Notifications/NotificationBell.jsx';
+import ThemeToggle from '../ThemeToggle/ThemeToggle.jsx';
 import styles from './Navbar.module.css';
 
 /**
@@ -83,6 +86,8 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
       </form>
 
       <div className={styles.navbar__actions}>
+        <ThemeToggle />
+        {user && <NotificationBell />}
         <div className={styles.navbar__user}>
           <span className={styles['navbar__user-name']}>
             {user ? `${user.firstName} ${user.lastName}` : 'Guest'}
@@ -90,7 +95,7 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
           <div className={styles['navbar__user-avatar']}>
             <img
               src={
-                user?.avatar ||
+                avatarUrl(user?.avatar) ||
                 `https://ui-avatars.com/api/?name=${
                   user?.firstName || 'User'
                 }+${user?.lastName || ''}&background=random`

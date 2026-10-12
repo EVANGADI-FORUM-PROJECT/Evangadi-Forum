@@ -2,6 +2,9 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import Navbar from './Navbar.jsx';
 
+vi.mock('../../contexts/NotificationContext.jsx', () => ({ useNotifications: () => ({ notifications: [], unreadCount: 0 }) }));
+vi.mock('../../contexts/ThemeContext.jsx', () => ({ useTheme: () => ({ theme: 'light', toggleTheme: vi.fn() }) }));
+
 const router = vi.hoisted(() => ({
   navigate: vi.fn(),
   location: { pathname: '/dashboard', search: '?semantic=react%20hooks' },
