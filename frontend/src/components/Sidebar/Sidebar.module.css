@@ -352,3 +352,15 @@
   .sidebar__footer { padding-left:var(--spacing-md); padding-right:var(--spacing-md); }
 }
 .sidebar--closed { visibility:hidden; pointer-events:none; }
+.sidebar__avatar-image { object-fit:cover; }
+
+.messageBadge { margin-left:auto; min-width:21px; padding:.15rem .35rem; border-radius:999px; background:var(--primary); color:#fff; font-size:.65rem; text-align:center; font-weight:700; }
+
+/* Use the same header height as the desktop navigation bar. */
+@media(min-width:901px) {
+  .sidebar { padding-top:0; }
+  .sidebar__header { height:4.25rem; min-height:4.25rem; box-sizing:border-box; display:flex; align-items:center; padding-top:0; padding-bottom:0; }
+  .sidebar__branding { width:100%; gap:.6rem; }
+  .sidebar__title { font-size:.85rem; }
+  .sidebar__tagline { font-size:.6rem; line-height:1.35; }
+}
