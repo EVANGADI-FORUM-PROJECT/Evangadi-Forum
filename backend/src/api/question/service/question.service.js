@@ -1,8 +1,9 @@
 import crypto from 'crypto'; //for generating random hash its built in node crypto module 
-import { BadRequestError, NotFoundError, ServiceUnavailableError } from "../../../utils/errors/index.js";
+import { BadRequestError, ForbiddenError, NotFoundError, ServiceUnavailableError } from "../../../utils/errors/index.js";
 import { safeExecute } from "../../../../db/config.js"
 import { findSimilarQuestionsByQuestionHash, findSimilarQuestionsByText, generatingQuestionEmbedding, getVectorConfig, storeQuestionVector, normalizeQuestionText , } from "./vector.service.js"
 import {fetchGeminiJsonTextResponse, parseJsonObjectGeminiText}from"./geminiTextCoach.service.js"
+import { notifyNewQuestion } from "../../notification/service/notification.service.js"
 
 
 const generateQuestionHash = () => crypto.randomBytes(8).toString('hex') //  gives unique string for every question 
@@ -11,7 +12,7 @@ const generateQuestionHash = () => crypto.randomBytes(8).toString('hex') //  giv
 // POST /api/questions
 export const createQuestionWithVectorService = async payload => {
     
-    const { userId, title, content } = payload; 
+    const { userId, authorFirstName, title, content } = payload; 
 
     const insertQuestionsql = 'INSERT INTO QUESTIONS (question_hash, user_id, title, content) VALUES (?, ?, ?, ?)';
 
@@ -48,6 +49,15 @@ export const createQuestionWithVectorService = async payload => {
         content,
         userId
     }
+
+    // Fire-and-forget: notification failures must never break question creation.
+    notifyNewQuestion({
+        questionId,
+        questionHash,
+        title,
+        authorId: userId,
+        authorFirstName,
+    });
 
     const sourceText = normalizeQuestionText({
         title: payload.title
@@ -106,6 +116,10 @@ const buildQuestionFilters = filters => {
         conditions.push(`q.user_id = ?`);
         params.push(filters.userId);
     }
+    if (filters.savedOnly && filters.userId) {
+        conditions.push(`EXISTS (SELECT 1 FROM saved_questions sq WHERE sq.question_id = q.question_id AND sq.user_id = ?)`);
+        params.push(filters.userId);
+    }
 
     if (conditions.length === 0) {
         return { whereClause: '', params };
@@ -123,7 +137,8 @@ const buildQuestionFilters = filters => {
 // # Task: List Questions[T-10]
 //GET /api/questions
 export const getQuestionsService = async (filters) => {
-    const normalizedLimit = 100;
+    const normalizedLimit = Number.isInteger(Number(filters.limit)) && Number(filters.limit) > 0 ? Math.min(Number(filters.limit), 100) : 100;
+    const offset = Number.isInteger(Number(filters.offset)) && Number(filters.offset) >= 0 ? Number(filters.offset) : 0;
     const sortColumn = 'q.created_at';
     const normalizedSortOrder = 'DESC';
 
@@ -131,7 +146,7 @@ export const getQuestionsService = async (filters) => {
 
     const { whereClause, params } = buildQuestionFilters(filters);
 
-    const listSql = `SELECT q.question_id AS id, 
+    const listSql = `SELECT q.question_id AS id,
     q.question_hash AS questionHash,
     q.title, 
     q.content,
@@ -140,17 +155,21 @@ export const getQuestionsService = async (filters) => {
     u.user_id AS userId,
     u.first_name AS firstName,
     u.last_name AS lastName,
-    COUNT(DISTINCT a.answer_id) AS answerCount
+    u.avatar AS avatar,
+    COUNT(DISTINCT a.answer_id) AS answerCount,
+    EXISTS(SELECT 1 FROM saved_questions sq WHERE sq.question_id = q.question_id AND sq.user_id = ?) AS isSaved
     FROM questions q
     JOIN users u ON u.user_id = q.user_id 
     LEFT JOIN answers a ON a.question_id = q.question_id
     ${whereClause}
     GROUP BY q.question_id, u.user_id
-    ORDER BY ${sortColumn} ${normalizedSortOrder}
-    LIMIT ${normalizedLimit}
+    ORDER BY ${sortColumn} ${normalizedSortOrder}, q.question_id DESC
+    LIMIT ${normalizedLimit} OFFSET ${offset}
     `   
 
-    const rows = await safeExecute(listSql, params);
+    const rows = await safeExecute(listSql, [filters.userId || 0, ...params]);
+    const counts = await safeExecute(`SELECT COUNT(*) AS total FROM questions q ${whereClause}`, params);
+    const total = Number(counts[0].total);
 
     return {
         data: rows.map(question => ({
@@ -164,12 +183,16 @@ export const getQuestionsService = async (filters) => {
                 id: question.userId,
                 firstName: question.firstName,
                 lastName: question.lastName,
+                avatar: question.avatar,
             },
             answerCount: Number(question.answerCount || 0),
+            isSaved: Boolean(question.isSaved),
         })),
         meta: {
             limit: normalizedLimit,
-            total: rows.length,
+            offset,
+            total,
+            hasMore: offset + rows.length < total,
             sortBy: "newest",
             sortOrder: normalizedSortOrder,
         },
@@ -179,7 +202,7 @@ export const getQuestionsService = async (filters) => {
 // ! ==================================
 // # Task: Get Single Question Details[T-10] AND  # Task: AI Answer Fit Evaluation[T-18]
 // GET /api/questions/:questionHash AND POST /api/questions/:questionHash/answer-fit
-export const getSingleQuestionService = async ({ questionHash, includeAnswers = true }) => {
+export const getSingleQuestionService = async ({ questionHash, includeAnswers = true, userId }) => {
     //console.log('service questionHsh:' , questionHash);
     const normalizedAnswerLimit = 100;
 
@@ -194,7 +217,9 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
     u.user_id AS userId,
     u.first_name AS firstName,
     u.last_name AS lastName,
-    COUNT(DISTINCT a.answer_id) AS answerCount
+    u.avatar AS avatar,
+    COUNT(DISTINCT a.answer_id) AS answerCount,
+    EXISTS(SELECT 1 FROM saved_questions sq WHERE sq.question_id = q.question_id AND sq.user_id = ?) AS isSaved
     FROM questions q
     JOIN users u ON u.user_id = q.user_id 
     LEFT JOIN answers a ON a.question_id = q.question_id
@@ -203,7 +228,7 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
     `;
    
 
-    const questionRows = await safeExecute(questionSql, [questionHash]);
+    const questionRows = await safeExecute(questionSql, [userId || 0, questionHash]);
 
 
     if (questionRows.length === 0) {
@@ -230,7 +255,10 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
     a.updated_at AS updatedAt,
     au.user_id AS userId,
     au.first_name AS firstName,
-    au.last_name AS lastName
+    au.last_name AS lastName,
+    au.avatar AS avatar
+    , (SELECT COUNT(*) FROM answer_likes al WHERE al.answer_id = a.answer_id) AS likeCount
+    , EXISTS(SELECT 1 FROM answer_likes al WHERE al.answer_id = a.answer_id AND al.user_id = ?) AS likedByMe
     FROM answers a
     JOIN users au ON au.user_id = a.user_id
     WHERE a.question_id = ?
@@ -239,7 +267,7 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
     `;
    
 
-    const answers = await safeExecute(answerSql, [questionId]);
+    const answers = await safeExecute(answerSql, [userId || 0, questionId]);
 
     return {
         question: {
@@ -253,8 +281,10 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
                 id: question.userId,
                 firstName: question.firstName,
                 lastName: question.lastName,
+                avatar: question.avatar,
             },
             answerCount: question.answerCount,
+            isSaved: Boolean(question.isSaved),
         },
         answers: answers.map(answer => ({
             id: answer.id,
@@ -265,7 +295,10 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
                 id: answer.userId,
                 firstName: answer.firstName,
                 lastName: answer.lastName,
+                avatar: answer.avatar,
             },
+            likeCount: Number(answer.likeCount || 0),
+            likedByMe: Boolean(answer.likedByMe),
 
         })),
         answersMeta: {
@@ -277,20 +310,54 @@ export const getSingleQuestionService = async ({ questionHash, includeAnswers = 
 
 };
 
+export const updateQuestionService = async ({ questionHash, userId, title, content }) => {
+    const rows = await safeExecute('SELECT question_id, user_id FROM questions WHERE question_hash = ? LIMIT 1', [questionHash]);
+    if (!rows.length) throw new NotFoundError('Question not found');
+    if (rows[0].user_id !== userId) throw new ForbiddenError('You can only edit your own question.');
+    await safeExecute('UPDATE questions SET title = ?, content = ? WHERE question_id = ?', [title, content, rows[0].question_id]);
+    const sourceText = normalizeQuestionText({ title });
+    try {
+        const embedded = await generatingQuestionEmbedding(sourceText);
+        await storeQuestionVector({ questionId: rows[0].question_id, sourceText, embedding: embedded.embedding, status: 'ready' });
+    } catch (error) {
+        console.warn('Question updated, but its semantic search vector could not be refreshed:', error.message);
+    }
+    return { questionHash, title, content };
+};
+
+export const deleteQuestionService = async ({ questionHash, userId }) => {
+    const rows = await safeExecute('SELECT question_id, user_id FROM questions WHERE question_hash = ? LIMIT 1', [questionHash]);
+    if (!rows.length) throw new NotFoundError('Question not found');
+    if (rows[0].user_id !== userId) throw new ForbiddenError('You can only delete your own question.');
+    await safeExecute('DELETE FROM questions WHERE question_id = ?', [rows[0].question_id]);
+};
+
+export const toggleSavedQuestionService = async ({ questionHash, userId, saved }) => {
+    const rows = await safeExecute('SELECT question_id FROM questions WHERE question_hash = ? LIMIT 1', [questionHash]);
+    if (!rows.length) throw new NotFoundError('Question not found');
+    if (saved) {
+        await safeExecute('INSERT IGNORE INTO saved_questions (user_id, question_id) VALUES (?, ?)', [userId, rows[0].question_id]);
+    } else {
+        await safeExecute('DELETE FROM saved_questions WHERE user_id = ? AND question_id = ?', [userId, rows[0].question_id]);
+    }
+    return { saved };
+};
+
+export const getSavedQuestionsService = async (userId) => getQuestionsService({ userId, savedOnly: true });
+
 
 
 //========================================
 // ! semantic search : find semantically similar questions to the user's query (new text typed by the user) - from existing questions in db  
 // # Task: Semantic Search Questions[T-11]
 // GET /api/questions/search
-export const searchQuestionsSemanticService = async ({ query, k, threshold }) => {
-    
+export const searchQuestionsSemanticService = async ({ query, k, threshold, limit, offset = 0 }) => {
     const sourceText = normalizeQuestionText({ title: query });
 
     const vectorConfig = getVectorConfig(); 
     const searchThreshold = threshold !== undefined ? threshold : vectorConfig.recommendThreshold; 
 
-    const result = await findSimilarQuestionsByText({ sourceText, threshold: searchThreshold, k: k });
+    const result = await findSimilarQuestionsByText({ sourceText, threshold: searchThreshold, k: k, limit, offset });
 
     return {
         data: result.similarQuestions,
@@ -298,7 +365,10 @@ export const searchQuestionsSemanticService = async ({ query, k, threshold }) =>
             query,
             k,
             threshold: searchThreshold,
-            total: result.similarQuestions.length
+            limit: limit || result.similarQuestions.length,
+            offset: Number(offset),
+            total: result.total ?? result.similarQuestions.length,
+            hasMore: Number(offset) + result.similarQuestions.length < (result.total ?? result.similarQuestions.length)
         },
     };
 
@@ -369,4 +439,3 @@ export const getSimilarQuestionsService = async ({ questionHash, k, threshold })
 
 
 };
-

@@ -1,6 +1,6 @@
 import express from "express"
 import { authenticateUser } from "../../../middleware/authentication.js"
-import { createQuestionController, getQuestionsController, searchQuestionsSemanticController, getSingleQuestionController, assessAnswerAgainstQuestionController, generateQuestionDraftCoachController, getSimilarQuestionsController } from "../controller/question.controller.js";
+import { createQuestionController, getQuestionsController, searchQuestionsSemanticController, getSingleQuestionController, assessAnswerAgainstQuestionController, generateQuestionDraftCoachController, getSimilarQuestionsController, updateQuestionController, deleteQuestionController, toggleSavedQuestionController, getSavedQuestionsController } from "../controller/question.controller.js";
 
 import {
     createQuestionValidation, getQuestionsValidation, searchQuestionsSemanticValidation, getSingleQuestionValidation, assessAnswerAgainstQuestionsValidation, generateQuestionDraftCoachValidation, similarQuestionsValidation
@@ -15,6 +15,7 @@ router.post("/", authenticateUser, createQuestionValidation, createQuestionContr
 // # Task: List Questions [T-10]
 // GET /api/questions : used for fetching all questions and again for filtering the current user questions
 router.get("/", authenticateUser, getQuestionsValidation, getQuestionsController);
+router.get('/saved', authenticateUser, getSavedQuestionsController);
 
 //==================================
 /**
@@ -24,6 +25,9 @@ router.get("/", authenticateUser, getQuestionsValidation, getQuestionsController
 // # Task: Semantic Search Questions[T-11]
 //GET /api/questions/search
 router.get("/search", authenticateUser, searchQuestionsSemanticValidation, searchQuestionsSemanticController)
+router.put('/:questionHash', authenticateUser, getSingleQuestionValidation, createQuestionValidation, updateQuestionController);
+router.delete('/:questionHash', authenticateUser, getSingleQuestionValidation, deleteQuestionController);
+router.put('/:questionHash/saved', authenticateUser, getSingleQuestionValidation, toggleSavedQuestionController);
 //===================================
 
 // # Task: AI Question Draft Coach

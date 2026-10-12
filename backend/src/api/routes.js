@@ -17,3 +17,12 @@ mainRouter.use("/answers", answerRoutes)
 
 // /api/rag
 mainRouter.use("/rag", ragRouter)
+
+import notificationRoutes from "./notification/routes/notification.route.js";
+mainRouter.use("/notifications", notificationRoutes);
+
+import discussionRoutes from "./discussion/routes/discussion.route.js";
+mainRouter.use("/discussion", discussionRoutes);
+
+import chatRoutes from "./chat/routes/chat.route.js";
+mainRouter.use("/chat", chatRoutes);

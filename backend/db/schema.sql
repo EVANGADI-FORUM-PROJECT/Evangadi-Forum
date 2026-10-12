@@ -2,6 +2,15 @@
 -- Platform: MySQL 
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `message_hidden`;
+DROP TABLE IF EXISTS `message_read_state`;
+DROP TABLE IF EXISTS `private_messages`;
+DROP TABLE IF EXISTS `private_conversations`;
+DROP TABLE IF EXISTS `discussion_messages`;
+DROP TABLE IF EXISTS `discussion_rooms`;
+DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `answer_likes`;
+DROP TABLE IF EXISTS `saved_questions`;
 
 -- -----------------------------------------------------------------------------
 -- 1. Users Table
@@ -15,6 +24,7 @@ CREATE TABLE `users` (
     `email` VARCHAR(320) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NULL,
     `google_id` VARCHAR(255) CHARACTER SET ascii COLLATE ascii_bin NULL UNIQUE,
+    `avatar` LONGTEXT NULL,
     `auth_version` INT UNSIGNED NOT NULL DEFAULT 0,
     `reset_token_hash` CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL UNIQUE,
     `reset_token_expires` DATETIME NULL,
@@ -135,5 +145,125 @@ CREATE TABLE `document_chunk_vectors` (
     FOREIGN KEY (`chunk_id`) REFERENCES `document_chunks`(`chunk_id`) ON DELETE CASCADE,
     UNIQUE KEY `uniq_chunk_vectors_chunk_id` (`chunk_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+CREATE TABLE IF NOT EXISTS saved_questions (
+    user_id INT NOT NULL,
+    question_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, question_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE,
+    INDEX idx_saved_questions_user_created (user_id, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS answer_likes (
+    answer_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (answer_id, user_id),
+    FOREIGN KEY (answer_id) REFERENCES answers(answer_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `notifications` (
+    `notification_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `type` ENUM('new_question', 'new_answer') NOT NULL,
+    `question_id` INT NOT NULL,
+    `answer_id` INT NULL,
+    `message` VARCHAR(255) NOT NULL,
+    `is_read` BOOLEAN NOT NULL DEFAULT FALSE,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`question_id`) REFERENCES `questions`(`question_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`answer_id`) REFERENCES `answers`(`answer_id`) ON DELETE CASCADE,
+
+    INDEX `idx_notifications_user_created` (`user_id`, `created_at`),
+    INDEX `idx_notifications_user_unread` (`user_id`, `is_read`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Safe to apply to an existing forum database. No existing data is removed.
+CREATE TABLE IF NOT EXISTS discussion_rooms (
+  room_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(500) NOT NULL DEFAULT '',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS discussion_messages (
+  message_id INT AUTO_INCREMENT PRIMARY KEY,
+  room_id INT NOT NULL,
+  user_id INT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  edited_at TIMESTAMP NULL DEFAULT NULL,
+  FOREIGN KEY (room_id) REFERENCES discussion_rooms(room_id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  INDEX (room_id, message_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS private_conversations (
+  conversation_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_one INT NOT NULL,
+  user_two INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_pair (user_one, user_two),
+  FOREIGN KEY (user_one) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (user_two) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS private_messages (
+  message_id INT AUTO_INCREMENT PRIMARY KEY,
+  conversation_id INT NOT NULL,
+  user_id INT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  edited_at TIMESTAMP NULL DEFAULT NULL,
+  FOREIGN KEY (conversation_id) REFERENCES private_conversations(conversation_id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  INDEX (conversation_id, message_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Apply this migration to the working forum database for unread message badges.
+-- This adds one table and does not alter existing rooms, conversations or messages.
+CREATE TABLE IF NOT EXISTS message_read_state (
+  user_id INT NOT NULL,
+  target_type VARCHAR(20) NOT NULL,
+  target_id INT NOT NULL,
+  last_message_id INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, target_type, target_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Apply once to a database where discussion rooms, private chat and badges work.
+-- Existing messages are preserved as text messages.
+ALTER TABLE discussion_messages
+  ADD COLUMN message_type VARCHAR(20) NOT NULL DEFAULT 'text',
+  ADD COLUMN attachment_path VARCHAR(255) NULL,
+  ADD COLUMN attachment_name VARCHAR(255) NULL,
+  ADD COLUMN attachment_mime VARCHAR(120) NULL,
+  ADD COLUMN attachment_size INT NULL,
+  ADD COLUMN duration_seconds INT NULL,
+  ADD COLUMN deleted_for_everyone TINYINT(1) NOT NULL DEFAULT 0;
+
+ALTER TABLE private_messages
+  ADD COLUMN message_type VARCHAR(20) NOT NULL DEFAULT 'text',
+  ADD COLUMN attachment_path VARCHAR(255) NULL,
+  ADD COLUMN attachment_name VARCHAR(255) NULL,
+  ADD COLUMN attachment_mime VARCHAR(120) NULL,
+  ADD COLUMN attachment_size INT NULL,
+  ADD COLUMN duration_seconds INT NULL,
+  ADD COLUMN deleted_for_everyone TINYINT(1) NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS message_hidden (
+  user_id INT NOT NULL,
+  target_type VARCHAR(20) NOT NULL,
+  message_id INT NOT NULL,
+  PRIMARY KEY (user_id, target_type, message_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

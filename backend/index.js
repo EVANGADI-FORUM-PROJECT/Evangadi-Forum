@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+import http from 'http';
+import { initSocket } from './src/socket/socket.server.js';
 import { db } from './db/config.js';
 import { mainRouter } from './src/api/routes.js';
 import { errorHandler } from './src/middleware/error-handler.js';
@@ -10,7 +12,7 @@ const port = process.env.PORT || 3777;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '3mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Health check
@@ -22,6 +24,9 @@ app.use('/api', mainRouter);
 
 app.use(errorHandler);
 
+const httpServer = http.createServer(app);
+initSocket(httpServer);
+
 // Start server
 const startServer = async () => {
   try {
@@ -31,7 +36,7 @@ const startServer = async () => {
     console.log('Database connection established successfully.');
     connection.release();
 
-    app.listen(port, err => {
+    httpServer.listen(port, err => {
       if (err) {
         console.error('Failed to start the server:', err.message);
         process.exit(1);
