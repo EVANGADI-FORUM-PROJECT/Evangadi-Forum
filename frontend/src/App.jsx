@@ -1,3 +1,5 @@
+import { NotificationProvider } from './contexts/NotificationContext.jsx';
+import { MessageProvider } from './contexts/MessageContext.jsx';
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx';
 import ResetPassword from './pages/Auth/ResetPassword.jsx';
 /**
@@ -22,7 +24,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <MessageProvider><NotificationProvider><Routes>
           {/* Public routes */}
           <Route path='/' element={<Landing />} />
           <Route path='/auth' element={<Auth />} />
@@ -84,7 +86,7 @@ function App() {
 
           {/* Catch-all redirect */}
           <Route path='*' element={<Navigate to='/' replace />} />
-        </Routes>
+        </Routes></NotificationProvider></MessageProvider>
       </AuthProvider>
     </BrowserRouter>
   );
