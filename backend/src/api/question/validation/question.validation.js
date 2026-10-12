@@ -25,6 +25,8 @@ export const createQuestionValidation = [
 
 //[T-10]
 export const getQuestionsValidation = [
+    query("limit").optional().isInt({ min: 1, max: 100 }).withMessage("Limit must be between 1 and 100.").toInt(),
+    query("offset").optional().isInt({ min: 0 }).withMessage("Offset must be zero or greater.").toInt(),
     query("search")
         .optional() // means search is not mandatory if not provided
         .isString()
@@ -42,6 +44,8 @@ export const getQuestionsValidation = [
 
 //[T-11]
 export const searchQuestionsSemanticValidation = [
+    query("limit").optional().isInt({ min: 1, max: 100 }).withMessage("Limit must be between 1 and 100.").toInt(),
+    query("offset").optional().isInt({ min: 0 }).withMessage("Offset must be zero or greater.").toInt(),
     query("query")
         .notEmpty()
         .withMessage("Search query is required")

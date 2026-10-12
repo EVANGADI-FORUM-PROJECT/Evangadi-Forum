@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import {createQuestionWithVectorService, getQuestionsService, searchQuestionsSemanticService, getSingleQuestionService, assessAnswerAgainstQuestionsService,getSimilarQuestionsService} from "../service/question.service.js"
+import {createQuestionWithVectorService, getQuestionsService, searchQuestionsSemanticService, getSingleQuestionService, assessAnswerAgainstQuestionsService,getSimilarQuestionsService, updateQuestionService, deleteQuestionService, toggleSavedQuestionService, getSavedQuestionsService} from "../service/question.service.js"
 import {generateQuestionDraftCoachService} from "../service/geminiTextCoach.service.js"
 
 
@@ -10,7 +10,8 @@ export const createQuestionController = async (req, res, next) => {
     try {
         const {title, content} = req.body;// frontend: {title:..., content: .....}
         const result= await createQuestionWithVectorService({
-            userId: req.user.id, // asker's id attached in authenticateUser middleware from payload
+            userId: req.user.id,
+            authorFirstName: req.user.firstName, // asker's id attached in authenticateUser middleware from payload
             title,
             content
         })
@@ -32,6 +33,8 @@ export const getQuestionsController = async(req, res, next)=>{
  try {
     const filters = {
         search: req.query.search,
+        limit: req.query.limit,
+        offset: req.query.offset,
         mine: req.query.mine,
         userId: req.user.id,
     }// get request doesnt have body that why we are sending data through query params
@@ -57,6 +60,8 @@ export const searchQuestionsSemanticController = async (req, res, next)=>{
         
         const result = await searchQuestionsSemanticService({
             query: req.query.query,
+            limit: req.query.limit,
+            offset: req.query.offset,
             k: req.query.k ? Number(req.query.k): 0,
             threshold: req.query.threshold !== undefined ? Number(req.query.threshold): undefined,
         });
@@ -81,7 +86,7 @@ export const getSingleQuestionController = async (req, res, next)=>{
     const {questionHash}= req.params
   
 
-    const result =await getSingleQuestionService({questionHash})
+    const result =await getSingleQuestionService({questionHash, userId: req.user.id})
 
     res.status(StatusCodes.OK).json({
         success: true,
@@ -93,6 +98,34 @@ export const getSingleQuestionController = async (req, res, next)=>{
         next(error);
     }
 }
+
+export const updateQuestionController = async (req, res, next) => {
+    try {
+        const data = await updateQuestionService({ questionHash: req.params.questionHash, userId: req.user.id, ...req.body });
+        res.status(StatusCodes.OK).json({ success: true, message: 'Question updated successfully.', data });
+    } catch (error) { next(error); }
+};
+
+export const deleteQuestionController = async (req, res, next) => {
+    try {
+        await deleteQuestionService({ questionHash: req.params.questionHash, userId: req.user.id });
+        res.status(StatusCodes.OK).json({ success: true, message: 'Question deleted successfully.' });
+    } catch (error) { next(error); }
+};
+
+export const toggleSavedQuestionController = async (req, res, next) => {
+    try {
+        const data = await toggleSavedQuestionService({ questionHash: req.params.questionHash, userId: req.user.id, saved: req.body.saved });
+        res.status(StatusCodes.OK).json({ success: true, data });
+    } catch (error) { next(error); }
+};
+
+export const getSavedQuestionsController = async (req, res, next) => {
+    try {
+        const result = await getSavedQuestionsService(req.user.id);
+        res.status(StatusCodes.OK).json({ success: true, ...result });
+    } catch (error) { next(error); }
+};
 
 // ! =============================================
 // # Task: AI Answer Fit Evaluation[T-18]
