@@ -26,3 +26,6 @@ mainRouter.use("/discussion", discussionRoutes);
 
 import chatRoutes from "./chat/routes/chat.route.js";
 mainRouter.use("/chat", chatRoutes);
+
+import profileRoutes from "./profile/profile.route.js";
+mainRouter.use("/profile", profileRoutes);

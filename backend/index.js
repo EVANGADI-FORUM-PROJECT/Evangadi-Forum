@@ -6,6 +6,7 @@ import { db } from './db/config.js';
 import { mainRouter } from './src/api/routes.js';
 import { errorHandler } from './src/middleware/error-handler.js';
 import cors from 'cors';
+import { avatarDirectory, migrateAvatars } from './src/api/profile/avatar.files.js';
 
 const app = express();
 const port = process.env.PORT || 3777;
@@ -20,6 +21,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
+app.use('/uploads/avatars', express.static(avatarDirectory, { dotfiles: 'deny', index: false, setHeaders: res => res.set('X-Content-Type-Options', 'nosniff') }));
 app.use('/api', mainRouter);
 
 app.use(errorHandler);
@@ -36,6 +38,7 @@ const startServer = async () => {
     console.log('Database connection established successfully.');
     connection.release();
 
+    await migrateAvatars();
     httpServer.listen(port, err => {
       if (err) {
         console.error('Failed to start the server:', err.message);
