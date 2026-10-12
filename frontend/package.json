@@ -20,7 +20,8 @@
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.14.1",
-    "@react-oauth/google": "^0.13.5"
+    "@react-oauth/google": "^0.13.5",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
