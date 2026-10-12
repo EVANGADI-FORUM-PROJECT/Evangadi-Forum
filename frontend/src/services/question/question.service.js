@@ -86,6 +86,26 @@ async function getSimilarQuestions(questionHash, options = {}) {
   }
 }
 
+async function updateQuestion(questionHash, payload) {
+  try { return (await apiClient.put(`/api/questions/${questionHash}`, payload)).data; }
+  catch (error) { throw new Error(getMessage(error, 'Unable to update this question.')); }
+}
+
+async function deleteQuestion(questionHash) {
+  try { return (await apiClient.delete(`/api/questions/${questionHash}`)).data; }
+  catch (error) { throw new Error(getMessage(error, 'Unable to delete this question.')); }
+}
+
+async function saveQuestion(questionHash, saved) {
+  try { return (await apiClient.put(`/api/questions/${questionHash}/saved`, { saved })).data; }
+  catch (error) { throw new Error(getMessage(error, 'Unable to update saved questions.')); }
+}
+
+async function getSavedQuestions() {
+  try { return (await apiClient.get('/api/questions/saved')).data; }
+  catch (error) { throw new Error(getMessage(error, 'Unable to load saved questions.')); }
+}
+
 export const questionService = {
   getQuestions,
   searchQuestionsSemantic,
@@ -94,4 +114,8 @@ export const questionService = {
   generateQuestionDraftCoach,
   assessAnswerFit,
   getSimilarQuestions,
+  updateQuestion,
+  deleteQuestion,
+  saveQuestion,
+  getSavedQuestions,
 };
