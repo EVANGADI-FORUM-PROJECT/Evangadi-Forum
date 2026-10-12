@@ -52,6 +52,21 @@ async function googleLogin(credential) {
 /**
  * Logs out the current user by clearing localStorage.
  */
+async function updateProfile(profile) {
+  try {
+    const response = await apiClient.put('/api/profile', profile);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+    return response.data.user;
+  } catch (error) {
+    throw handleAuthError(error);
+  }
+}
+
+async function getProfile() {
+  try { return (await apiClient.get('/api/profile')).data.user; }
+  catch (error) { throw handleAuthError(error); }
+}
+
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
@@ -122,6 +137,8 @@ function handleAuthError(error) {
  * Service for handling auth-related requests.
  */
 export const authService = {
+  updateProfile,
+  getProfile,
   forgotPassword,
   resetPassword,
   googleLogin,
