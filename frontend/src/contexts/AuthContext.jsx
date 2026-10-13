@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth/auth.service.js';
 
@@ -28,6 +28,25 @@ export function AuthProvider({ children }) {
    * Registers a new user. Does not automatically log them in.
    * @param {Object} userData - { firstName, lastName, email, password }
    */
+  useEffect(() => {
+    const token = authService.getStoredToken();
+    if (!token) return;
+    let cancelled = false;
+    authService.getProfile().then(profile => {
+      if (!cancelled && authService.getStoredToken() === token) {
+        setUser(profile);
+        localStorage.setItem('user', JSON.stringify(profile));
+      }
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  const updateProfile = async profile => {
+    const updated = await authService.updateProfile(profile);
+    setUser(updated);
+    return updated;
+  };
+
   const register = async (userData) => {
     setLoading(true);
     try {
@@ -79,6 +98,7 @@ export function AuthProvider({ children }) {
     register,
     login,
     googleLogin,
+    updateProfile,
     logout,
     isAuthenticated: !!user,
   };
