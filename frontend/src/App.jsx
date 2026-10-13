@@ -1,3 +1,4 @@
+import { ConfirmProvider } from './contexts/ConfirmContext.jsx';
 import { NotificationProvider } from './contexts/NotificationContext.jsx';
 import { MessageProvider } from './contexts/MessageContext.jsx';
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx';
@@ -24,7 +25,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <MessageProvider><NotificationProvider><Routes>
+        <MessageProvider><NotificationProvider><ConfirmProvider><Routes>
           {/* Public routes */}
           <Route path='/' element={<Landing />} />
           <Route path='/auth' element={<Auth />} />
@@ -86,7 +87,7 @@ function App() {
 
           {/* Catch-all redirect */}
           <Route path='*' element={<Navigate to='/' replace />} />
-        </Routes></NotificationProvider></MessageProvider>
+        </Routes></ConfirmProvider></NotificationProvider></MessageProvider>
       </AuthProvider>
     </BrowserRouter>
   );
