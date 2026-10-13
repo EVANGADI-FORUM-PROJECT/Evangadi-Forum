@@ -1,6 +1,8 @@
+import { avatarUrl } from '../../services/core/avatar.url.js';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, LogOut, MessageSquare, FileText, X } from 'lucide-react';
-import { useAuth } from '../../contexts/useAuth';
+import { LayoutDashboard, LogOut, MessageSquare, FileText, X, Bookmark, UserRound, UsersRound, MessagesSquare } from 'lucide-react';
+import { useMessages } from '../../contexts/MessageContext.jsx';
+import { useAuth } from '../../contexts/useAuth.js';
 import styles from './Sidebar.module.css';
 
 /**
@@ -10,12 +12,17 @@ import styles from './Sidebar.module.css';
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Home', path: '/dashboard' },
   { icon: MessageSquare, label: 'Your Topics', path: '/my-questions' },
+  { icon: Bookmark, label: 'Saved Questions', path: '/saved-questions' },
   { icon: FileText, label: 'Knowledge Base', path: '/rag-documents' },
+  { icon: UsersRound, label: 'Discussion Rooms', path: '/discussion-rooms' },
+  { icon: MessagesSquare, label: 'Private Chat', path: '/private-chat' },
+  { icon: UserRound, label: 'Edit Profile', path: '/profile' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { roomUnread, chatUnread } = useMessages();
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles['sidebar--open'] : styles['sidebar--closed']}`} aria-hidden={!isOpen}>
@@ -72,6 +79,7 @@ export default function Sidebar({ isOpen, onClose }) {
                     }`}
                   />
                   <span>{item.label}</span>
+                  {((item.path === '/discussion-rooms' && roomUnread > 0) || (item.path === '/private-chat' && chatUnread > 0)) && <span className={styles.messageBadge} aria-label={`${item.path === '/private-chat' ? chatUnread : roomUnread} unread messages`}>{Math.min(item.path === '/private-chat' ? chatUnread : roomUnread, 99)}{(item.path === '/private-chat' ? chatUnread : roomUnread) > 99 ? '+' : ''}</span>}
                 </>
               )}
             </NavLink>
@@ -93,7 +101,7 @@ export default function Sidebar({ isOpen, onClose }) {
             <div className={styles.sidebar__avatar}>
               <img
                 src={
-                  user?.avatar ||
+                  avatarUrl(user?.avatar) ||
                   `https://ui-avatars.com/api/?name=${
                     user?.firstName || 'User'
                   }+${user?.lastName || ''}&background=random`
